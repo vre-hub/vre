@@ -33,3 +33,7 @@ openstack coe cluster create eosc-cluster \
     --labels auto_scaling_enabled=true --labels min_node_count=3 --labels max_node_count=7 \
     --node-count 5 --flavor m2.2xlarge --master-flavor m2.medium
 ```
+
+## File encryption
+
+Secrets stored in this repo should be encrypted by adding them to `.gitattributes`.
