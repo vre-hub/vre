@@ -2,6 +2,12 @@
 
 EOSC Future CERN Infrastructure Code.
 
+## Getting Started
+
+1. Clone this repo
+2. [Install git-crypt](https://github.com/AGWA/git-crypt/blob/master/INSTALL.md) and let someone add your GPG `USER_ID`
+3. Uncrypt enrypted files in the repo using `git-crypt unlock`
+
 ## Setup Documentation
 
 1. Creation of [Key Pair](https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/keypair.html) to use with the cluster, called `eosc-cluster-keypair` and created by `dogosein`.
