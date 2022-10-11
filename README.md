@@ -36,8 +36,7 @@ openstack coe cluster create eosc-cluster \
     --node-count 5 --flavor m2.2xlarge --master-flavor m2.medium
 ```
 
-The *kubeconfig* is stored as a secret [here](secrets/config), copy it and then export it to your environment `export KUBECONFIG=config`.
-
+The *kubeconfig* is stored as a secret [here](secrets/kubeconfig), copy it and then export it to your environment `export KUBECONFIG=config`. The `eosc-cluster-keypair` openstack keypair is stored as a secret [here](secrets/eosc-cluster-keypair.pem).
 
 ## About file encryption
 
