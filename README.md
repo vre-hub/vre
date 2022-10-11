@@ -2,16 +2,18 @@
 
 EOSC Future CERN Infrastructure Code.
 
-## Getting Started
+## Getting started as a collaborator
 
 1. Clone this repo
-2. [Install git-crypt](https://github.com/AGWA/git-crypt/blob/master/INSTALL.md) and let someone add your GPG `USER_ID`
-3. Uncrypt enrypted files in the repo using `git-crypt unlock`
+2. [Install git-crypt](https://github.com/AGWA/git-crypt/blob/master/INSTALL.md), generate a GPG Key `gpg --full-generate-key`, export the public key `gpg --export --armor $KEY_ID` and send it to one of the collaborators already added to git-crypt
+3. After they added you, you should be able to decrypt encrypted files in the repo using `git-crypt unlock`
+4. ..
 
-## Setup Documentation
+## Setup documentation
 
-1. Creation of [Key Pair](https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/keypair.html) to use with the cluster, called `eosc-cluster-keypair` and created by `dogosein`.
-2. Cluster creation using the following command:
+The [Key Pair](https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/keypair.html) that was used to setup the cluster is called `eosc-cluster-keypair` and was created by `dogosein`.
+
+The cluster was created by the following command:
 
 ```bash
 openstack coe cluster create eosc-cluster \
@@ -34,6 +36,11 @@ openstack coe cluster create eosc-cluster \
     --node-count 5 --flavor m2.2xlarge --master-flavor m2.medium
 ```
 
-## File encryption
+The *kubeconfig* is stored as a secret [here](secrets/config), copy it and then export it to your environment `export KUBECONFIG=config`.
 
-All files in within the `secrets` directory will be encrypted by git-crypt. Other secrets stored in this repo should be encrypted by adding them to `.gitattributes` accordingly.
+
+## About file encryption
+
+Keys of new collaborators need to be added to git-crypt using `git-crypt add-gpg-user USER_ID`. As a member you need to import their public key to your GPG `gpg --import /path/to/file` (see also *Getting started as a collaborator*).
+
+**All files in within the `secrets` directory will be encrypted by git-crypt. Other secrets stored in this repo should be encrypted by adding them to `.gitattributes` accordingly.**
