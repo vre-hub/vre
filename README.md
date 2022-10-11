@@ -36,4 +36,4 @@ openstack coe cluster create eosc-cluster \
 
 ## File encryption
 
-Secrets stored in this repo should be encrypted by adding them to `.gitattributes`.
+All files in within the `secrets` directory will be encrypted by git-crypt. Other secrets stored in this repo should be encrypted by adding them to `.gitattributes` accordingly.
