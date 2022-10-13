@@ -38,6 +38,14 @@ openstack coe cluster create eosc-cluster \
 
 The *kubeconfig* is stored as a secret [here](secrets/kubeconfig), copy it and then export it to your environment `export KUBECONFIG=config`. The `eosc-cluster-keypair` openstack keypair is stored as a secret [here](secrets/eosc-cluster-keypair.pem). You can directly connect to an instance with `ssh -i eosc-cluster-keypair.pem core@XXX.XXX.XXX.XXX`
 
+ArgoCD was installed according to the official [documentation](https://argo-cd.readthedocs.io/en/stable/getting_started/).
+
+```bash
+kubectl create namespace argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/core-install.yaml
+```
+
+
 ## About file encryption
 
 Keys of new collaborators need to be added to git-crypt using `git-crypt add-gpg-user USER_ID`. As a member you need to import their public key to your GPG `gpg --import /path/to/file` (see also *Getting started as a collaborator*).
