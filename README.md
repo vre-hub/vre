@@ -9,7 +9,7 @@ EOSC Future CERN Infrastructure Code.
 3. After they added you, you should be able to decrypt encrypted files in the repo using `git-crypt unlock`
 4. ..
 
-## Setup documentation
+## Cluster Setup
 
 ### Openstack K8s Cluster
 
@@ -64,6 +64,28 @@ In order to access Argo CD from the CERN Network its DNS name (ingress host) nee
 openstack server set --property landb-alias=argocd-eosc--load-1- eosc-cluster-kx4fpc7ktdnk-node-0
 openstack server set --property landb-alias=argocd-eosc--load-2- eosc-cluster-kx4fpc7ktdnk-node-1
 ```
+
+### Terraform IaC for openstack
+
+Terraform is located [here](infrastructure/openstack/prod/tf), the configuration stored in the [main.tf](infrastructure/openstack/prod/tf/main.tf) only stores the provider information.
+The provider configuration is taken from the environment variables (when you source the OpenStack RC File).
+
+Find the latest docs on this provider [here](https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs).
+
+The workflow in short is:
+
+```bash
+git pull
+
+terraform init
+terraform plan
+terraform apply
+
+git commit -m 'tf apply XYZ'
+git push
+```
+
+**Never leave changes unapplied and always pull/commit to store the correct state for others!**
 
 ### Secrets management
 
