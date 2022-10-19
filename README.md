@@ -11,6 +11,8 @@ EOSC Future CERN Infrastructure Code.
 
 ## Setup documentation
 
+### Openstack K8s Cluster
+
 The [Key Pair](https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/keypair.html) that was used to setup the cluster is called `eosc-cluster-keypair` and was created by `dogosein`.
 
 The cluster was created by the following command:
@@ -38,13 +40,34 @@ openstack coe cluster create eosc-cluster \
 
 The *kubeconfig* is stored as a secret [here](secrets/kubeconfig), copy it and then export it to your environment `export KUBECONFIG=config`. The `eosc-cluster-keypair` openstack keypair is stored as a secret [here](secrets/eosc-cluster-keypair.pem). You can directly connect to an instance with `ssh -i eosc-cluster-keypair.pem core@XXX.XXX.XXX.XXX`
 
-ArgoCD was installed according to the official [documentation](https://argo-cd.readthedocs.io/en/stable/getting_started/).
+Node 0 an 1 are labeled as ingress for *nginx*:
+
+```bash
+kubectl label node eosc-cluster-kx4fpc7ktdnk-node-0 role=ingress
+kubectl label node eosc-cluster-kx4fpc7ktdnk-node-1 role=ingress
+```
+
+### Argo CD GitOps
+
+ArgoCD was installed according to the official [documentation](https://argo-cd.readthedocs.io/en/stable/getting_started/):
 
 ```bash
 kubectl create namespace argocd
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/core-install.yaml
 ```
 
+The following ingress enables access to the ArgoCD WebUI: [argocd-server-ingress.yml](infrastructure/openstack/production/k8s/argocd-server-ingress.yml)
+
+In order to access Argo CD from the CERN Network its DNS name (ingress host) needs to be added to *landb*:
+
+```bash
+openstack server set --property landb-alias=argocd-eosc--load-1- eosc-cluster-kx4fpc7ktdnk-node-0
+openstack server set --property landb-alias=argocd-eosc--load-2- eosc-cluster-kx4fpc7ktdnk-node-1
+```
+
+### Secrets management
+
+tbd
 
 ## About file encryption
 
