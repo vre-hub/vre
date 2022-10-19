@@ -6,6 +6,7 @@ provider "registry.terraform.io/terraform-provider-openstack/openstack" {
   constraints = "1.48.0"
   hashes = [
     "h1:Q1+17/v0+xpNDUvEqVOX9UqYTwb1suAdH73ObnIVepc=",
+    "h1:qjf/qyH9oKOMujQk59bNxV8yLRbUhmihxMRrKOeA8qI=",
     "zh:1fe237fa1153e05879fd26857416a1d029a3f108e32e83c4931dd874c777aa6a",
     "zh:2c4587b4c810d569aafd69e287ecc2ee910e6c16cfc784e49861e0a8066b8655",
     "zh:3f1a42fce3c925afeeaa96efae0bc9be95acfc80ba147a8123d03038d429df6b",
