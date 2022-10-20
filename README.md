@@ -7,7 +7,15 @@ EOSC Future CERN Infrastructure Code.
 1. Clone this repo
 2. [Install git-crypt](https://github.com/AGWA/git-crypt/blob/master/INSTALL.md), generate a GPG Key `gpg --full-generate-key`, export the public key `gpg --export --armor $KEY_ID` and send it to one of the collaborators already added to git-crypt
 3. After they added you, you should be able to decrypt encrypted files in the repo using `git-crypt unlock`
-4. ..
+4. Install `kubectl`, `terraform`, `helm` and `kubeseal` in order to do all relevant operations on the cluster (refer to Cluster Setup below)
+
+## Repo structure
+
+the repo is designed to be a Monorepo, containing all relevant files to this project. Within the repo files are logically separated as follows:
+
+* IaC (Terraform, Kubernetes) --> divided into environments (in this case only *prod*)
+* Other encrypted secrets
+* Application files
 
 ## Cluster Setup
 
