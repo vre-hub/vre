@@ -89,7 +89,24 @@ git push
 
 ### Secrets management
 
-tbd
+Sealed-secrets was installed with the following commands:
+
+```bash
+helm repo add sealed-secrets https://bitnami-labs.github.io/sealed-secrets
+helm install sealed-secrets -n kube-system --set-string fullnameOverride=sealed-secrets-controller sealed-secrets/sealed-secrets
+```
+
+Create a sealed secret file running the command below:
+
+```bash
+kubectl create secret generic secret-name --dry-run=client --from-literal=foo=bar -o [json|yaml] | \
+kubeseal \
+    --controller-name=sealed-secrets-controller \
+    --controller-namespace=kube-system \
+    --format yaml > mysealedsecret.[json|yaml]
+
+kubectl create -f mysealedsecret.[json|yaml]
+```
 
 ## About file encryption
 
