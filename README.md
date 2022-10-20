@@ -87,7 +87,7 @@ git push
 
 **Never leave changes unapplied and always pull/commit to store the correct state for others!**
 
-### Secrets management
+### Kubernetes secrets management
 
 Sealed-secrets was installed with the following commands:
 
@@ -108,7 +108,7 @@ kubeseal \
 kubectl create -f mysealedsecret.[json|yaml]
 ```
 
-## About file encryption
+### File encryption (other secrets)
 
 Keys of new collaborators need to be added to git-crypt using `git-crypt add-gpg-user USER_ID`. As a member you need to import their public key to your GPG `gpg --import /path/to/file` (see also *Getting started as a collaborator*).
 
