@@ -51,8 +51,8 @@ The *kubeconfig* is stored as a secret [here](secrets/kubeconfig), copy it and t
 Node 0 an 1 are labeled as ingress for *nginx*:
 
 ```bash
-kubectl label node eosc-cluster-kx4fpc7ktdnk-node-0 role=ingress
-kubectl label node eosc-cluster-kx4fpc7ktdnk-node-1 role=ingress
+kubectl label node eosc-cluster-XYZ-node-0 role=ingress
+kubectl label node eosc-cluster-XYZ-node-1 role=ingress
 ```
 
 ### Argo CD GitOps
@@ -61,16 +61,25 @@ ArgoCD was installed according to the official [documentation](https://argo-cd.r
 
 ```bash
 kubectl create namespace argocd
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/core-install.yaml
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 ```
 
-The following ingress enables access to the ArgoCD WebUI: [argocd-server-ingress.yml](infrastructure/openstack/production/k8s/argocd-server-ingress.yml)
+The following ingress enables access to the ArgoCD WebUI: [argocd-server-ingress.yml](infrastructure/openstack/prod/k8s/argocd-server-ingress.yml)
 
 In order to access Argo CD from the CERN Network its DNS name (ingress host) needs to be added to *landb*:
 
 ```bash
-openstack server set --property landb-alias=argocd-eosc--load-1- eosc-cluster-kx4fpc7ktdnk-node-0
-openstack server set --property landb-alias=argocd-eosc--load-2- eosc-cluster-kx4fpc7ktdnk-node-1
+openstack server set --property landb-alias=argocd-eosc--load-1- eosc-cluster-XYZ-node-0
+openstack server set --property landb-alias=argocd-eosc--load-2- eosc-cluster-XYZ-node-1
+```
+
+Add the `--insecure` flag to the argocd-server deployment in order to access the web UI:
+
+```yml
+containers:
+    - command:
+        - argocd-server
+        - --insecure
 ```
 
 ### Terraform IaC for openstack
