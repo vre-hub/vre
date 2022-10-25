@@ -19,6 +19,12 @@ the repo is designed to be a Monorepo, containing all relevant files to this pro
 
 ## Cluster Setup
 
+### Namespaces
+
+| Namespace | Description |
+| --- | --- |
+| shared-services | For shared services like argocd and sealed-secrets |
+
 ### Openstack K8s Cluster
 
 The [Key Pair](https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/keypair.html) that was used to setup the cluster is called `eosc-cluster-keypair` and was created by `dogosein`.
@@ -81,6 +87,8 @@ containers:
         - argocd-server
         - --insecure
 ```
+
+The standard login username is `admin` and the password can be retrieved via: `kubectl -n shared-services get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo` 
 
 ### Terraform IaC for openstack
 
