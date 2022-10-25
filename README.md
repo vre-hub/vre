@@ -75,6 +75,8 @@ openstack server set --property landb-alias=argocd-eosc--load-2- eosc-cluster-kx
 
 ### Terraform IaC for openstack
 
+:warning: **The openstack terraform provider does not allow cluster changes atm, so this only works for creating new resources!**
+
 Terraform is located [here](infrastructure/openstack/prod/tf), the configuration stored in the [main.tf](infrastructure/openstack/prod/tf/main.tf) only stores the provider information.
 The provider configuration is taken from the environment variables (when you source the OpenStack RC File).
 
@@ -117,6 +119,8 @@ kubectl create -f mysealedsecret.[json|yaml]
 ```
 
 ### File encryption (other secrets)
+
+:warning: **git-crypt seems to have problems with CentOS, so we cannot use it there atm!**
 
 Keys of new collaborators need to be added to git-crypt using `git-crypt add-gpg-user USER_ID`. As a member you need to import their public key to your GPG `gpg --import /path/to/file` (see also *Getting started as a collaborator*).
 
