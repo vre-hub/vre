@@ -1,4 +1,1 @@
 .gitattributes !filter !diff
-secrets/** filter=git-crypt diff=git-crypt
-infrastructure/openstack/prod/tf/terraform.tfstate filter=git-crypt diff=git-crypt
-infrastructure/openstack/prod/tf/terraform.tfstate.backup filter=git-crypt diff=git-crypt
