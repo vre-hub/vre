@@ -54,7 +54,7 @@ kubectl create secret generic ${RELEASENAMENOTEBOOK}-hostkey --from-file=${NOTEB
 # 1. X509 robot certificate for the 'rucio-x509up' secret is on my aiadm
 
 # OTHER secrets to be configured from [gitlab](https://gitlab.cern.ch/escape-wp2/flux-rucio/-/tree/master/secrets)
-# 2. idpsecrets.json --> oidc secrets for rucio client, look at http://rucio.cern.ch/documentation/installing_server/#server-configuration-for-open-id-connect-authnz 
+# 2. idpsecrets.json --> oidc secrets for rucio client, look at http://rucio.cern.ch/documentation/installing_server/#server-configuration-for-open-id-connect-authnz and to https://gitlab.com/ska-telescope/src/ska-rucio-prototype/-/blob/master/notes/enable-tokens-1.26.2.md
 # 3. hermes-secret --> messenger secret
 # 4. db-secret --> database secret
 # 5. rse-account --> for S3 cloud storage config
