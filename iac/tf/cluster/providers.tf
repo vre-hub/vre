@@ -1,19 +1,19 @@
 terraform {
-   backend "kubernetes" {
-    secret_suffix    = "state"
-    config_path      = "~/.kube/config" # Change to your local config path if necessary
+  backend "kubernetes" {
+    secret_suffix = "state"
+    config_path   = "~/.kube/config" # Change to your local config path if necessary
   }
   required_providers {
     openstack = {
-      source = "terraform-provider-openstack/openstack"
+      source  = "terraform-provider-openstack/openstack"
       version = "1.49.0"
     }
-     kubernetes = {
-      source = "hashicorp/kubernetes"
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
       version = "2.14.0"
     }
     helm = {
-      source = "hashicorp/helm"
+      source  = "hashicorp/helm"
       version = "2.7.1"
     }
   }
