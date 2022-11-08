@@ -1,0 +1,534 @@
+# Default values for rucio.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+## judgeCleanerCount gives the number of judge-cleaner pods to run
+abacusAccountCount: 0
+abacusCollectionReplicaCount: 0
+abacusRseCount: 0
+automatixCount: 0
+cacheConsumerCount: 0
+conveyorTransferSubmitterCount: 0
+conveyorPollerCount: 0
+conveyorFinisherCount: 0
+conveyorReceiverCount: 0
+conveyorStagerCount: 0
+conveyorThrottlerCount: 0
+conveyorPreparerCount: 0
+darkReaperCount: 0
+hermesCount: 0
+hermes2Count: 0
+judgeCleanerCount: 0
+judgeEvaluatorCount: 0
+judgeInjectorCount: 0
+judgeRepairerCount: 0
+oauthManagerCount: 0
+undertakerCount: 0
+reaperCount: 0
+replicaRecovererCount: 0
+transmogrifierCount: 0
+tracerKronosCount: 0
+minosCount: 0
+minosTemporaryExpirationCount: 0
+necromancerCount: 0
+
+image:
+  repository: rucio/rucio-daemons
+  tag: release-1.18.0
+  pullPolicy: Always
+
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 1
+
+podLabels: {}
+podAnnotations: {}
+
+minReadySeconds: 5
+
+monitoring:
+  enabled: false
+  serviceMonitorEnabled: true
+  exporterPort: 8080
+  targetPort: 8080
+  interval: 30s
+  telemetryPath: /metrics
+  namespace: monitoring
+  labels:
+    release: prometheus-operator
+
+abacusAccount:
+  threads: 1
+  podAnnotations: {}
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
+abacusCollectionReplica:
+  threads: 1
+  podAnnotations: {}
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
+abacusRse:
+  fillHistoryTable: 0
+  threads: 1
+  podAnnotations: {}
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
+automatix:
+  threads: 1
+  sleepTime: 30
+  podAnnotations: {}
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "100Mi"
+      cpu: "100m"
+
+cacheConsumer:
+  threads: 1
+  podAnnotations: {}
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "100Mi"
+      cpu: "100m"
+
+conveyorTransferSubmitter:
+  threads: 1
+  podAnnotations: {}
+  activities: "'test1' 'test2'"
+  sleepTime: 10
+  archiveTimeout: ""
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
+conveyorPoller:
+  threads: 1
+  podAnnotations: {}
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
+conveyorFinisher:
+  threads: 1
+  podAnnotations: {}
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
+conveyorReceiver:
+  threads: 1
+  podAnnotations: {}
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
+conveyorThrottler:
+  threads: 1
+  podAnnotations: {}
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
+conveyorPreparer:
+  threads: 1
+  podAnnotations: {}
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
+darkReaper:
+  workers: 1
+  chunkSize: "10"
+  scheme: ""
+  rses: ""
+  includeRses: ""
+  excludeRses: ""
+  podAnnotations: {}
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
+hermes:
+  threads: 1
+  podAnnotations: {}
+  bulk: 100
+  sleepTime: 10
+  brokerTimeout: 3
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
+hermes2:
+  threads: 1
+  podAnnotations: {}
+  bulk: 1000
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
+judgeCleaner:
+  threads: 1
+  podAnnotations: {}
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
+judgeEvaluator:
+  threads: 1
+  podAnnotations: {}
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
+judgeInjector:
+  threads: 1
+  podAnnotations: {}
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
+judgeRepairer:
+  threads: 1
+  podAnnotations: {}
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
+oauthManager:
+  threads: 1
+  podAnnotations: {}
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
+undertaker:
+  threads: 1
+  podAnnotations: {}
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
+reaper:
+  greedy: 0
+  scheme: ""
+  threads: 4
+  includeRses: ""
+  podAnnotations: {}
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
+replicaRecoverer:
+  threads: 1
+  podAnnotations: {}
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
+transmogrifier:
+  threads: 1
+  podAnnotations: {}
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
+tracerKronos:
+  threads: 1
+  podAnnotations: {}
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
+minos:
+  threads: 1
+  podAnnotations: {}
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "100Mi"
+      cpu: "100m"
+
+minosTemporaryExpiration:
+  threads: 1
+  podAnnotations: {}
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "100Mi"
+      cpu: "100m"
+
+necromancer:
+  podAnnotations: {}
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "100Mi"
+      cpu: "100m"
+
+ftsRenewal:
+  enabled: 0
+  schedule: "12 */6 * * *"
+  image:
+    repository: rucio/fts-cron
+    tag: latest
+    pullPolicy: Always
+  vo: "cms"
+  voms: "cms:/cms/Role=production"
+  servers: "https://fts3-devel.cern.ch:8446,https://cmsfts3.fnal.gov:8446,https://fts3.cern.ch:8446,https://lcgfts3.gridpp.rl.ac.uk:8446,https://fts3-pilot.cern.ch:8446"
+
+automaticRestart:
+  enabled: 0
+  image:
+    repository: bitnami/kubectl
+    tag: latest
+    pullPolicy: IfNotPresent
+  schedule: "0 0 * * *"
+  selectorLabel: "app-group=rucio-daemons"
+
+additionalSecrets: {}
+  # gcssecret:
+  #   secretName: gcssecret
+  #   mountPath: /opt/rucio/etc/gcs_rucio.json
+  #   subPath: gcs_rucio.json
+
+## common config values used to configure the Rucio daemons
+config:
+  # accounts:
+    # special_accounts: "panda, tier0"
+
+  # common:
+    ## config.common.logdir: the default directoy to write logs to (default: "/var/log/rucio")
+    # logdir: "/var/log/rucio"
+    ## config.common.logdir: the max loglevel (default: "DEBUG")
+    # loglevel: "DEBUG"
+    ## config.common.mailtemplatedir: directory containing the mail templates (default: "/opt/rucio/etc/mail_templates")
+    # mailtemplatedir: "/opt/rucio/etc/mail_templates"
+
+  # database:
+    ## config.database.default: the connection string for the database (default: "sqlite:////tmp/rucio.db")
+    # default: "sqlite:////tmp/rucio.db"
+    ## config.database.schema: the schema used in the DB. only necessary when using Oracle.
+    # schema: ""
+    ## config.database.pool_reset_on_return: set the “reset on return” behavior of the pool (default: "rollback")
+    # pool_reset_on_return: "rollback"
+    ## config.database.echo: flag to control the logging of all statements to stdout (default: "0")
+    # echo: "0"
+    ## config.database.po0l_recycle: this setting causes the pool to recycle connections after the given number of seconds has passed (default: "600")
+    # pool_recycle: "600"
+    ## config.database.pool_size: the number of connections to keep open inside the connection pool
+    # pool_size: ""
+    ## config.database.pool_timeout: number of seconds to wait before giving up on getting a connection from the pool
+    # pool_timeout: ""
+    ## config.database.maxoverflow: the number of connections to allow in connection pool "overflow"
+    # max_overflow: ""
+    ## config.database.powuseraccount: user used to check the DB
+    # powuseraccount: ""
+    ## config.database.powuseraccount: password for user used to check the DB
+    # powuserpassword: ""
+
+  # monitor:
+    ## config.monitor.carbon_server: address of carbon server used for graphite monitoring (default: "localhost")
+    # carbon_server: "localhost"
+    ## config.monitor.carbon_port: port of carbon server used for graphite monitoring (default: "8125")
+    # carbon_server: "8125"
+    ## config.monitor.user_scope: scope used on the graphite server (default: "default_docker")
+    # user_scope: "default_docker"
+
+  # policy:
+    ## config.permission.policy: (default "generic")
+    # permission: "generic"
+    ## config.permission.schema: (default "generic")
+    # schema: "generic"
+    ## config.permission.lfn2pfn_algorithm_default: (default "hash")
+    # lfn2pfn_algorithm_default: "hash"
+    ## config.permission.support: (default "https://github.com/rucio/rucio/issues/")
+    # support: "https://github.com/rucio/rucio/issues/"
+    ## config.permission.support_rucio: (default "https://github.com/rucio/rucio/issues/")
+    # support_rucio: "https://github.com/rucio/rucio/issues/"
+
+  # automatix:
+    # sites: ""
+    # sleep_time: ""
+    # database_lifetime: ""
+    # set_metadata: ""
+
+  conveyor:
+    # scheme: "srm,gsiftp,root,http,https"
+    # transfertool: "fts3"
+    # ftshosts: "https://fts3-pilot.cern.ch:8446, https://fts3-pilot.cern.ch:8446"
+    cacert: "/opt/certs/CERN-bundle.pem"
+    usercert: "/opt/proxy/x509up"
+    # cache_time: ""
+    # user_deterministic_id: ""
+    # poll_timeout: ""
+    # submit_timeout: ""
+    # bring_online: ""
+    # queue_mode: ""
+    # using_memcache: ""
+    # ftsmonhosts: ""
+
+  # messaging-fts3:
+    # port: "61123"
+    # ssl_key_file: "/etc/grid-security/hostkey.pem"
+    # ssl_cert_file: "/etc/grid-security/hostcert.pem"
+    # destination: "/topic/transfer.fts_monitoring_queue_state"
+    # brokers: "dashb-test-mb.cern.ch"
+    # voname: "atlas"
+
+  # messaging-hermes:
+    # username: ""
+    # password: ""
+    # port: "61023"
+    # nonssl_port: ""
+    # use_ssl: ""
+    # ssl_key_file: "/etc/grid-security/hostkey.pem"
+    # ssl_cert_file: "/etc/grid-security/hostcert.pem"
+    # destination: "/topic/rucio.events"
+    # brokers: "atlas-test-mb.cern.ch"
+    # voname: "atlas"
+    # email_from: "Rucio <atlas-adc-ddm-support@cern.ch"
+    # email_test: ""
+
+  # messaging-hermes2:
+    # elastic_endpoint:  # _bulk endpoint
+    # influxdb_endpoint: # write endpoint
+
+  # tracer-kronos:
+    # brokers: "atlas-test-mb.cern.ch"
+    # port: "61013"
+    # ssl_key_file: "/etc/grid-security/hostkey.pem"
+    # ssl_cert_file: "/etc/grid-security/hostcert.pem"
+    # queue: "/queue/Consumer.kronos.rucio.tracer"
+    # prefetch_size: "10"
+    # chunksize: "10"
+    # subscription_id: "rucio-tracer-listener"
+    # use_ssl: "False"
+    # reconnect_attempts: "100"
+    # excluded_usrdns: ""
+    # username: ""
+    # password: ""
+    # dataset_wait: 60
+
+  # transmogrifier:
+    # maxdids: 100000
+
+  # messaging-cache:
+    # port: "61123"
+    # ssl_key_file: "/etc/grid-security/hostkey.pem"
+    # ssl_cert_file: "/etc/grid-security/hostcert.pem"
+    # destination: "/topic/rucio.cache"
+    # brokers: "dashb-test-mb.cern.ch"
+    # voname: "atlas"
+    # account: "ddm"
+
+  # credentials:
+    # gcs: "/opt/rucio/etc/google-cloud-storage-test.json"
+    # signature_lifetime: "3600"
+
