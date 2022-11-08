@@ -1,127 +1,51 @@
+:construction: *This repository is still under construction*
+
 # EOSC Future CERN
 
 EOSC Future CERN Infrastructure Code.
 
-## Getting started as a collaborator
+## Prerequisites
 
-1. Clone this repo
-2. [Install git-crypt](https://github.com/AGWA/git-crypt/blob/master/INSTALL.md), generate a GPG Key `gpg --full-generate-key`, export the public key `gpg --export --armor $KEY_ID` and send it to one of the collaborators already added to git-crypt
-3. After they added you, you should be able to decrypt encrypted files in the repo using `git-crypt unlock`
-4. Install `kubectl`, `terraform`, `helm` and `kubeseal` in order to do all relevant operations on the cluster (refer to Cluster Setup below)
+In order to create or interact with this cluster you'll need: `kubectl`, `terraform`, `helm` and `kubeseal` installed locally.
 
-## Repo structure
+Further you'll need the Openstack RC configuration and the kubeconfig (once the cluster has been created).
 
-the repo is designed to be a Monorepo, containing all relevant files to this project. Within the repo files are logically separated as follows:
+## Repository structure
 
-* IaC (Terraform, Kubernetes) --> divided into environments (in this case only *prod*)
-* Other encrypted secrets
-* Application files
+The repo is designed to be a Monorepo, containing all relevant files to this project:
+
+* `iac`: Infrastructure as Code
+    * `scripts`: Scripts used for the infrastructure
+    * `tf`: Terraform files
+        * `cluster`: Cluster main files
+        * `modules`: Terraform modules used in the cluster
 
 ## Cluster Setup
+
+### Terraform
+
+All resources are created via [Terraform](https://www.terraform.io/).
+
+:warning: **The openstack terraform provider does not support changes to exisitng resources. Every change will result in a replace operation!**
 
 ### Namespaces
 
 | Namespace | Description |
 | --- | --- |
-| shared-services | For shared services like argocd and sealed-secrets |
+| shared-services | Namespace for shared resources |
+| rucio | Namespace for rucio resources |
+| monitoring | Namespace for monitoring resources |
 
-### Openstack K8s Cluster
-
-The [Key Pair](https://docs.openstack.org/python-openstackclient/pike/cli/command-objects/keypair.html) that was used to setup the cluster is called `eosc-cluster-keypair` and was created by `dogosein`.
-
-The cluster was created by the following command:
-
-```bash
-openstack coe cluster create eosc-cluster \
-    --keypair eosc-cluster-keypair \
-    --cluster-template kubernetes-1.22.9-1-multi --master-count 3 \
-    --merge-labels \
-    --labels cern_enabled=true \
-    --labels cvmfs_enabled=true \
-    --labels cvmfs_storage_driver=true \
-    --labels eos_enabled=true \
-    --labels monitoring_enabled=true \
-    --labels metrics_server_enabled=true \
-    --labels ingress_controller=nginx \
-    --labels logging_producer=eosc-future \
-    --labels logging_installer=helm \
-    --labels logging_include_internal=true \
-    --labels grafana_admin_passwd=admin \
-    --labels keystone_auth_enabled=true \
-    --labels auto_scaling_enabled=true --labels min_node_count=3 --labels max_node_count=7 \
-    --node-count 5 --flavor m2.2xlarge --master-flavor m2.medium
-```
-
-The *kubeconfig* is stored as a secret [here](secrets/kubeconfig), copy it and then export it to your environment `export KUBECONFIG=config`. The `eosc-cluster-keypair` openstack keypair is stored as a secret [here](secrets/eosc-cluster-keypair.pem). You can directly connect to an instance with `ssh -i eosc-cluster-keypair.pem core@XXX.XXX.XXX.XXX`
+### Manual configurations
 
 Node 0 an 1 are labeled as ingress for *nginx*:
 
 ```bash
-kubectl label node eosc-cluster-XYZ-node-0 role=ingress
-kubectl label node eosc-cluster-XYZ-node-1 role=ingress
+kubectl label <node-name> role=ingress
+kubectl label <node-name> role=ingress
 ```
-
-### Argo CD GitOps
-
-ArgoCD was installed according to the official [documentation](https://argo-cd.readthedocs.io/en/stable/getting_started/):
-
-```bash
-kubectl create namespace argocd
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-```
-
-The following ingress enables access to the ArgoCD WebUI: [argocd-server-ingress.yml](infrastructure/openstack/prod/k8s/argocd-server-ingress.yml)
-
-In order to access Argo CD from the CERN Network its DNS name (ingress host) needs to be added to *landb*:
-
-```bash
-openstack server set --property landb-alias=argocd-eosc--load-1- eosc-cluster-XYZ-node-0
-openstack server set --property landb-alias=argocd-eosc--load-2- eosc-cluster-XYZ-node-1
-```
-
-Add the `--insecure` flag to the argocd-server deployment in order to access the web UI:
-
-```yml
-containers:
-    - command:
-        - argocd-server
-        - --insecure
-```
-
-The standard login username is `admin` and the password can be retrieved via: `kubectl -n shared-services get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo` 
-
-### Terraform IaC for openstack
-
-:warning: **The openstack terraform provider does not allow cluster changes atm, so this only works for creating new resources!**
-
-Terraform is located [here](infrastructure/openstack/prod/tf), the configuration stored in the [main.tf](infrastructure/openstack/prod/tf/main.tf) only stores the provider information.
-The provider configuration is taken from the environment variables (when you source the OpenStack RC File).
-
-Find the latest docs on this provider [here](https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs).
-
-The workflow in short is:
-
-```bash
-git pull
-
-terraform init
-terraform plan
-terraform apply
-
-git commit -m 'tf apply XYZ'
-git push
-```
-
-**Never leave changes unapplied and always pull/commit to store the correct state for others!**
 
 ### Kubernetes secrets management
-
-Sealed-secrets was installed with the following commands:
-
-```bash
-helm repo add sealed-secrets https://bitnami-labs.github.io/sealed-secrets
-helm install sealed-secrets -n kube-system --set-string fullnameOverride=sealed-secrets-controller sealed-secrets/sealed-secrets
-```
 
 Create a sealed secret file running the command below:
 
@@ -135,10 +59,6 @@ kubeseal \
 kubectl create -f mysealedsecret.[json|yaml]
 ```
 
-### File encryption (other secrets)
+## Rucio
 
-:warning: **git-crypt seems to have problems with CentOS, so we cannot use it there atm!**
-
-Keys of new collaborators need to be added to git-crypt using `git-crypt add-gpg-user USER_ID`. As a member you need to import their public key to your GPG `gpg --import /path/to/file` (see also *Getting started as a collaborator*).
-
-**All files in within the `secrets` directory will be encrypted by git-crypt. Other secrets stored in this repo should be encrypted by adding them to `.gitattributes` accordingly.**
+After the Rucio Helm charts have been applied via Terraform, secrets need to be created. A script with instructions can be found [here](code/eosc-future-cern/iac/scripts/create-rucio-secrets.sh).
