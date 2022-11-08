@@ -1,5 +1,7 @@
 :construction: *This repository is still under construction*
 
+[![tfsec](https://github.com/EOSC-Future/eosc-future-cern/actions/workflows/tfsec.yml/badge.svg)](https://github.com/EOSC-Future/eosc-future-cern/actions/workflows/tfsec.yml)
+
 # EOSC Future CERN
 
 EOSC Future CERN Infrastructure Code.
