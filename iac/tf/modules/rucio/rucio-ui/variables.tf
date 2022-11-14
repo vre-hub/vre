@@ -1,9 +1,9 @@
-variable "ns_name" {
+variable "ns-name" {
   description = "The namespace to use for ui daemons"
   type        = string
 }
 
-variable "release_suffix" {
+variable "release-suffix" {
   description = "The suffix added to the rucio ui release"
   type        = string
 }
