@@ -1,7 +1,7 @@
 variable "resource-suffix" {
   description = "The cluster resource suffix"
-  type = string
-  default = "cernvre"
+  type        = string
+  default     = "cernvre"
 }
 
 variable "cluster-template-name" {
@@ -24,8 +24,8 @@ variable "cluster-keypair-name" {
 
 variable "logging-producer" {
   description = "The cluster logging producer"
-  type = string
-  default = "eosc-future"
+  type        = string
+  default     = "eosc-future"
 }
 
 variable "ns-shared-services" {

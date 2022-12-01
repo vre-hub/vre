@@ -5,12 +5,12 @@ data "openstack_containerinfra_clustertemplate_v1" "cluster_template" {
 }
 
 resource "openstack_compute_keypair_v2" "openstack_cluster_keypair" {
-  name = var.keypair-name
+  name = var.cluster-keypair-name
 }
 
 resource "openstack_containerinfra_cluster_v1" "openstack_cluster" {
   name                = var.cluster-name
-  cluster_template_id = data.openstack_containerinfra_clustertemplate_v1.cluster_template
+  cluster_template_id = data.openstack_containerinfra_clustertemplate_v1.cluster_template.id # 22a4c77f-cfe3-47bb-8006-31d02375a3f3
   master_count        = 3
   node_count          = 24
   keypair             = var.cluster-keypair-name
@@ -31,7 +31,7 @@ resource "openstack_containerinfra_cluster_v1" "openstack_cluster" {
     grafana_admin_passwd     = "admin"
     keystone_auth_enabled    = "true"
     auto_scaling_enabled     = "true"
-    min_node_count           = "2"
+    min_node_count           = "4"
     max_node_count           = "24"
   }
 }
