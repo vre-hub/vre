@@ -1,13 +1,31 @@
-variable "keypair-name" {
-  description = "The suffix for all cluster resources"
-  type        = string
-  default     = "eosc-future-keypair"
-}
-
 variable "resource-suffix" {
   description = "The cluster resource suffix"
   type = string
-  default = "eoscf"
+  default = "cernvre"
+}
+
+variable "cluster-template-name" {
+  description = "The cluster template"
+  type        = string
+  default     = "kubernetes-1.22.9-1-multi"
+}
+
+variable "cluster-name" {
+  description = "The openstack cluster name"
+  type        = string
+  default     = "cern-vre"
+}
+
+variable "cluster-keypair-name" {
+  description = "The cluster keypair name"
+  type        = string
+  default     = "cern-vre-keypair"
+}
+
+variable "logging-producer" {
+  description = "The cluster logging producer"
+  type = string
+  default = "eosc-future"
 }
 
 variable "ns-shared-services" {

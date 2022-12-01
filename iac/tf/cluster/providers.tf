@@ -10,7 +10,7 @@ terraform {
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "2.15.0"
+      version = "2.16.0"
     }
     helm = {
       source  = "hashicorp/helm"
@@ -26,6 +26,11 @@ provider "openstack" {
 /* provider "kubernetes" {
   config_path    = "~/.kube/config" # Change to your local config path if necessary
   config_context = "default"
+  host                   = openstack_containerinfra_cluster_v1.rucio_cluster.kubeconfig.host
+  cluster_ca_certificate = openstack_containerinfra_cluster_v1.rucio_cluster.kubeconfig.cluster_ca_certificate
+  client_certificate     = openstack_containerinfra_cluster_v1.rucio_cluster.kubeconfig.client_certificate
+  client_key             = openstack_containerinfra_cluster_v1.rucio_cluster.kubeconfig.client_key
+
 }
 
 provider "helm" {
