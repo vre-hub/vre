@@ -26,4 +26,20 @@ module "sealed-secrets" {
 
   ns_name        = var.ns-shared-services
   release_suffix = var.resource-suffix
-} */
+} 
+
+module "jupyterhub" {
+  source = "../modules/jupyterhub"
+
+  ns_name        = var.tbd
+  release_suffix = var.resource-suffix
+} 
+
+module "reana" {
+  source = "../modules/reana"
+
+  ns_name        = var.tbd
+  release_suffix = var.resource-suffix
+} 
+
+*/
