@@ -1,8 +1,9 @@
 terraform {
-  /*   backend "kubernetes" {
+    backend "kubernetes" {
     secret_suffix = "state"
     config_path   = "~/.kube/config" # Change to your local config path if necessary
-  } */
+    namespace = "default"
+  }
   required_providers {
     openstack = {
       source  = "terraform-provider-openstack/openstack"
@@ -24,12 +25,12 @@ provider "openstack" {
 }
 
 /* provider "kubernetes" {
-  config_path    = "~/.kube/config" # Change to your local config path if necessary
-  config_context = "default"
-  host                   = openstack_containerinfra_cluster_v1.rucio_cluster.kubeconfig.host
-  cluster_ca_certificate = openstack_containerinfra_cluster_v1.rucio_cluster.kubeconfig.cluster_ca_certificate
-  client_certificate     = openstack_containerinfra_cluster_v1.rucio_cluster.kubeconfig.client_certificate
-  client_key             = openstack_containerinfra_cluster_v1.rucio_cluster.kubeconfig.client_key
+  # config_context = "default"
+  # config_path   = "~/.kube/config" # Change to your local config path if necessary
+  host                   = data.openstack_containerinfra_cluster_v1.kubeconfig.host
+  cluster_ca_certificate = data.openstack_containerinfra_cluster_v1.kubeconfig.cluster_ca_certificate
+  client_certificate     = data.openstack_containerinfra_cluster_v1.kubeconfig.client_certificate
+  client_key             = data.openstack_containerinfra_cluster_v1.kubeconfig.client_key
 
 }
 
