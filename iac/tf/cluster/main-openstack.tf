@@ -35,7 +35,7 @@ resource "openstack_containerinfra_cluster_v1" "openstack_cluster" {
     max_node_count           = "24"
   }
   provisioner "local-exec" {
-    command = "sh /root/code/eosc-future-cern/iac/scripts/post_cluster_setup.sh"
+    command = "sh ../../scripts/post_cluster_setup.sh"
     environment = {
       cluster = var.cluster-name
     }
