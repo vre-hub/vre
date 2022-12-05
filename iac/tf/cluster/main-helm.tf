@@ -1,6 +1,8 @@
 # Helm Resources (imported from modules)
 
-/* module "rucio-daemons" {
+# Rucio
+
+module "rucio-daemons" {
   source = "../modules/rucio/rucio-daemons"
 
   ns_name        = var.rucio-ns
@@ -21,6 +23,8 @@ module "rucio-ui" {
   release_suffix = var.resource-suffix
 }
 
+# Sealed Secrets
+
 module "sealed-secrets" {
   source = "../modules/sealed-secrets"
 
@@ -28,18 +32,20 @@ module "sealed-secrets" {
   release_suffix = var.resource-suffix
 } 
 
+# JupyterHub
+
 module "jupyterhub" {
   source = "../modules/jupyterhub"
 
-  ns_name        = var.tbd
+  ns_name        = var.ns-jupyterhub
   release_suffix = var.resource-suffix
 } 
+
+# Reana
 
 module "reana" {
   source = "../modules/reana"
 
-  ns_name        = var.tbd
+  ns_name        = var.ns-reana
   release_suffix = var.resource-suffix
-} 
-
-*/
+}

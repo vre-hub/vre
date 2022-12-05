@@ -1,0 +1,150 @@
+# Default values for reana.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# reana_hostname: reana.cern.ch
+# `reana_hostname` should be set for third party integrations to work and for
+# production deployments to be secure.
+
+debug:
+  enabled: false
+eos:
+  enabled: false
+
+workspaces:
+  retention_rules:
+    maximum_period: forever
+    cronjob_schedule: "0 2 * * *"  # everyday at 2am
+  paths:
+    - /var/reana:/var/reana
+
+compute_backends:
+  - kubernetes
+
+shared_storage:
+  backend: hostpath  # hostpath | cephfs | nfs
+  volume_size: 200
+  access_modes: ReadWriteMany
+  shared_volume_mount_path: "/var/reana"
+  hostpath:
+    root_path: "/var/reana"
+  cephfs:
+    provisioner: manila-provisioner
+    type: "Geneva CephFS Testing"
+    availability_zone: nova
+    os_secret_name: os-trustee
+    os_secret_namespace: kube-system
+    cephfs_os_share_id: <cephfs-share-id>
+    cephfs_os_share_access_id: <cephfs-share-access-id>
+
+secrets:
+  database: {}
+  gitlab: {}
+  cern:
+    sso: {}
+  reana: {}
+
+# External database service configuration
+db_env_config:
+  REANA_DB_NAME: "reana"
+  REANA_DB_PORT: "5432"
+  # There are two more environment variables that should be set in order
+  # to connect to a database:
+  # REANA_DB_USERNAME: containing the database user name.
+  # REANA_DB_PASSWORD: containing the password for the user previously set.
+  # Both environment variables should be set inside a Kubernetes secret:
+  # `[release-name]-db-secrets`
+
+# REANA components configuration
+components:
+  reana_ui:
+    enabled: true
+    docs_url: https://docs.reana.io
+    forum_url: https://forum.reana.io
+    imagePullPolicy: IfNotPresent
+    image: reanahub/reana-ui:0.9.0-alpha.7
+  reana_db:
+    enabled: true
+  reana_server:
+    imagePullPolicy: IfNotPresent
+    image: reanahub/reana-server:0.9.0-alpha.7
+    environment:
+      REANA_MAX_CONCURRENT_BATCH_WORKFLOWS: 30
+      REANA_SCHEDULER_REQUEUE_SLEEP: 15
+      REANA_SCHEDULER_REQUEUE_COUNT: 200
+      REANA_USER_EMAIL_CONFIRMATION: true
+      REANA_WORKFLOW_SCHEDULING_POLICY: "fifo"
+      REANA_WORKFLOW_SCHEDULING_READINESS_CHECK_LEVEL: 9
+      REANA_RATELIMIT_GUEST_USER: "20 per second"
+      REANA_RATELIMIT_AUTHENTICATED_USER: "20 per second"
+      REANA_RATELIMIT_SLOW: "1/5 second"
+    uwsgi:
+      processes: 6
+      threads: 4
+      log_all: true
+      log_4xx: true
+      log_5xx: true
+  reana_workflow_controller:
+    imagePullPolicy: IfNotPresent
+    image: reanahub/reana-workflow-controller:0.9.0-alpha.7
+    environment:
+      SHARED_VOLUME_PATH: /var/reana
+      REANA_JOB_STATUS_CONSUMER_PREFETCH_COUNT: 10
+  reana_workflow_engine_cwl:
+    image: reanahub/reana-workflow-engine-cwl:0.9.0-alpha.5
+  reana_workflow_engine_yadage:
+    image: reanahub/reana-workflow-engine-yadage:0.9.0-alpha.5
+  reana_workflow_engine_serial:
+    image: reanahub/reana-workflow-engine-serial:0.9.0-alpha.5
+  reana_workflow_engine_snakemake:
+    image: reanahub/reana-workflow-engine-snakemake:0.9.0-alpha.5
+  reana_job_controller:
+    image: reanahub/reana-job-controller:0.9.0-alpha.7
+  reana_message_broker:
+    imagePullPolicy: IfNotPresent
+    image: reanahub/reana-message-broker:0.9.0-alpha.1
+
+notifications:
+  enabled: false
+  email_config: {}
+  system_status: "0 0 * * *"
+
+# Accessing the cluster from outside world
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.frontend.entryPoints: "http,https"
+    ingress.kubernetes.io/ssl-redirect: "true"
+  tls:
+    self_signed_cert: true
+
+# Permissions
+serviceAccount:
+  create: true
+  name: reana
+
+# Traefik's chart values.yaml
+traefik:
+  ports:
+    web:
+      nodePort: 30080
+    websecure:
+      nodePort: 30443
+      tls:
+        # without additional configs will use default insecure one
+        enabled: true
+  enabled: true
+  rbac:
+    enabled: true
+  service:
+    type: NodePort
+
+# Quota
+quota:
+  enabled: true
+  periodic_update_policy: "{{ .Values.quota.disk_update }}"
+  workflow_termination_update_policy: "{{ .Values.quota.termination_update_policy }}"
+  # backward compatibility
+  disk_update: "0 3 * * *"  # everyday at 3am
+  termination_update_policy: ""

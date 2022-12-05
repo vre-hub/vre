@@ -1,7 +1,7 @@
 variable "resource-suffix" {
   description = "The cluster resource suffix"
   type        = string
-  default     = "cernvre"
+  default     = "cvre"
 }
 
 variable "cluster-template-name" {
@@ -44,4 +44,16 @@ variable "ns-monitoring" {
   description = "The name of the namespace for monitoring"
   type        = string
   default     = "monitoring"
+}
+
+variable "ns-reana" {
+  description = "The name of the namespace for reana"
+  type        = string
+  default     = "reana"
+}
+
+variable "ns-jupyterhub" {
+  description = "The name of the namespace for jupyterhub"
+  type        = string
+  default     = "jupyterhub"
 }
