@@ -1,9 +1,9 @@
 terraform {
-  backend "kubernetes" {
+  /* backend "kubernetes" {
     secret_suffix = "state"
     config_path   = "~/.kube/config" # Change to your local config path if necessary (variables cannot be used inside here)
     namespace     = "default"
-  }
+  } */
   required_providers {
     openstack = {
       source  = "terraform-provider-openstack/openstack"
