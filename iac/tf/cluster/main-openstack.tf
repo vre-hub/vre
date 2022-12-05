@@ -38,6 +38,6 @@ resource "openstack_containerinfra_cluster_v1" "openstack_cluster" {
     command = "sh /root/code/eosc-future-cern/iac/scripts/post_cluster_setup.sh"
     environment = {
       cluster = var.cluster-name
-     }
+    }
   }
 }
