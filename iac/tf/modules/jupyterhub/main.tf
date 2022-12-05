@@ -6,6 +6,6 @@ resource "helm_release" "jupyterhub-chart" {
   namespace  = "${var.ns-name}"
 
   values = [
-    file("${path.module}/values.yaml")
+    file("${path.module}/config.yaml")
   ]
 }

@@ -6,6 +6,6 @@ resource "helm_release" "sealed-secrets-chart" {
   namespace  = "${var.ns-name}"
 
   values = [
-    file("${path.module}/config.yaml")
+    file("${path.module}/values.yaml")
   ]
 }
