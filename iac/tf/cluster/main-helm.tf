@@ -30,7 +30,7 @@ module "sealed-secrets" {
 
   ns-name        = var.ns-shared-services
   release-suffix = var.resource-suffix
-} 
+}
 
 # JupyterHub
 
@@ -39,7 +39,7 @@ module "jupyterhub" {
 
   ns-name        = var.ns-jupyterhub
   release-suffix = var.resource-suffix
-} 
+}
 
 # Reana
 
