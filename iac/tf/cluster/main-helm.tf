@@ -46,10 +46,10 @@ module "sealed-secrets" {
 module "reana" {
   source = "../modules/reana"
 
-  ns-name        = var.ns-reana
-  release-suffix = var.resource-suffix
+  ns-name         = var.ns-reana
+  release-suffix  = var.resource-suffix
   storage-backend = "chepfs"
-  share-id = data.openstack_sharedfilesystem_share_v2.share_1_reana.share_network_id
-  share-access-id = data.openstack_sharedfilesystem_share_v2.share_1_reana.id
-  cephfs-type = "Meyrin CephFS"
+  share-id        = data.openstack_sharedfilesystem_share_v2.share_1_reana.id
+  share-access-id = openstack_sharedfilesystem_share_access_v2.share_access_2.id
+  cephfs-type     = var.cephfs-type
 }

@@ -13,37 +13,17 @@ variable "storage-backend" {
   type = string
 }
 
-/* variable "availability-zone" {
-  description = "The reana availability zone"
-  type = string
-} */
-
 variable "share-access-id" {
   description = "The reana share access id"
   type = string
 }
 
 variable "share-id" {
-  description = "The reana os share id"
+  description = "The reana share id"
   type = string
 }
-
-/* variable "os-secret-name" {
-  description = "The reana os secret name"
-  type = string
-}
-
-variable "secret-namespace" {
-  description = "The reana seceret namespace"
-  type = string
-}
-
-variable "cephfs-provisioner" {
-  description = "The reana cephfs provisioner"
-  type = string
-} */
 
 variable "cephfs-type" {
-  description = "The reana chephfs type"
+  description = "The reana cephfs type"
   type = string
 }
