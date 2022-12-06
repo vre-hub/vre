@@ -3,5 +3,5 @@ resource "helm_release" "sealed-secrets-chart" {
   repository = "https://bitnami-labs.github.io/sealed-secrets"
   chart      = "sealed-secrets"
   version    = "2.7.1"
-  namespace  = "${var.ns-name}"
+  namespace  = var.ns-name
 }

@@ -1,8 +1,16 @@
 # Openstack Resources (cannot be changed after applied due to limitations of the OpenStack tf provider)
 
+# Data
+
 data "openstack_containerinfra_clustertemplate_v1" "cluster_template" {
   name = var.cluster-template-name
 }
+
+data "openstack_sharedfilesystem_share_v2" "share_1_reana" {
+  name = var.reana-share-name
+}
+
+# Resources
 
 resource "openstack_compute_keypair_v2" "openstack_cluster_keypair" {
   name = var.cluster-keypair-name
@@ -42,17 +50,17 @@ resource "openstack_containerinfra_cluster_v1" "openstack_cluster" {
   }
 }
 
-resource "openstack_blockstorage_volume_v3" "volume_1_reana" {
-  name        = "reana_vol1"
-  description = "Volume for reana"
-  size        = 500
-  volume_type = "standard"
-}
-
 resource "openstack_sharedfilesystem_share_v2" "share_1_reana" {
-  name        = "reana_sh1"
+  name        = var.reana-share-name
   description = "Share for reana"
   share_proto = "CEPHFS"
   size        = 1000
-  share_type  = "Meyrin CephFS"
+  share_type  = var.cephfs-type
+}
+
+resource "openstack_sharedfilesystem_share_access_v2" "share_access_2" {
+  share_id     = openstack_sharedfilesystem_share_v2.share_1_reana.id
+  access_type  = "cephx"
+  access_to    = var.reana-share-name
+  access_level = "rw"
 }

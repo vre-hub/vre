@@ -1,8 +1,12 @@
+# General variables
+
 variable "resource-suffix" {
   description = "The cluster resource suffix"
   type        = string
   default     = "cvre"
 }
+
+# Openstack variables
 
 variable "cluster-template-name" {
   description = "The cluster template"
@@ -27,6 +31,20 @@ variable "logging-producer" {
   type        = string
   default     = "eosc-future"
 }
+
+variable "reana-share-name" {
+  description = "The reana share name"
+  type        = string
+  default     = "reana_sh1"
+}
+
+variable "cephfs-type" {
+  description = "The cephfs share type"
+  type        = string
+  default     = "Meyrin CephFS"
+}
+
+# Kubernetes variables
 
 variable "ns-shared-services" {
   description = "The name of the namespace for shared services"

@@ -3,7 +3,7 @@ resource "helm_release" "rucio-ui-chart" {
   repository = "https://rucio.github.io/helm-charts"
   chart      = "rucio-ui"
   version    = "1.29.3"
-  namespace  = "${var.ns-name}"
+  namespace  = var.ns-name
 
   values = [
     file("${path.module}/values.yaml")
