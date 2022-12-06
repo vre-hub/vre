@@ -3,38 +3,38 @@ resource "helm_release" "reana-chart" {
   repository = "https://reanahub.github.io/reana"
   chart      = "reana"
   version    = "0.9.0-alpha.7"
-  namespace  = "${var.ns-name}"
+  namespace  = var.ns-name
 
   set {
     name  = "shared_storage.backend"
-    value = "cephfs"
+    value = var.storage-backend
   }
-  set {
+  /* set {
     name  = "shared_storage.cephfs.availability_zone"
-    value = ""
-  }
+    value = var.availability-zone
+  } */
   set {
     name  = "shared_storage.cephfs.cephfs_os_share_access_id"
-    value = ""
+    value = var.share-access-id
   }
   set {
     name  = "shared_storage.cephfs.cephfs_os_share_id"
-    value = ""
+    value = var.share-id
   }
-  set {
+  /* set {
     name  = "shared_storage.cephfs.os_secret_name"
-    value = ""
+    value = var.os-secret-name
   }
   set {
     name  = "shared_storage.cephfs.os_secret_namespace"
-    value = ""
+    value = var.secret-namespace
   }
   set {
     name  = "shared_storage.cephfs.provisioner"
-    value = ""
-  }
+    value = var.cephfs-provisioner
+  } */
   set {
     name  = "shared_storage.cephfs.type"
-    value = ""
+    value = var.cephfs-type
   }
 }

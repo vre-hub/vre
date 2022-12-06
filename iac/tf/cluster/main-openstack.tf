@@ -56,3 +56,7 @@ resource "openstack_sharedfilesystem_share_v2" "share_1_reana" {
   size        = 1000
   share_type  = "Meyrin CephFS"
 }
+
+data "openstack_sharedfilesystem_share_v2" "share_1_reana" {
+  name = "reana_sh1"
+}
