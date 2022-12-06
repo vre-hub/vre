@@ -4,8 +4,4 @@ resource "helm_release" "sealed-secrets-chart" {
   chart      = "sealed-secrets"
   version    = "2.7.1"
   namespace  = "${var.ns-name}"
-
-  values = [
-    file("${path.module}/values.yaml")
-  ]
 }

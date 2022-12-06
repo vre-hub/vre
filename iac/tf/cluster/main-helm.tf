@@ -2,7 +2,7 @@
 
 # Rucio
 
-module "rucio-daemons" {
+/* module "rucio-daemons" {
   source = "../modules/rucio/rucio-daemons"
 
   ns-name        = var.ns-rucio
@@ -21,7 +21,7 @@ module "rucio-ui" {
 
   ns-name        = var.ns-rucio
   release-suffix = var.resource-suffix
-}
+} */
 
 # Sealed Secrets
 
@@ -34,18 +34,18 @@ module "sealed-secrets" {
 
 # JupyterHub
 
-module "jupyterhub" {
+/* module "jupyterhub" {
   source = "../modules/jupyterhub"
 
   ns-name        = var.ns-jupyterhub
   release-suffix = var.resource-suffix
-}
+} */
 
 # Reana
 
-module "reana" {
+/* module "reana" {
   source = "../modules/reana"
 
   ns-name        = var.ns-reana
   release-suffix = var.resource-suffix
-}
+} */
