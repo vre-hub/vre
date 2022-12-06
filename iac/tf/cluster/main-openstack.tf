@@ -41,3 +41,18 @@ resource "openstack_containerinfra_cluster_v1" "openstack_cluster" {
     }
   }
 }
+
+resource "openstack_blockstorage_volume_v3" "volume_1_reana" {
+  name        = "reana_vol1"
+  description = "Volume for reana"
+  size        = 500
+  volume_type = "standard"
+}
+
+resource "openstack_sharedfilesystem_share_v2" "share_1_reana" {
+  name        = "reana_sh1"
+  description = "Share for reana"
+  share_proto = "CEPHFS"
+  size        = 1000
+  share_type  = "Meyrin CephFS"
+}
