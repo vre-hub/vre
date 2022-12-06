@@ -1,9 +1,9 @@
 terraform {
-  /* backend "kubernetes" {
+  backend "kubernetes" {
     secret_suffix = "state"
     config_path   = "~/.kube/config" # Change to your local config path if necessary (variables cannot be used inside here)
     namespace     = "default"
-  } */
+  }
   required_providers {
     openstack = {
       source  = "terraform-provider-openstack/openstack"
@@ -31,7 +31,6 @@ provider "kubernetes" {
   cluster_ca_certificate = openstack_containerinfra_cluster_v1.openstack_cluster.kubeconfig.cluster_ca_certificate
   client_certificate     = openstack_containerinfra_cluster_v1.openstack_cluster.kubeconfig.client_certificate
   client_key             = openstack_containerinfra_cluster_v1.openstack_cluster.kubeconfig.client_key
-
 }
 
 provider "helm" {
