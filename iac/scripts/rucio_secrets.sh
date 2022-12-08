@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Rucio Secret Creation Process
-# 1. Create a LanDB Alias for all the required CNAMES like so: openstack server set --property landb-alias=eoscf-rucio,eoscf-rucio-auth,eoscf-rucio-ui <cluster-name>-node-0
+# 1. Create a LanDB Alias for all the required CNAMES like so: openstack server set --property landb-alias=vre-rucio,vre-rucio-auth,vre-rucio-ui <cluster-name>-node-0
 # 2. Create and download host certificates form the CERN CA Authority here: https://ca.cern.ch/ca/
 # 3. Split them into a cert/key file each by following this documentation: https://ca.cern.ch/ca/Help/?kbid=024010
 # 4. Use the below script (modify variabels if needed) to create a SealedSecret for each one of them and deploy them to the cluster
@@ -10,74 +10,77 @@ echo "--> create rucio secrets"
 
 controller_ns="shared-services"
 
-helm_release_name_ui="rucio-ui-eoscf1"
-helm_release_name_server="rucio-server-eoscf1"
-helm_release_name_daemons="rucio-daemons-eoscf1"
+helm_release_name_server="vre-rucio-servers"
+helm_release_name_ui="vre-rucio-ui"
+helm_release_name_daemons="vre-rucio-daemons"
+# helm_release_name_daemons="vre-rucio-notebook"
 
-rucio_namespace="rucio-test"
+SERVERPROXIES="/root/clusters/vre-cluster/rucio-secrets/main/"
+AUTHPROXIES="/root/clusters/vre-cluster/rucio-secrets/auth/"
+WEBUIPROXIES="/root/clusters/vre-cluster/rucio-secrets/webui/"
+# NOTEBOOKPROXIES="/root/clusters/vre-cluster/rucio-secrets/notebook"
+
+rucio_namespace="rucio"
 
 yml_output_prefix="ss_"
 
-echo "--> create and apply server secrets"
+echo "--> create and apply main server secrets"
 
-kubectl create secret generic ${helm_release_name_server}-hostcert --dry-run=client --from-file=eoscf-rucio_cert.pem -o yaml | \
-kubeseal --controller-name=sealed-secrets --controller-namespace=${controller_ns} --format yaml --namespace=${rucio_namespace} > ${yml_output_prefix}eoscf-rucio_cert.yaml
+kubectl create secret generic ${helm_release_name_server}-server-hostcert --dry-run=client --from-file=${SERVERPROXIES}usercert.pem -o yaml | \
+kubeseal --controller-name=sealed-secrets-cvre --controller-namespace=${controller_ns} --format yaml --namespace=${rucio_namespace} > ${yml_output_prefix}${helm_release_name_server}-main-cert.yaml
 
-kubectl apply -f ${yml_output_prefix}eoscf-rucio_cert.yaml
+kubectl apply -f ${yml_output_prefix}${helm_release_name_server}cert.yaml
 
-kubectl create secret generic ${helm_release_name_server}-hostkey --dry-run=client --from-file=eoscf-rucio_key.pem -o yaml | \
-kubeseal --controller-name=sealed-secrets --controller-namespace=${controller_ns} --format yaml --namespace=${rucio_namespace} > ${yml_output_prefix}eoscf-rucio_key.yaml
+kubectl create secret generic ${helm_release_name_server}-server-hostkey --dry-run=client --from-file=${SERVERPROXIES}userkey.pem -o yaml | \
+kubeseal --controller-name=sealed-secrets-cvre --controller-namespace=${controller_ns} --format yaml --namespace=${rucio_namespace} > ${yml_output_prefix}${helm_release_name_server}-main-key.yaml
 
-kubectl apply -f ${yml_output_prefix}eoscf-rucio_key.yaml
+kubectl apply -f ${yml_output_prefix}${helm_release_name_server}key.yaml
 
 kubectl create secret generic ${helm_release_name_server}-server-cafile --dry-run=client --from-file=/etc/pki/tls/certs/CERN-bundle.pem -o yaml | \
-kubeseal --controller-name=sealed-secrets --controller-namespace=${controller_ns} --format yaml --namespace=${rucio_namespace} > ${yml_output_prefix}server-cafile.yaml
+kubeseal --controller-name=sealed-secrets-cvre --controller-namespace=${controller_ns} --format yaml --namespace=${rucio_namespace} > ${yml_output_prefix}${helm_release_name_server}-main-ca.yaml
 
-kubectl apply -f ${yml_output_prefix}server-cafile.yaml
+kubectl apply -f ${yml_output_prefix}${helm_release_name_server}-main-ca.yaml
 
-echo "--> create and apply auth secrets"
+echo "--> create and apply auth server secrets"
 
-kubectl create secret generic ${helm_release_name_server}-hostcert --dry-run=client --from-file=eoscf-rucio-auth_cert.pem -o yaml | \
-kubeseal --controller-name=sealed-secrets --controller-namespace=${controller_ns} --format yaml --namespace=${rucio_namespace} > ${yml_output_prefix}eoscf-rucio-auth_cert.yaml
+kubectl create secret generic ${helm_release_name_server}-auth-hostcert --dry-run=client --from-file=${AUTHPROXIES}usercert.pem -o yaml | \
+kubeseal --controller-name=sealed-secrets-cvre --controller-namespace=${controller_ns} --format yaml --namespace=${rucio_namespace} > ${yml_output_prefix}${helm_release_name_server}-auth-cert.yaml
 
-kubectl apply -f ${yml_output_prefix}eoscf-rucio-auth_cert.yaml
+kubectl apply -f ${yml_output_prefix}${helm_release_name_server}-auth-cert.yaml
 
-kubectl create secret generic ${helm_release_name_server}-hostkey --dry-run=client --from-file=eoscf-rucio-auth_key.pem -o yaml | \
-kubeseal --controller-name=sealed-secrets --controller-namespace=${controller_ns} --format yaml --namespace=${rucio_namespace} > ${yml_output_prefix}eoscf-rucio-auth_key.yaml
+kubectl create secret generic ${helm_release_name_server}-auth-hostkey --dry-run=client --from-file=${AUTHPROXIES}userkey.pem -o yaml | \
+kubeseal --controller-name=sealed-secrets-cvre --controller-namespace=${controller_ns} --format yaml --namespace=${rucio_namespace} >  ${yml_output_prefix}${helm_release_name_server}-auth-key.yaml
 
-kubectl apply -f ${yml_output_prefix}eoscf-rucio-auth_key.yaml
+kubectl apply -f ${yml_output_prefix}${helm_release_name_server}-auth-key.yaml
 
 kubectl create secret generic ${helm_release_name_server}-auth-cafile --dry-run=client --from-file=/etc/pki/tls/certs/CERN-bundle.pem -o yaml | \
-kubeseal --controller-name=sealed-secrets --controller-namespace=${controller_ns} --format yaml --namespace=${rucio_namespace} > ${yml_output_prefix}auth-cafile.yaml
+kubeseal --controller-name=sealed-secrets-cvre --controller-namespace=${controller_ns} --format yaml --namespace=${rucio_namespace} > ${yml_output_prefix}${helm_release_name_server}-auth-ca.yaml
 
-kubectl apply -f ${yml_output_prefix}auth-cafile.yaml
+kubectl apply -f ${yml_output_prefix}${helm_release_name_server}-auth-ca.yaml
 
 echo "--> create and apply ui secrets"
 
-kubectl create secret generic ${helm_release_name_ui}-hostcert --dry-run=client --from-file=eoscf-rucio-ui_cert.pem -o yaml | \
-kubeseal --controller-name=sealed-secrets --controller-namespace=${controller_ns} --format yaml --namespace=${rucio_namespace} > ${yml_output_prefix}eoscf-rucio-ui_cert.yaml
+kubectl create secret generic ${helm_release_name_ui}-hostcert --dry-run=client --from-file=${WEBUIPROXIES}usercert.pem -o yaml | \
+kubeseal --controller-name=sealed-secrets-cvre --controller-namespace=${controller_ns} --format yaml --namespace=${rucio_namespace} > ${yml_output_prefix}${helm_release_name_ui}cert.yaml
 
-kubectl apply -f ${yml_output_prefix}eoscf-rucio-ui_cert.yaml
+kubectl apply -f ${yml_output_prefix}${helm_release_name_ui}cert.yaml
 
-kubectl create secret generic ${helm_release_name_ui}-hostkey --dry-run=client --from-file=eoscf-rucio-ui_key.pem -o yaml | \
-kubeseal --controller-name=sealed-secrets --controller-namespace=${controller_ns} --format yaml --namespace=${rucio_namespace} > ${yml_output_prefix}eoscf-rucio-ui_key.yaml
+kubectl create secret generic ${helm_release_name_ui}-hostkey --dry-run=client --from-file=${WEBUIPROXIES}userkey.pem -o yaml | \
+kubeseal --controller-name=sealed-secrets-cvre --controller-namespace=${controller_ns} --format yaml --namespace=${rucio_namespace} > ${yml_output_prefix}${helm_release_name_ui}key.yaml
 
-kubectl apply -f ${yml_output_prefix}eoscf-rucio-ui_key.yaml
+kubectl apply -f  ${yml_output_prefix}${helm_release_name_ui}key.yaml
 
 kubectl create secret generic ${helm_release_name_server}-cafile --dry-run=client --from-file=/etc/pki/tls/certs/CERN-bundle.pem -o yaml | \
-kubeseal --controller-name=sealed-secrets --controller-namespace=${controller_ns} --format yaml --namespace=${rucio_namespace} > ${yml_output_prefix}cafile.yaml
+kubeseal --controller-name=sealed-secrets-cvre --controller-namespace=${controller_ns} --format yaml --namespace=${rucio_namespace} > ${yml_output_prefix}${helm_release_name_ui}ca.yaml
 
-kubectl apply -f ${yml_output_prefix}cafile.yaml
+kubectl apply -f ${yml_output_prefix}${helm_release_name_ui}ca.yaml
 
-echo "--> create rucio bundel"
+echo "--> create rucio CA bundle for daemons"
 
-bundle_dir="/root/test-certs/bundle"
+bundle_dir="/root/clusters/vre-cluster/rucio-secrets/ca-bundle"
+mkdir ${bundle_dir}
 cp /etc/grid-security/certificates/*.0 ${bundle_dir}
 cp /etc/grid-security/certificates/*.signing_policy ${bundle_dir}
 
-# kubectl create secret generic ${helm_release_name_daemons}-rucio-ca-bundle-reaper --dry-run=client --from-file=${bundle_dir} -o yaml | \
-# kubeseal --controller-name=sealed-secrets --controller-namespace=${controller_ns} --format yaml --namespace=${rucio_namespace} > ${yml_output_prefix}rucio-bundle.yaml
-
-# kubectl apply -f ${yml_output_prefix}rucio-bundle.yaml
-
-kubectl create secret generic ${helm_release_name_daemons}-rucio-ca-bundle-reaper --from-file=${bundle_dir} -n rucio-test
+kubectl create secret generic ${helm_release_name_daemons}-rucio-ca-bundle-reaper --from-file=${bundle_dir} -n rucio
+kubectl create secret generic ${helm_release_name_daemons}-rucio-ca-bundle --from-file=${bundle_dir} -n rucio
