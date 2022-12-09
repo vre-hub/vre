@@ -6,6 +6,7 @@ resource "helm_release" "rucio-daemons-chart" {
   namespace  = var.ns-name
 
   values = [
-    file("${path.module}/values.yaml")
+    file("${path.module}/values.yaml", 
+    { image-tag = "${var.image-tag}" })
   ]
 }
