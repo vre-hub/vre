@@ -18,7 +18,7 @@ service:
 
 image:
   repository: rucio/rucio-ui
-  tag: ${image-tag}
+  tag: ${rucio-ui-image-tag}
   pullPolicy: Always
 
 strategy:

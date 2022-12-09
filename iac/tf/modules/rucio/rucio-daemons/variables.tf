@@ -8,8 +8,7 @@ variable "release-suffix" {
   type        = string
 }
 
-variable "image-tag" {
+variable "rucio-daemons-image-tag" {
   description = "The rucio dockerhub image tag"
   type        = string
-  default     = "release-1.29.8"
 }

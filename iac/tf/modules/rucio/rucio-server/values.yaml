@@ -30,7 +30,7 @@ useSSL:
 
 image:
   repository: rucio/rucio-server
-  tag: ${image-tag}
+  tag: ${rucio-server-image-tag}
   pullPolicy: Always
 
 # service:

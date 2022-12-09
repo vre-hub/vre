@@ -7,7 +7,7 @@ resource "helm_release" "rucio-ui-chart" {
 
   values = [
     file("${path.module}/values.yaml", 
-    {image-tag = "${var.image-tag}"}, 
+    {rucio-ui-image-tag = "${var.image-tag}"}, 
     {rucio-vre-dn = "${var.rucio-vre-dn}", 
     {rucio-auth-vre-dn = "${var.rucio-auth-vre-dn}", 
     {rucio-ui-vre-dn = "${var.rucio-ui-vre-dn}")

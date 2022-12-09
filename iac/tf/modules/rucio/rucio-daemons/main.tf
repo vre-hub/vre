@@ -7,6 +7,6 @@ resource "helm_release" "rucio-daemons-chart" {
 
   values = [
     file("${path.module}/values.yaml", 
-    { image-tag = "${var.image-tag}" })
+    {rucio-daemons-image-tag = "${var.image-tag}"})
   ]
 }
