@@ -3,9 +3,9 @@
 # Declare variables to be passed into your templates.
 
 ## replicaCount gives the number of server pods to run
-replicaCount: 0
+replicaCount: 2
 ## authReplicaCount gives the number of authentication server pods to run
-authReplicaCount: 0
+authReplicaCount: 2
 traceReplicaCount: 0
 
 # When set, run extra busybox containers in the relevant pods to also expose the error logs
@@ -25,26 +25,26 @@ errorLogsExporterResources:
 # Set to true to enable SSL support for the different servers to be able accept X509 certificates and proxies.
 useSSL:
   server: false
-  authServer: false
+  authServer: true
   traceServer: false
 
 image:
   repository: rucio/rucio-server
-  tag: release-1.24.3
+  tag: ${image-tag}
   pullPolicy: Always
 
-service:
-  type: ClusterIP
-  port: 80
-  targetPort: 80
-  protocol: TCP
-  name: http
-  annotations: {}
+# service:
+#   type: ClusterIP
+#   port: 80
+#   targetPort: 80
+#   protocol: TCP
+#   name: http
+#   annotations: {}
     # loadbalancer.openstack.org/network-id: "<id>"
     # service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
     # loadbalancer.openstack.org/cascade-delete: "false"
 
-authService:
+authService:   # ELENA: in escape config the ports are 443 and https 
   type: ClusterIP
   port: 80
   targetPort: 80
@@ -85,10 +85,13 @@ livenessProbe:
     periodSeconds: 20
     timeoutSeconds: 5
 
+# serverType:
+#   server: api
+#   authServer: auth
+#   traceServer: trace
 serverType:
-  server: api
-  authServer: auth
-  traceServer: trace
+  server: flask
+  authServer: flask
 
 logFormat:
   server: '[%{%Y-%m-%d %H:%M:%S}t]\t%v\t%h\t%{X-Forwarded-For}i\t%{X-Rucio-RequestId}i\t%>s\t%I\t%B\t%D\t\"%r\"\t\"%{X-Rucio-Auth-Token}i\"\t\"%{User-Agent}i\"\t%{X-Rucio-Script}i'
@@ -96,15 +99,32 @@ logFormat:
   traceServer: '[%{%Y-%m-%d %H:%M:%S}t]\t%v\t%h\t%{X-Forwarded-For}i\t%{X-Rucio-RequestId}i\t%>s\t%I\t%B\t%D\t\"%r\"\t\"%{X-Rucio-Auth-Token}i\"\t\"%{User-Agent}i\"\t%{X-Rucio-Script}i'
 
 monitoring:
-  enabled: false
+  enabled: true
   exporterPort: 8080
   targetPort: 8080
-  nativeMetricsPort: 8081
+#   nativeMetricsPort: 8081
   interval: 30s
   telemetryPath: /metrics
   namespace: monitoring
   labels:
     release: prometheus-operator
+  serviceMonitor:
+    ## Metric relabel configs to apply to samples before ingestion.
+    ##
+    metricRelabelings: []
+    # - action: keep
+    #   regex: 'kube_(daemonset|deployment|pod|namespace|node|statefulset).+'
+    #   sourceLabels: [__name__]
+
+    #   relabel configs to apply to samples before ingestion.
+    ##
+    relabelings: []
+    # - sourceLabels: [__meta_kubernetes_pod_node_name]
+    #   separator: ;
+    #   regex: ^(.*)$
+    #   targetLabel: nodename
+    #   replacement: $1
+    #   action: replace
 
 metricsExporterResources:
   limits:
@@ -133,12 +153,12 @@ ftsRenewal:
       memory: 128Mi
 
 automaticRestart:
-  enabled: 0
+  enabled: 1
   image:
     repository: bitnami/kubectl
     tag: latest
     pullPolicy: IfNotPresent
-  schedule: "0 0 * * *"
+  schedule: "17 1 * * *"
   selectorLabel: "'app in (rucio-server,rucio-server-trace,rucio-server-auth)'"
   resources:
     limits:
@@ -149,42 +169,53 @@ automaticRestart:
      memory: 128Mi
 
 additionalSecrets: {}
-  # gcssecret:
+  - volumeName: rucio-db
+    secretName: rucio-db
+    mountPath: /opt/rucio/etc/rucio-db
+    subPath: rucio-db
+#   - volumeName: hermes-secret, idpsecret, rse-account
+#     secretName: ...
+#     mountPath: /opt/rucio/etc/...
+#     subPath: ...
+  # - volumeName: gcssecret
   #   secretName: gcssecret
   #   mountPath: /opt/rucio/etc/gcs_rucio.json
   #   subPath: gcs_rucio.json
 
-wsgi:
+wsgi:  #ELENA: could be good to have?
   daemonProcesses: "4"
   daemonThreads: "4"
 
 httpd_config:
   mpm_mode: "event"
+  timeout: "300"
   enable_status: "True"
   legacy_dn: "False"
-  # keep_alive: "On"
-  # keep_alive_timeout: "5"
-  # max_keep_alive_requests: "128"
-  # server_limit: "10"
-  # start_servers: "4"
-  # thread_limit: "128"
-  # threads_per_child: "128"
-  # min_spare_threads: "256"
-  # max_spare_threads: "512"
-  # max_request_workers: "1280"
-  # max_connections_per_child: "2048"
+  keep_alive: "On"
+  keep_alive_timeout: "5"
+  max_keep_alive_requests: "128"
+  server_limit: "10"
+  start_servers: "4"
+  thread_limit: "128"
+  threads_per_child: "128"
+  min_spare_threads: "256"
+  max_spare_threads: "512"
+  max_request_workers: "1280"
+  max_connections_per_child: "2048"
 
 ingress:
-  enabled: false
+  enabled: true
   annotations: {}
-    # kubernetes.io/ingress.class: traefik
-    # traefik.ingress.kubernetes.io/frontend-entry-points: http
-    # traefik.ingress.kubernetes.io/redirect-entry-point: https
+    kubernetes.io/ingress.class: nginx # default is traefik
+    nginx.ingress.kubernetes.io/frontend-entry-points: http, https
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+#     traefik.ingress.kubernetes.io/frontend-entry-points: http
+#     traefik.ingress.kubernetes.io/redirect-entry-point: https
   path: /
   hosts: []
-  #   - my.rucio.test
+    - ${rucio-vre-dn}
   tls:
-    - secretName: rucio-server.tls-secret
+    - secretName: vre-rucio-server.tls-secret
   secrets:
   ## If you're providing your own certificates, please use this to add the certificates as secrets
   ## key and certificate should start with -----BEGIN CERTIFICATE----- or
@@ -204,14 +235,17 @@ ingress:
   #     -----END CERTIFICATE-----
 
 authIngress:
-  enabled: false
+  enabled: true
   annotations: {}
-    # kubernetes.io/ingress.class: traefik
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+#     kubernetes.io/ingress.class: traefik
     # traefik.ingress.kubernetes.io/frontend-entry-points: http
     # traefik.ingress.kubernetes.io/redirect-entry-point: https
-  path: /auth
+  path: /
   hosts: []
-  #   - my.rucio.test
+    - ${rucio-auth-vre-dn}
   # tls:
   #   - secretName: rucio-auth.tls-secret
   secrets:
@@ -281,7 +315,7 @@ config:
     ## config.common.mailtemplatedir: directory containing the mail templates (default: "/opt/rucio/etc/mail_templates")
     # mailtemplatedir: "/opt/rucio/etc/mail_templates"
 
-  # database:
+  database:
     ## config.database.default: the connection string for the database (default: "sqlite:////tmp/rucio.db")
     # default: "sqlite:////tmp/rucio.db"
     ## config.database.schema: the schema used in the DB. only necessary when using Oracle.
@@ -293,11 +327,11 @@ config:
     ## config.database.po0l_recycle: this setting causes the pool to recycle connections after the given number of seconds has passed (default: "600")
     # pool_recycle: "600"
     ## config.database.pool_size: the number of connections to keep open inside the connection pool
-    # pool_size: ""
+    pool_size: 10
     ## config.database.pool_timeout: number of seconds to wait before giving up on getting a connection from the pool
     # pool_timeout: ""
     ## config.database.maxoverflow: the number of connections to allow in connection pool "overflow"
-    # max_overflow: ""
+    max_overflow: 20
     ## config.database.powuseraccount: user used to check the DB
     # powuseraccount: ""
     ## config.database.powuseraccount: password for user used to check the DB
@@ -325,12 +359,18 @@ config:
     # username: ""
     ## config.trace.password: password for the topic (if necessary)
     # password: ""
+    
+  oidc:
+    idpsecrets: "/opt/rucio/etc/idpsecrets.json"
+    admin_issuer: "escape"
+    expected_audience: "rucio"
+    expected_scope: "openid profile"
 
-  # policy:
+  policy:
     ## config.permission.policy: (default "generic")
-    # permission: "generic"
+    permission: "escape"
     ## config.permission.schema: (default "generic")
-    # schema: "generic"
+    schema: "escape"
     ## config.permission.lfn2pfn_algorithm_default: (default "hash")
     # lfn2pfn_algorithm_default: "hash"
     ## config.permission.support: (default "https://github.com/rucio/rucio/issues/")
@@ -344,14 +384,28 @@ config:
     # usercert: "/opt/rucio/etc/usercert_with_key.pem"
 
 serverResources: {}
+  limits:
+    cpu: "4000m"
+    memory: "4000Mi"
+  requests:
+    cpu: "2000m"
+    memory: "2000Mi"
+
 authServerResources: {}
+  limits:
+      cpu: "4000m"
+      memory: "4000Mi"
+    requests:
+      cpu: "2000m"
+      memory: "2000Mi"
+
 traceServerResources: {}
-  # limits:
-  #  cpu: 100m
-  #  memory: 128Mi
-  # requests:
-  #  cpu: 100m
-  #  memory: 128Mi
+#   limits:
+#    cpu: 100m
+#    memory: 128Mi
+#   requests:
+#    cpu: 100m
+#    memory: 128Mi
 
 nodeSelector: {}
 
