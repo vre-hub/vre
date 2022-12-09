@@ -18,7 +18,7 @@ service:
 
 image:
   repository: rucio/rucio-ui
-  tag: release-1.21.12
+  tag: ${image-tag}
   pullPolicy: Always
 
 strategy:
@@ -30,9 +30,9 @@ strategy:
 minReadySeconds: 5
 
 proxy:
-  rucioProxy: ""
-  #rucioProxyScheme: "https"
-  rucioAuthProxy: ""
+  rucioProxy: ${rucio-vre-dn}
+  rucioProxyScheme: "https" # ELENA: OR HTTPS????
+  rucioAuthProxy: ${rucio-auth-vre-dn}
   #rucioAuthProxyScheme: "https"
   
 ingress:
@@ -43,13 +43,17 @@ ingress:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
   path: /
   hosts: []
-  #   - my.rucio.test
+    - ${rucio-ui-vre-dn}
 
 additionalSecrets: {}
-# gcssecret:
-#   secretName: gcssecret
-#   mountPath: /opt/rucio/etc/gcs_rucio.json
-#   subPath: gcs_rucio.json
+  - volumeName: rucio-db
+    secretName: rucio-db
+    mountPath: /opt/rucio/etc/rucio-db
+    subPath: rucio-db
+#   - volumeName: hermes-secret, idpsecret, rse-account
+#     secretName: ...
+#     mountPath: /opt/rucio/etc/...
+#     subPath: ...
 
 ## values used to configure apache
 httpd_config:
@@ -94,30 +98,30 @@ config:
     ## config.database.powuseraccount: password for user used to check the DB
     # powuserpassword: ""
 
-  # policy:
+  policy:
     ## config.permission.policy: (default "generic")
-    # permission: "generic"
+    permission: "generic"
     ## config.permission.schema: (default "generic")
-    # schema: "generic"
+    schema: "generic"
     ## config.permission.lfn2pfn_algorithm_default: (default "hash")
-    # lfn2pfn_algorithm_default: "hash"
+    lfn2pfn_algorithm_default: "identity" # ELENA: not sure, default is "hash"
     ## config.permission.support: (default "https://github.com/rucio/rucio/issues/")
     # support: "https://github.com/rucio/rucio/issues/"
     ## config.permission.support_rucio: (default "https://github.com/rucio/rucio/issues/")
     # support_rucio: "https://github.com/rucio/rucio/issues/"
 
   ## Only necessary for webui deployments
-  # webui:
+  # webui:  # ELENA: not there in the past, but maybe needed for browser ecure connection 
     ## config.webui.usercert:  (default "/opt/rucio/etc/usercert_with_key.pem")
     # usercert: "/opt/rucio/etc/usercert_with_key.pem"
 
 resources: {}
-  # limits:
-  #  cpu: 100m
-  #  memory: 128Mi
-  # requests:
-  #  cpu: 100m
-  #  memory: 128Mi
+  limits:
+    cpu: 100m
+    memory: 800Mi
+  requests:
+    cpu: 100m
+    memory: 500Mi
 
 nodeSelector: {}
 
