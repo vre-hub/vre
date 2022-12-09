@@ -41,6 +41,11 @@ kubeseal --controller-name=sealed-secrets-cvre --controller-namespace=${controll
 
 kubectl apply -f ${yml_output_prefix}${helm_release_name_server}-main-ca.yaml
 
+kubectl create secret tls vre-rucio-server.tls-secret --key=${SERVERPROXIES}userkey.pem --cert=${SERVERPROXIES}usercert.pem -o yaml | \
+kubeseal --controller-name=sealed-secrets-cvre --controller-namespace=${controller_ns} --format yaml --namespace=${rucio_namespace} > ${yml_output_prefix}${helm_release_name_server}-tls.yaml
+
+kubectl apply -f ${yml_output_prefix}${helm_release_name_server}-tls.yaml
+
 echo "--> create and apply auth server secrets"
 
 kubectl create secret generic ${helm_release_name_server}-auth-hostcert --dry-run=client --from-file=${AUTHPROXIES}usercert.pem -o yaml | \
