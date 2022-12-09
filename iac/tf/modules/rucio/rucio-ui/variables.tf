@@ -15,4 +15,18 @@ variable "image-tag" {
 }
 
 
+variable "rucio-vre-dn" {
+  description = "Domain name of service for which grid host certificates were requested"
+  type        = string
+}
+
+variable "rucio-auth-vre-dn" {
+  description = "Domain name of service for which grid host certificates were requested"
+  type        = string
+}
+
+variable "rucio-ui-vre-dn" {
+  description = "Domain name of service for which grid host certificates were requested"
+  type        = string
+}
 
