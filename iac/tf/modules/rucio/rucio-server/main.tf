@@ -6,6 +6,9 @@ resource "helm_release" "rucio-server-chart" {
   namespace  = var.ns-name
 
   values = [
-    file("${path.module}/values.yaml")
+    file("${path.module}/values.yaml", 
+    {image-tag = "${var.image-tag}"}, 
+    {rucio-vre-dn = "${var.rucio-vre-dn}", 
+    {rucio-auth-vre-dn = "${var.rucio-auth-vre-dn}")
   ]
 }
