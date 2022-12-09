@@ -3,30 +3,30 @@
 # Declare variables to be passed into your templates.
 
 ## judgeCleanerCount gives the number of judge-cleaner pods to run
-abacusAccountCount: 0
-abacusCollectionReplicaCount: 0
-abacusRseCount: 0
+abacusAccountCount: 1
+abacusCollectionReplicaCount: 1
+abacusRseCount: 1
 automatixCount: 0
 cacheConsumerCount: 0
-conveyorTransferSubmitterCount: 0
-conveyorPollerCount: 0
-conveyorFinisherCount: 0
+conveyorTransferSubmitterCount: 3
+conveyorPollerCount: 3
+conveyorFinisherCount: 1
 conveyorReceiverCount: 0
 conveyorStagerCount: 0
 conveyorThrottlerCount: 0
 conveyorPreparerCount: 0
 darkReaperCount: 0
-hermesCount: 0
+hermesCount: 1
 hermes2Count: 0
-judgeCleanerCount: 0
-judgeEvaluatorCount: 0
-judgeInjectorCount: 0
-judgeRepairerCount: 0
-oauthManagerCount: 0
-undertakerCount: 0
-reaperCount: 0
+judgeCleanerCount: 2
+judgeEvaluatorCount: 3
+judgeInjectorCount: 2
+judgeRepairerCount: 2
+oauthManagerCount: 1
+undertakerCount: 1
+reaperCount: 4
 replicaRecovererCount: 0
-transmogrifierCount: 0
+transmogrifierCount: 1
 tracerKronosCount: 0
 minosCount: 0
 minosTemporaryExpirationCount: 0
@@ -34,7 +34,7 @@ necromancerCount: 0
 
 image:
   repository: rucio/rucio-daemons
-  tag: release-1.18.0
+  tag: ${image-tag}
   pullPolicy: Always
 
 strategy:
@@ -49,7 +49,7 @@ podAnnotations: {}
 minReadySeconds: 5
 
 monitoring:
-  enabled: false
+  enabled: true
   serviceMonitorEnabled: true
   exporterPort: 8080
   targetPort: 8080
@@ -58,6 +58,23 @@ monitoring:
   namespace: monitoring
   labels:
     release: prometheus-operator
+  serviceMonitor:
+    ## Metric relabel configs to apply to samples before ingestion.
+    ##
+    metricRelabelings: []
+    # - action: keep
+    #   regex: 'kube_(daemonset|deployment|pod|namespace|node|statefulset).+'
+    #   sourceLabels: [__name__]
+
+    #   relabel configs to apply to samples before ingestion.
+    ##
+    relabelings: []
+    # - sourceLabels: [__meta_kubernetes_pod_node_name]
+    #   separator: ;
+    #   regex: ^(.*)$
+    #   targetLabel: nodename
+    #   replacement: $1
+    #   action: replace
 
 abacusAccount:
   threads: 1
@@ -117,11 +134,13 @@ cacheConsumer:
       cpu: "100m"
 
 conveyorTransferSubmitter:
-  threads: 1
+  threads: 6
   podAnnotations: {}
-  activities: "'test1' 'test2'"
+  activities: "'Analysis Input' 'Analysis Output' 'Data Brokering' 'Data Consolidation' 'Data rebalancing' 'Debug' 'Express' 'Functional Test' 'Group Subscriptions' 'Production Input' 'Production Output' 'Recovery' 'Staging' 'T0 Export' 'T0 Export' 'T0 Tape' 'User Subscriptions' 'default' 'DAC21'"
   sleepTime: 10
   archiveTimeout: ""
+  bulk: 1000
+  groupBulk: 200
   resources:
     limits:
       memory: "200Mi"
@@ -131,7 +150,8 @@ conveyorTransferSubmitter:
       cpu: "700m"
 
 conveyorPoller:
-  threads: 1
+  activities: "'Analysis Input' 'Analysis Output' 'Data Brokering' 'Data Consolidation' 'Data rebalancing' 'Debug' 'Express' 'Functional Test' 'Group Subscriptions' 'Production Input' 'Production Output' 'Recovery' 'Staging' 'T0 Export' 'T0 Export' 'T0 Tape' 'User Subscriptions' 'default' 'DAC21'"
+  threads: 6
   podAnnotations: {}
   resources:
     limits:
@@ -142,7 +162,7 @@ conveyorPoller:
       cpu: "700m"
 
 conveyorFinisher:
-  threads: 1
+  threads: 4
   podAnnotations: {}
   resources:
     limits:
@@ -204,7 +224,7 @@ darkReaper:
 hermes:
   threads: 1
   podAnnotations: {}
-  bulk: 100
+  bulk: 1000
   sleepTime: 10
   brokerTimeout: 3
   resources:
@@ -228,26 +248,26 @@ hermes2:
       cpu: "700m"
 
 judgeCleaner:
-  threads: 1
+  threads: 5
   podAnnotations: {}
   resources:
     limits:
-      memory: "200Mi"
-      cpu: "700m"
+      memory: "1200Mi"
+      cpu: "1000m"
     requests:
-      memory: "200Mi"
-      cpu: "700m"
+      memory: "400Mi"
+      cpu: "1000m"
 
 judgeEvaluator:
-  threads: 1
+  threads: 3
   podAnnotations: {}
   resources:
     limits:
-      memory: "200Mi"
-      cpu: "700m"
+      memory: "3000Mi"
+      cpu: "2000m"
     requests:
-      memory: "200Mi"
-      cpu: "700m"
+      memory: "3000Mi"
+      cpu: "2000m"
 
 judgeInjector:
   threads: 1
@@ -261,15 +281,15 @@ judgeInjector:
       cpu: "700m"
 
 judgeRepairer:
-  threads: 1
+  threads: 5
   podAnnotations: {}
   resources:
     limits:
-      memory: "200Mi"
-      cpu: "700m"
+      memory: "6000Mi"
+      cpu: "1000m"
     requests:
-      memory: "200Mi"
-      cpu: "700m"
+      memory: "800Mi"
+      cpu: "1000m"
 
 oauthManager:
   threads: 1
@@ -294,18 +314,20 @@ undertaker:
       cpu: "700m"
 
 reaper:
+  includeRses: "(rse=EULAKE-EC|rse=EULAKE-1|rse=CNAF-STORM|rse=CESNET-S3)"
   greedy: 0
   scheme: ""
-  threads: 4
+  threads: 6
+  chunkSize: 2
   includeRses: ""
   podAnnotations: {}
   resources:
     limits:
-      memory: "200Mi"
-      cpu: "700m"
+      memory: "1600Mi"
+      cpu: "2000m"
     requests:
-      memory: "200Mi"
-      cpu: "700m"
+      memory: "500Mi"
+      cpu: "400m"
 
 replicaRecoverer:
   threads: 1
@@ -382,24 +404,48 @@ ftsRenewal:
   vo: "cms"
   voms: "cms:/cms/Role=production"
   servers: "https://fts3-devel.cern.ch:8446,https://cmsfts3.fnal.gov:8446,https://fts3.cern.ch:8446,https://lcgfts3.gridpp.rl.ac.uk:8446,https://fts3-pilot.cern.ch:8446"
+  resources:
+    limits:
+      cpu: 500m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
 
 automaticRestart:
-  enabled: 0
+  enabled: 1
   image:
     repository: bitnami/kubectl
     tag: latest
     pullPolicy: IfNotPresent
-  schedule: "0 0 * * *"
+  schedule: "7 1 * * *"
   selectorLabel: "app-group=rucio-daemons"
+  resources:
+    limits:
+      cpu: 500m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
 
 additionalSecrets: {}
-  # gcssecret:
-  #   secretName: gcssecret
-  #   mountPath: /opt/rucio/etc/gcs_rucio.json
-  #   subPath: gcs_rucio.json
+  - volumeName: rucio-db
+    secretName: rucio-db
+    mountPath: /opt/rucio/etc/rucio-db
+    subPath: rucio-db
+#   - volumeName: hermes-secret, idpsecret, rse-account
+#     secretName: ...
+#     mountPath: /opt/rucio/etc/...
+#     subPath: ...
 
 ## common config values used to configure the Rucio daemons
 config:
+
+  oidc:
+    idpsecrets: "/opt/rucio/etc/idpsecrets.json"
+    admin_issuer: "escape"
+    expected_audience: "rucio"
+
   # accounts:
     # special_accounts: "panda, tier0"
 
@@ -433,7 +479,8 @@ config:
     ## config.database.powuseraccount: password for user used to check the DB
     # powuserpassword: ""
 
-  # monitor:
+  monitor:
+    enable_metrics: "True"
     ## config.monitor.carbon_server: address of carbon server used for graphite monitoring (default: "localhost")
     # carbon_server: "localhost"
     ## config.monitor.carbon_port: port of carbon server used for graphite monitoring (default: "8125")
@@ -441,11 +488,11 @@ config:
     ## config.monitor.user_scope: scope used on the graphite server (default: "default_docker")
     # user_scope: "default_docker"
 
-  # policy:
+  policy:
     ## config.permission.policy: (default "generic")
-    # permission: "generic"
+    permission: "escape"
     ## config.permission.schema: (default "generic")
-    # schema: "generic"
+    schema: "escape"
     ## config.permission.lfn2pfn_algorithm_default: (default "hash")
     # lfn2pfn_algorithm_default: "hash"
     ## config.permission.support: (default "https://github.com/rucio/rucio/issues/")
@@ -462,9 +509,13 @@ config:
   conveyor:
     # scheme: "srm,gsiftp,root,http,https"
     # transfertool: "fts3"
-    # ftshosts: "https://fts3-pilot.cern.ch:8446, https://fts3-pilot.cern.ch:8446"
+    ftshosts: "https://fts3-pilot.cern.ch:8446"
     cacert: "/opt/certs/CERN-bundle.pem"
     usercert: "/opt/proxy/x509up"
+    allow_user_oidc_tokens: "True"
+    request_oidc_scope: "openid profile offline_access wlcg.groups email"
+    request_oidc_audience: "fts"
+
     # cache_time: ""
     # user_deterministic_id: ""
     # poll_timeout: ""
@@ -482,17 +533,17 @@ config:
     # brokers: "dashb-test-mb.cern.ch"
     # voname: "atlas"
 
-  # messaging-hermes:
+  messaging-hermes:
     # username: ""
     # password: ""
-    # port: "61023"
-    # nonssl_port: ""
-    # use_ssl: ""
+    port: "61113"
+    nonssl_port: "61113"
+    use_ssl: "False"
     # ssl_key_file: "/etc/grid-security/hostkey.pem"
     # ssl_cert_file: "/etc/grid-security/hostcert.pem"
-    # destination: "/topic/rucio.events"
-    # brokers: "atlas-test-mb.cern.ch"
-    # voname: "atlas"
+    destination: "/topic/escape.rucio.events" #ELENA: needs changing !
+    brokers: "dashb-mb.cern.ch"
+    voname: "escape"
     # email_from: "Rucio <atlas-adc-ddm-support@cern.ch"
     # email_test: ""
 
@@ -531,4 +582,3 @@ config:
   # credentials:
     # gcs: "/opt/rucio/etc/google-cloud-storage-test.json"
     # signature_lifetime: "3600"
-
