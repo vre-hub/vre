@@ -10,7 +10,7 @@ resource "helm_release" "rucio-daemons-chart" {
   namespace  = var.ns-rucio
 
   values = [
-    file("rucio/values-daemons.yaml")
+    "${file("rucio/values-daemons.yaml")}"
   ]
 }
 
@@ -22,7 +22,7 @@ resource "helm_release" "rucio-ui-chart" {
   namespace  = var.ns-rucio
 
   values = [
-    file("rucio/values-ui.yaml")
+    "${file("rucio/values-ui.yaml")}"
   ]
 }
 
@@ -34,7 +34,7 @@ resource "helm_release" "rucio-server-chart" {
   namespace  = var.ns-rucio
 
   values = [
-    file("rucio/values-servers.yaml")
+    "${file("rucio/values-server.yaml")}"
   ]
 }
 
