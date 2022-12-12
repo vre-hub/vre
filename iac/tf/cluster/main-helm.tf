@@ -34,23 +34,9 @@ resource "helm_release" "rucio-server-chart" {
   namespace  = var.ns-name
 
   values = [
-    file("rucio/values.yaml")
+    file("rucio/values-servers.yaml")
   ]
 }
-
-module "rucio-server" {
-  source = "../modules/rucio/rucio-server"
-
-  ns-name        = var.ns-rucio
-  release-suffix = var.resource-suffix
-}
-
-module "rucio-ui" {
-  source = "../modules/rucio/rucio-ui"
-
-  ns-name        = var.ns-rucio
-  release-suffix = var.resource-suffix
-} */
 
 # Sealed Secrets
 
