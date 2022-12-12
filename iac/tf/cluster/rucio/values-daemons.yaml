@@ -428,7 +428,7 @@ automaticRestart:
       cpu: 100m
       memory: 128Mi
 
-additionalSecrets: {}
+additionalSecrets:
   - volumeName: rucio-db
     secretName: rucio-db
     mountPath: /opt/rucio/etc/rucio-db

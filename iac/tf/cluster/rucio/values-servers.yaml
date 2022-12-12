@@ -168,7 +168,7 @@ automaticRestart:
      cpu: 100m
      memory: 128Mi
 
-additionalSecrets: {}
+additionalSecrets:
   - volumeName: rucio-db
     secretName: rucio-db
     mountPath: /opt/rucio/etc/rucio-db
@@ -212,8 +212,8 @@ ingress:
 #     traefik.ingress.kubernetes.io/frontend-entry-points: http
 #     traefik.ingress.kubernetes.io/redirect-entry-point: https
   path: /
-  hosts: []
-    - vre.rucio.cern.ch
+  hosts:
+    - "vre-rucio.cern.ch"
   tls:
     - secretName: vre-rucio-server.tls-secret
   secrets:
@@ -244,8 +244,8 @@ authIngress:
     # traefik.ingress.kubernetes.io/frontend-entry-points: http
     # traefik.ingress.kubernetes.io/redirect-entry-point: https
   path: /
-  hosts: []
-    - vre.rucio-auth.cern.ch
+  hosts:
+    - "vre-rucio-auth.cern.ch"
   # tls:
   #   - secretName: rucio-auth.tls-secret
   secrets:

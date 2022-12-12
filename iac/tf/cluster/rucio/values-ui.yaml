@@ -30,9 +30,9 @@ strategy:
 minReadySeconds: 5
 
 proxy:
-  rucioProxy: vre.rucio.cern.ch
+  rucioProxy: "vre-rucio.cern.ch"
   rucioProxyScheme: "https" # ELENA: OR HTTPS????
-  rucioAuthProxy: ${rucio-auth-vre-dn}
+  rucioAuthProxy: "vre-rucio-auth.cern.ch"
   #rucioAuthProxyScheme: "https"
   
 ingress:
@@ -42,10 +42,10 @@ ingress:
     nginx.ingress.kubernetes.io/ssl-passthrough: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
   path: /
-  hosts: []
-    - vre.rucio-ui.cern.ch
+  hosts: 
+    - "vre-rucio-ui.cern.ch"
 
-additionalSecrets: {}
+additionalSecrets: 
   - volumeName: rucio-db
     secretName: rucio-db
     mountPath: /opt/rucio/etc/rucio-db
