@@ -30,7 +30,7 @@ useSSL:
 
 image:
   repository: rucio/rucio-server
-  tag: ${rucio-server-image-tag}
+  tag: release-1.30.0
   pullPolicy: Always
 
 # service:
@@ -213,7 +213,7 @@ ingress:
 #     traefik.ingress.kubernetes.io/redirect-entry-point: https
   path: /
   hosts: []
-    - ${rucio-vre-dn}
+    - vre.rucio.cern.ch
   tls:
     - secretName: vre-rucio-server.tls-secret
   secrets:
@@ -245,7 +245,7 @@ authIngress:
     # traefik.ingress.kubernetes.io/redirect-entry-point: https
   path: /
   hosts: []
-    - ${rucio-auth-vre-dn}
+    - vre.rucio-auth.cern.ch
   # tls:
   #   - secretName: rucio-auth.tls-secret
   secrets:

@@ -18,7 +18,7 @@ service:
 
 image:
   repository: rucio/rucio-ui
-  tag: ${rucio-ui-image-tag}
+  tag: release-1.30.0
   pullPolicy: Always
 
 strategy:
@@ -30,7 +30,7 @@ strategy:
 minReadySeconds: 5
 
 proxy:
-  rucioProxy: ${rucio-vre-dn}
+  rucioProxy: vre.rucio.cern.ch
   rucioProxyScheme: "https" # ELENA: OR HTTPS????
   rucioAuthProxy: ${rucio-auth-vre-dn}
   #rucioAuthProxyScheme: "https"
@@ -43,7 +43,7 @@ ingress:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
   path: /
   hosts: []
-    - ${rucio-ui-vre-dn}
+    - vre.rucio-ui.cern.ch
 
 additionalSecrets: {}
   - volumeName: rucio-db

@@ -2,11 +2,40 @@
 
 # Rucio
 
-/* module "rucio-daemons" {
-  source = "../modules/rucio/rucio-daemons"
+resource "helm_release" "rucio-daemons-chart" {
+  name       = "rucio-daemons-${var.release-suffix}"
+  repository = "https://rucio.github.io/helm-charts"
+  chart      = "rucio-daemons"
+  version    = "1.30.0"
+  namespace  = var.ns-name
 
-  ns-name        = var.ns-rucio
-  release-suffix = var.resource-suffix
+  values = [
+    file("rucio/values-daemons.yaml")
+  ]
+}
+
+resource "helm_release" "rucio-ui-chart" {
+  name       = "rucio-ui-${var.release-suffix}"
+  repository = "https://rucio.github.io/helm-charts"
+  chart      = "rucio-ui"
+  version    = "1.30.0"
+  namespace  = var.ns-name
+
+  values = [
+    file("rucio/values-ui.yaml")
+  ]
+}
+
+resource "helm_release" "rucio-server-chart" {
+  name       = "rucio-server-${var.release-suffix}"
+  repository = "https://rucio.github.io/helm-charts"
+  chart      = "rucio-server"
+  version    = "1.30.0"
+  namespace  = var.ns-name
+
+  values = [
+    file("rucio/values.yaml")
+  ]
 }
 
 module "rucio-server" {

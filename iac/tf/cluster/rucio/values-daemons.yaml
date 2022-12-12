@@ -34,7 +34,7 @@ necromancerCount: 0
 
 image:
   repository: rucio/rucio-daemons
-  tag: ${rucio-daemons-image-tag}
+  tag: release-1.30.0
   pullPolicy: Always
 
 strategy:
