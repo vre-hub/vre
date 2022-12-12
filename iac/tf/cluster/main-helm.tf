@@ -1,13 +1,13 @@
-# Helm Resources (imported from modules)
+# Helm Resources
 
 # Rucio
 
 resource "helm_release" "rucio-daemons-chart" {
-  name       = "rucio-daemons-${var.release-suffix}"
+  name       = "rucio-daemons-${var.resource-suffix}"
   repository = "https://rucio.github.io/helm-charts"
   chart      = "rucio-daemons"
   version    = "1.30.0"
-  namespace  = var.ns-name
+  namespace  = var.ns-rucio
 
   values = [
     file("rucio/values-daemons.yaml")
@@ -15,11 +15,11 @@ resource "helm_release" "rucio-daemons-chart" {
 }
 
 resource "helm_release" "rucio-ui-chart" {
-  name       = "rucio-ui-${var.release-suffix}"
+  name       = "rucio-ui-${var.resource-suffix}"
   repository = "https://rucio.github.io/helm-charts"
   chart      = "rucio-ui"
   version    = "1.30.0"
-  namespace  = var.ns-name
+  namespace  = var.ns-rucio
 
   values = [
     file("rucio/values-ui.yaml")
@@ -27,11 +27,11 @@ resource "helm_release" "rucio-ui-chart" {
 }
 
 resource "helm_release" "rucio-server-chart" {
-  name       = "rucio-server-${var.release-suffix}"
+  name       = "rucio-server-${var.resource-suffix}"
   repository = "https://rucio.github.io/helm-charts"
   chart      = "rucio-server"
   version    = "1.30.0"
-  namespace  = var.ns-name
+  namespace  = var.ns-rucio
 
   values = [
     file("rucio/values-servers.yaml")
@@ -40,12 +40,12 @@ resource "helm_release" "rucio-server-chart" {
 
 # Sealed Secrets
 
-module "sealed-secrets" {
+/* module "sealed-secrets" {
   source = "../modules/sealed-secrets"
 
   ns-name        = var.ns-shared-services
   release-suffix = var.resource-suffix
-}
+} */
 
 # JupyterHub
 
@@ -58,7 +58,7 @@ module "sealed-secrets" {
 
 # Reana
 
-module "reana" {
+/* module "reana" {
   source = "../modules/reana"
 
   ns-name         = var.ns-reana
@@ -67,4 +67,4 @@ module "reana" {
   share-id        = data.openstack_sharedfilesystem_share_v2.share_1_reana.id
   share-access-id = openstack_sharedfilesystem_share_access_v2.share_access_2.id
   cephfs-type     = var.cephfs-type
-}
+} */
