@@ -20,11 +20,11 @@ resource "openstack_containerinfra_cluster_v1" "openstack_cluster" {
   name                = var.cluster-name
   cluster_template_id = data.openstack_containerinfra_clustertemplate_v1.cluster_template.id # 22a4c77f-cfe3-47bb-8006-31d02375a3f3
   master_count        = 3
-  node_count          = 24
+  node_count          = 23
   keypair             = var.cluster-keypair-name
   merge_labels        = true
   flavor              = "m2.xlarge"
-  master_flavor       = "m2.medium"
+  master_flavor       = "m2.large"
   labels = {
     cern_enabled             = "true"
     cvmfs_enabled            = "true"
@@ -40,7 +40,7 @@ resource "openstack_containerinfra_cluster_v1" "openstack_cluster" {
     keystone_auth_enabled    = "true"
     auto_scaling_enabled     = "true"
     min_node_count           = "4"
-    max_node_count           = "24"
+    max_node_count           = "23"
   }
   provisioner "local-exec" {
     command = "sh ../../scripts/post_cluster_setup.sh"
