@@ -63,4 +63,4 @@ kubectl create -f mysealedsecret.[json|yaml]
 
 ## Rucio
 
-After the Rucio Helm charts have been applied via Terraform, secrets need to be created. A script with instructions can be found [here](code/eosc-future-cern/iac/scripts/create-rucio-secrets.sh).
+Some secrets need to be created before applying the Rucio Helm charts via Terraform. A script with instructions can be found [here](code/eosc-future-cern/iac/scripts/create-rucio-secrets.sh). The secrets will be encrypted with sealed-secrets. The CERN Openstack `nginx-ingress-controller` pod in the `kube-system` namespace has a `validatingwebhookconfiguration` named `ingress-nginx-admission` that needs to be deleted in order for the nginx ingress controller to be able to reach the K8s API. 

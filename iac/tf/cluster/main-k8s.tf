@@ -14,6 +14,12 @@ resource "kubernetes_namespace_v1" "ns_rucio" {
   }
 }
 
+resource "kubernetes_namespace_v1" "ns_monitoring" {
+  metadata {
+    name = var.ns-monitoring
+  }
+}
+
 /* resource "kubernetes_namespace_v1" "ns_jupyterhub" {
   metadata {
     name = var.ns-jupyterhub
@@ -23,12 +29,6 @@ resource "kubernetes_namespace_v1" "ns_rucio" {
 resource "kubernetes_namespace_v1" "ns_reana" {
   metadata {
     name = var.ns-reana
-  }
-}
-
-resource "kubernetes_namespace_v1" "ns_monitoring" {
-  metadata {
-    name = var.ns-monitoring
   }
 } */
 

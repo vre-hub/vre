@@ -8,7 +8,7 @@ resource "helm_release" "rucio-daemons-chart" {
   chart      = "rucio-daemons"
   version    = "1.30.0"
   namespace  = var.ns-rucio
-
+  
   values = [
     "${file("rucio/values-daemons.yaml")}"
   ]
