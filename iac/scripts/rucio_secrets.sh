@@ -97,8 +97,7 @@ kubectl create secret tls vre-rucio-server.tls-secret --key=${SERVERPROXIES}user
 
 echo "--> create rucio DB secret"
 
-kubectl -n rucio create secret generic rucio-db --from-file=${DB_PATH}rucio-db --dry-run=client -o yaml | \
-kubeseal --controller-name=sealed-secrets-cvre --controller-namespace=${controller_ns} --format yaml --namespace=${rucio_namespace} > ${SECRETS_STORE}${yml_output_prefix}rucio-db.yaml
+kubectl -n rucio create secret generic ${helm_release_name_server}-rucio-db --from-file=${DB_PATH}rucio-db --dry-run=client -o yaml | \
+kubeseal --controller-name=sealed-secrets-cvre --controller-namespace=${controller_ns} --format yaml --namespace=${rucio_namespace} > ${SECRETS_STORE}${yml_output_prefix}${helm_release_name_server}-rucio-db.yaml
 
-kubectl apply -f ${SECRETS_STORE}${yml_output_prefix}rucio-db.yaml
-
+kubectl apply -f ${SECRETS_STORE}${yml_output_prefix}${helm_release_name_server}-rucio-db.yaml
