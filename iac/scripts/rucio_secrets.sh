@@ -80,6 +80,7 @@ kubectl apply -f ${SECRETS_STORE}${yml_output_prefix}${helm_release_name_ui}-ca.
 echo "--> create rucio CA bundle for daemons"
 
 bundle_dir="/root/clusters/vre-cluster/rucio-secrets/ca-bundle"
+rm -rf ${bundle_dir}
 mkdir ${bundle_dir}
 cp /etc/grid-security/certificates/*.0 ${bundle_dir}
 cp /etc/grid-security/certificates/*.signing_policy ${bundle_dir}
