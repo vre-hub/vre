@@ -121,6 +121,12 @@ additionalSecrets:
     secretName: rucio-db
     mountPath: /opt/rucio/etc/rucio-db
     subPath: rucio-db
+  - volumeName: auth-hostcert
+    secretName: auth-hostcert
+    mountPath: /etc/grid-security/hostcert.pem
+  - volumeName: auth-hostkey
+    secretName: auth-hostkey
+    mountPath: /etc/grid-security/hostkey.pem
 #   - volumeName: hermes-secret, idpsecret, rse-account
 #     secretName: ...
 #     mountPath: /opt/rucio/etc/...
