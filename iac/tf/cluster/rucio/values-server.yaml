@@ -101,10 +101,13 @@ useSSL:
   server: false
   authServer: false
 
+# The API server listens on port 6443 (by default). 
+# Therefore, expose the API server on port 443 and listen to 6443. 
+
 service:
   type: LoadBalancer
   port: 443
-  targetPort: 443
+  targetPort: 6443
   protocol: TCP
   name: https
   annotations:
@@ -115,7 +118,7 @@ service:
 authService:
   type: LoadBalancer
   port: 443
-  targetPort: 443
+  targetPort: 6443
   protocol: TCP
   name: https
   annotations:
