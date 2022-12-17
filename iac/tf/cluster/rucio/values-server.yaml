@@ -11,7 +11,7 @@ image:
   tag: release-1.30.0
   pullPolicy: Always
 
-# BASIC CONFIG FOR SERVERS 
+############################ BASIC CONFIG FOR SERVERS 
 # useSSL:
 #   server: false
 #   authServer: false
@@ -49,53 +49,83 @@ image:
 #   hosts:
 #     - "vre-rucio-auth.cern.ch"
 
-# VRE SPECIFIC 
+############################### VRE- INGRESSES 
+# useSSL:
+#   server: false
+#   authServer: true
+
+# service:
+#   type: ClusterIP
+#   port: 80
+#   targetPort: 80
+#   protocol: TCP
+#   name: http
+#   annotations: {}
+
+# authService:
+#   type: ClusterIP
+#   port: 443
+#   targetPort: 443
+#   protocol: TCP
+#   name: https
+#   annotations: {}
+
+# serverType:
+#   server: flask
+#   authServer: flask
+
+# ingress:
+#   enabled: true
+#   path: /
+#   annotations:
+#     kubernetes.io/ingress.class: nginx
+#     nginx.ingress.kubernetes.io/frontend-entry-points: http, https
+#     nginx.ingress.kubernetes.io/ssl-redirect: "false"
+#   hosts:
+#     - "vre-rucio.cern.ch"
+#   tls:
+#     - secretName: vre-rucio-server.tls-secret
+
+# authIngress:
+#   enabled: true
+#   annotations:
+#     kubernetes.io/ingress.class: nginx
+#     nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+#     nginx.ingress.kubernetes.io/ssl-redirect: "true"
+#   hosts:
+#     - "vre-rucio-auth.cern.ch"
+#   path: /
+
+################################# VRE: LOAD BALANCING 
 useSSL:
   server: false
-  authServer: true
+  authServer: false
 
 service:
-  type: ClusterIP
-  port: 80
-  targetPort: 80
-  protocol: TCP
-  name: http
-  annotations: {}
-
-authService:
-  type: ClusterIP
+  type: LoadBalancer
   port: 443
   targetPort: 443
   protocol: TCP
   name: https
-  annotations: {}
+  annotations:
+    loadbalancer.openstack.org/network-id: "f4adf6e0-9a32-4475-9044-d9bc474888a0" 
+    service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
+    loadbalancer.openstack.org/cascade-delete: "false"
+
+authService:
+  type: LoadBalancer
+  port: 443
+  targetPort: 443
+  protocol: TCP
+  name: https
+  annotations:
+    loadbalancer.openstack.org/network-id: "f4adf6e0-9a32-4475-9044-d9bc474888a0"
+    service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
+    loadbalancer.openstack.org/cascade-delete: "false"
 
 serverType:
   server: flask
   authServer: flask
-
-
-ingress:
-  enabled: true
-  path: /
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/frontend-entry-points: http, https
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
-  hosts:
-    - "vre-rucio.cern.ch"
-  tls:
-    - secretName: vre-rucio-server.tls-secret
-
-authIngress:
-  enabled: true
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-  hosts:
-    - "vre-rucio-auth.cern.ch"
-  path: /
 
 monitoring:
   enabled: true
