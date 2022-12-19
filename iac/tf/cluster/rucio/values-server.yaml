@@ -106,8 +106,8 @@ useSSL:
 
 service:
   type: LoadBalancer
-  port: 443
-  targetPort: 6443
+  port: 6443
+  targetPort: 443
   protocol: TCP
   name: https
   annotations:
@@ -117,8 +117,8 @@ service:
 
 authService:
   type: LoadBalancer
-  port: 443
-  targetPort: 6443
+  port: 6443
+  targetPort: 443
   protocol: TCP
   name: https
   annotations:
