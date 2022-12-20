@@ -1,10 +1,10 @@
 # Default values for rucio.
-# This is a YAML-formatted file.
+# This is a YAML-formatted file. 
 # Declare variables to be passed into your templates.
 
-## replicaCount gives the number of server pods to run
+## replicaCount gives the number of server pods to run 
 replicaCount: 2
-authReplicaCount: 2
+authReplicaCount: 2 
 
 image:
   repository: rucio/rucio-server
@@ -106,10 +106,10 @@ useSSL:
 
 service:
   type: LoadBalancer
-  port: 6443
-  targetPort: 443
+  port: 443
+  targetPort: 80
   protocol: TCP
-  name: https
+  name: http
   annotations:
     loadbalancer.openstack.org/network-id: "f4adf6e0-9a32-4475-9044-d9bc474888a0" 
     service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
@@ -117,10 +117,10 @@ service:
 
 authService:
   type: LoadBalancer
-  port: 6443
-  targetPort: 443
+  port: 443
+  targetPort: 80
   protocol: TCP
-  name: https
+  name: http
   annotations:
     loadbalancer.openstack.org/network-id: "f4adf6e0-9a32-4475-9044-d9bc474888a0"
     service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
