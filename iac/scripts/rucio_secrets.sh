@@ -26,6 +26,8 @@ rucio_namespace="rucio"
 
 yml_output_prefix="ss_"
 
+export DB_CONNECT_STRING="<set manually>" # Maually set the db connect string before running the script
+
 echo "--> create and apply main server secrets"
 
 kubectl create secret generic ${helm_release_name_server}-server-hostcert --dry-run=client --from-file=${SERVERPROXIES}hostcert.pem -o yaml | \
@@ -102,7 +104,7 @@ kubectl create secret tls vre-rucio-server.tls-secret --key=${SERVERPROXIES}host
 
 echo "--> create rucio DB secret"
 
-kubectl -n rucio create secret generic ${helm_release_name_server}-rucio-db --from-file=${DB_PATH}rucio-db --dry-run=client -o yaml | \
+kubectl -n rucio create secret generic ${helm_release_name_server}-rucio-db --from-literal=dbconnectstring=${DB_CONNECT_STRING} --dry-run=client -o yaml | \
 kubeseal --controller-name=sealed-secrets-cvre --controller-namespace=${controller_ns} --format yaml --namespace=${rucio_namespace} > ${SECRETS_STORE}${yml_output_prefix}${helm_release_name_server}-rucio-db.yaml
 
 kubectl apply -f ${SECRETS_STORE}${yml_output_prefix}${helm_release_name_server}-rucio-db.yaml

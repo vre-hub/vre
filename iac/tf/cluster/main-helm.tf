@@ -2,7 +2,7 @@
 
 # Rucio
 
-resource "helm_release" "rucio-daemons-chart" {
+/* resource "helm_release" "rucio-daemons-chart" {
   name       = "rucio-daemons-${var.resource-suffix}"
   repository = "https://rucio.github.io/helm-charts"
   chart      = "rucio-daemons"
@@ -24,7 +24,7 @@ resource "helm_release" "rucio-ui-chart" {
   values = [
     "${file("rucio/values-ui.yaml")}"
   ]
-}
+} */
 
 resource "helm_release" "rucio-server-chart" {
   name       = "rucio-server-${var.resource-suffix}"
@@ -36,6 +36,11 @@ resource "helm_release" "rucio-server-chart" {
   values = [
     "${file("rucio/values-server.yaml")}"
   ]
+
+  set {
+    name = "config.database.default"
+    value = data.kubernetes_secret_v1.rucio_db_secret.data.dbconnectstring
+  }
 }
 
 # Sealed Secrets

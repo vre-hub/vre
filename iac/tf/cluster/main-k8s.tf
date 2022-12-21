@@ -1,3 +1,12 @@
+# Kubernetes Data Sources
+
+data "kubernetes_secret_v1" "rucio_db_secret" {
+  metadata {
+    name = "rucio-server-cvre-rucio-db"
+    namespace = "rucio"
+  }
+}
+
 # Kubernetes Resources
 
 # Namespaces
