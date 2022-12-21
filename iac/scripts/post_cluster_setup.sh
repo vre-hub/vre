@@ -11,18 +11,25 @@ NODE_PREFIX=$(kubectl get nodes -l magnum.openstack.org/role=worker --sort-by .m
 NODE_PREFIX=${NODE_PREFIX%-0}
 echo $NODE_PREFIX
 
+# TO USE NGINX INGRESS CONTROL
 # set ingress nodes for the first three infrasteucture nodes
-FIRST_3NODES=$(kubectl get nodes -l magnum.openstack.org/role=worker --sort-by .metadata.name -o name | head -n 3)
-for NODE in $FIRST_3NODES
-do
-    kubectl label "$NODE" role=ingress
-done
+# FIRST_3NODES=$(kubectl get nodes -l magnum.openstack.org/role=worker --sort-by .metadata.name -o name | head -n 3)
+# for NODE in $FIRST_3NODES
+# do
+#     kubectl label "$NODE" role=ingress
+# done
 
-## distribute internet traffic across three master nodes and set DN host names for rucio services: 
-##  vre-rucio.cern.ch (main rucio server), vre-rucio-auth.cern.ch (rucio authentication server), vre-rucio-ui.cern.ch (rucio webui interface)
-openstack server set --property landb-alias=vre-rucio--load-1-,vre-rucio-auth--load-1-,vre-rucio-ui--load-1- cern-vre-bl53fcf4f77h-master-0 
-openstack server set --property landb-alias=vre-rucio--load-2-,vre-rucio-auth--load-2-,vre-rucio-ui--load-2- cern-vre-bl53fcf4f77h-master-1
-openstack server set --property landb-alias=vre-rucio--load-3-,vre-rucio-auth--load-3-,vre-rucio-ui--load-3- cern-vre-bl53fcf4f77h-master-2
+# ## distribute internet traffic across three master nodes and set DN host names for rucio services: 
+# ##  vre-rucio.cern.ch (main rucio server), vre-rucio-auth.cern.ch (rucio authentication server), vre-rucio-ui.cern.ch (rucio webui interface)
+# openstack server set --property landb-alias=vre-rucio--load-1-,vre-rucio-auth--load-1-,vre-rucio-ui--load-1- cern-vre-bl53fcf4f77h-master-0 
+# openstack server set --property landb-alias=vre-rucio--load-2-,vre-rucio-auth--load-2-,vre-rucio-ui--load-2- cern-vre-bl53fcf4f77h-master-1
+# openstack server set --property landb-alias=vre-rucio--load-3-,vre-rucio-auth--load-3-,vre-rucio-ui--load-3- cern-vre-bl53fcf4f77h-master-2
+
+
+# TO USE CERN CLOUD LOADBALANCING: apply secrets, then terraform, when externalIP of LoadBalancer gets created run 'openstack loadbalancer list' on aiadm and use the newly created LB IDs for: 
+
+openstack loadbalancer set --description "vre-rucio.cern.ch" a6555250-a0f4-418c-a3ab-08f0c4fa08e9
+openstack loadbalancer set --description "vre-rucio-auth.cern.ch" db7cb0a2-16ab-44fd-a00b-a7febdf975db 
 
 ## set reana HA node labels
 kubectl label "${NODE_PREFIX}-3" reana.io/system=infrastructure
