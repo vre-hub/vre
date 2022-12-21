@@ -98,8 +98,8 @@ image:
 
 ################################# VRE: LOAD BALANCING 
 useSSL:
-  server: false
-  authServer: false
+  server: true
+  authServer: true
 
 # The API server listens on port 6443 (by default). 
 # Therefore, expose the API server on port 443 and listen to 6443. 
@@ -107,9 +107,9 @@ useSSL:
 service:
   type: LoadBalancer
   port: 443
-  targetPort: 80
+  targetPort: 443
   protocol: TCP
-  name: http
+  name: https
   annotations:
     loadbalancer.openstack.org/network-id: "d874403a-5d7e-451e-96b4-0648586355b1" 
     service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
@@ -118,9 +118,9 @@ service:
 authService:
   type: LoadBalancer
   port: 443
-  targetPort: 80
+  targetPort: 443
   protocol: TCP
-  name: http
+  name: https
   annotations:
     loadbalancer.openstack.org/network-id: "d874403a-5d7e-451e-96b4-0648586355b1"
     service.beta.kubernetes.io/openstack-internal-load-balancer: "true"

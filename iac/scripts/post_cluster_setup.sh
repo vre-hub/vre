@@ -26,10 +26,10 @@ echo $NODE_PREFIX
 # openstack server set --property landb-alias=vre-rucio--load-3-,vre-rucio-auth--load-3-,vre-rucio-ui--load-3- cern-vre-bl53fcf4f77h-master-2
 
 
-# TO USE CERN CLOUD LOADBALANCING: apply secrets, then terraform, when externalIP of LoadBalancer gets created run 'openstack loadbalancer list' on aiadm and use the newly created LB IDs for: 
+# TO USE CERN CLOUD LOADBALANCING: apply secrets, then terraform, when externalIP of LoadBalancer gets created run 'openstack loadbalancer list' on aiadm and use the newly created LB IDs to assign the DN name of your service to them:
 
-openstack loadbalancer set --description "vre-rucio.cern.ch" a6555250-a0f4-418c-a3ab-08f0c4fa08e9
-openstack loadbalancer set --description "vre-rucio-auth.cern.ch" db7cb0a2-16ab-44fd-a00b-a7febdf975db 
+openstack loadbalancer set --description "vre-rucio.cern.ch" $LB_ID_MAIN
+openstack loadbalancer set --description "vre-rucio-auth.cern.ch" $LB_ID_AUTH
 
 ## set reana HA node labels
 kubectl label "${NODE_PREFIX}-3" reana.io/system=infrastructure
