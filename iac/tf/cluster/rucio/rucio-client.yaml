@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: rucio-client
+  namespace: rucio
+  labels:
+    app: client
+spec:
+  containers:
+  - name: client
+    image: projectescape/rucio-client:latest
+    volumeMounts:
+    - name: usercert
+      mountPath: /tmp/usercert.pem
+      subPath: usercert.pem
+    - name: userkey
+      mountPath: /tmp/userkey.pem
+      subPath: userkey.pem
+    # - name: ca
+    #   mountPath: /etc/pki/tls/certs/CERN-bundle.pem
+    #   subPath: CERN-bundle.pem
+    # - name: x509up
+    #   mountPath: /tmp/x509up
+    #   subPath: x509up
+    command: ["/bin/bash"]
+    args: ["-c", "mkdir -p /opt/rucio/etc; cp /tmp/usercert.pem /opt/rucio/etc/usercert.pem; cp /tmp/userkey.pem /opt/rucio/etc/userkey.pem; chmod 400 /opt/rucio/etc/userkey.pem; cd /opt/rucio/etc/; voms-proxy-init --voms escape --cert usercert.pem --key userkey.pem --out /tmp/x509up_u1000; echo ready; while true; do sleep 60; done"]
+    env:
+    - name: RUCIO_CFG_RUCIO_HOST
+      value: https://vre-rucio.cern.ch
+    - name: RUCIO_CFG_AUTH_HOST
+      value: https://vre-rucio-auth.cern.ch
+    - name: RUCIO_CFG_AUTH_TYPE
+      value: x509_proxy
+    - name: RUCIO_CFG_USERNAME
+      value: ewp2c01
+    - name: RUCIO_CFG_PASSWORD
+      value: WFVrN2VjelFRRUdnZ2dS
+    - name: RUCIO_CFG_ACCOUNT
+      value: root
+    - name: RUCIO_CFG_CLIENT_CERT
+      value: /opt/rucio/etc/usercert.pem
+    - name: RUCIO_CFG_CA_CERT
+      value: /etc/pki/tls/certs/CERN-bundle.pem
+    - name: RUCIO_CFG_CLIENT_KEY
+      value: /opt/rucio/etc/userkey.pem
+    - name: RUCIO_CFG_CLIENT_X509_PROXY
+      value: /tmp/x509up_u1000
+    - name: X509_USER_CERT
+      value: /opt/rucio/etc/usercert.pem
+    - name: X509_USER_KEY
+      value: /opt/rucio/etc/userkey.pem
+  volumes:
+  - name: usercert
+    secret:
+      secretName: sso-client-account
+      items:
+      - key: usercert.pem
+        path: usercert.pem
+  - name: userkey
+    secret:
+      secretName: sso-client-account
+      items:
+      - key: userkey.pem
+        path: userkey.pem
+  # - name: ca
+  #   secret:
+  #     secretName: sso-rucio-ca-bundle
+  #     defaultMode: 0644
+  # - name: x509up
+  #   secret:
+  #     secretName: sso-x509up
