@@ -2,7 +2,7 @@
 
 # Rucio
 
-/* resource "helm_release" "rucio-daemons-chart" {
+resource "helm_release" "rucio-daemons-chart" {
   name       = "rucio-daemons-${var.resource-suffix}"
   repository = "https://rucio.github.io/helm-charts"
   chart      = "rucio-daemons"
@@ -14,7 +14,7 @@
   ]
 }
 
-resource "helm_release" "rucio-ui-chart" {
+/* resource "helm_release" "rucio-ui-chart" {
   name       = "rucio-ui-${var.resource-suffix}"
   repository = "https://rucio.github.io/helm-charts"
   chart      = "rucio-ui"

@@ -130,3 +130,11 @@ echo "--> create service account secret for rucio client container to check init
 cat ${DB_PATH}sso-secret.yaml | kubeseal --controller-name=sealed-secrets-cvre --controller-namespace=${controller_ns} --format yaml --namespace=${rucio_namespace} > ${SECRETS_STORE}${yml_output_prefix}-sso-account.yaml
 kubectl apply -f ${SECRETS_STORE}${yml_output_prefix}-sso-account.yaml
 
+
+# Manually creating a copy of the service account secrets for Rucio FTS authentication
+
+cat escape-daemons-fts-cert.yaml | kubeseal --controller-name=sealed-secrets-cvre --controller-namespace=${controller_ns} --format yaml --namespace=${rucio_namespace} > ss_rucio-daemons-cvre-fts-cert.yaml
+cat escape-daemons-fts-key.yaml | kubeseal --controller-name=sealed-secrets-cvre --controller-namespace=${controller_ns} --format yaml --namespace=${rucio_namespace} > ss_rucio-daemons-cvre-fts-key.yaml
+
+kubectl create -f rucio-daemons-cvre-fts-cert.yaml 
+kubectl create -f rucio-daemons-cvre-fts-key.yaml
