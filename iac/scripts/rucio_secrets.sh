@@ -138,3 +138,16 @@ cat escape-daemons-fts-key.yaml | kubeseal --controller-name=sealed-secrets-cvre
 
 kubectl create -f rucio-daemons-cvre-fts-cert.yaml 
 kubectl create -f rucio-daemons-cvre-fts-key.yaml
+
+
+echo "--> create and apply fts secrets"
+
+kubectl create secret generic ${helm_release_name_daemons}-fts-cert --dry-run=client --from-file=usercert.pem -o yaml | \
+kubeseal --controller-name=sealed-secrets-cvre --controller-namespace=${controller_ns} --format yaml --namespace=${rucio_namespace} > ${yml_output_prefix}${helm_release_name_daemons}-fts-cert.yaml
+
+kubectl apply -f ${yml_output_prefix}${helm_release_name_daemons}-fts-cert.yaml
+
+kubectl create secret generic ${helm_release_name_daemons}-fts-key --dry-run=client --from-file=new_userkey.pem -o yaml | \
+kubeseal --controller-name=sealed-secrets-cvre --controller-namespace=${controller_ns} --format yaml --namespace=${rucio_namespace} > ${yml_output_prefix}${helm_release_name_daemons}-fts-key.yaml
+
+kubectl apply -f ${yml_output_prefix}${helm_release_name_daemons}-fts-key.yaml
