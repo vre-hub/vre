@@ -27,3 +27,8 @@ override.tf.json
 
 # Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
 # example: *tfplan*
+
+# Exclude temporary local secrets dir except README
+!iac/secrets/tmp_local_secrets
+iac/secrets/tmp_local_secrets/*
+!iac/secrets/tmp_local_secrets/README.md
