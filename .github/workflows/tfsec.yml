@@ -6,12 +6,12 @@
 name: tfsec
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]  
-  schedule:
-    - cron: '41 0 * * 2'
+  # push:
+  #   branches: [ "main" ]
+  # pull_request:
+  #   branches: [ "main" ]  
+  # schedule:
+  #   - cron: '41 0 * * 2'
 
 jobs:
   tfsec:
