@@ -459,7 +459,7 @@ config:
 
   # database:
     ## config.database.default: the connection string for the database (default: "sqlite:////tmp/rucio.db")
-    # default: "sqlite:////tmp/rucio.db"
+    # default: ""
     ## config.database.schema: the schema used in the DB. only necessary when using Oracle.
     # schema: ""
     ## config.database.pool_reset_on_return: set the “reset on return” behavior of the pool (default: "rollback")

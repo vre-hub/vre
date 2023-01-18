@@ -12,6 +12,11 @@ resource "helm_release" "rucio-daemons-chart" {
   values = [
     "${file("rucio/values-daemons.yaml")}"
   ]
+
+  set {
+    name = "config.database.default"
+    value = data.kubernetes_secret_v1.rucio_db_secret.data.dbconnectstring
+  }
 }
 
 /* resource "helm_release" "rucio-ui-chart" {

@@ -1,5 +1,7 @@
 #! /bin/bash
 
+# Script to manually create the x509up certificate and secret for FTS
+
 # Set variables
 RUCIO_FTS_VOMS="ms:/cms/Role=production"
 RUCIO_FTS_SERVERS="https://fts3-pilot.cern.ch:8446"
