@@ -11,8 +11,8 @@ RUCIO_FTS_SECRETS="rucio-daemons-cvre-rucio-x509up"
 chmod 600 usercert.pem
 chmod 600 new_userkey.pem
 
-# Generate a proxy with the voms extension if requested
-voms-proxy-init --debug -rfc -valid 96:00 -bits 2048 -cert usercert.pem -key new_userkey.pem -out x509up -voms escape -rfc -timeout 5
+# Generate a proxy with the voms extension if requested --> GRID pass phrase for this identity
+echo "<grid passphrase>" | voms-proxy-init --debug -rfc -valid 96:00 -bits 2048 -cert usercert.pem -key new_userkey.pem -out x509up -voms escape -timeout 5
 
 # Delegate the proxy to the requested servers
 fts-rest-delegate -v -f -H 96 --key=x509up --cert=x509up -s https://fts3-pilot.cern.ch:8446
