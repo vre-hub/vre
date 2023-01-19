@@ -7,11 +7,22 @@
 # Steps to 
 # 1. Create a LanDB alias for all the required CNAMES like so: openstack server set --property landb-alias=<alias-one>,<alias-two> <cluster-name>-node-0 or, when using a loadbalancer, use the description field.
 # 2. Create and download host certificates form the CERN CA Authority here: https://ca.cern.ch/ca/
-# 3. Split them into a cert/key file each by following this documentation: https://ca.cern.ch/ca/Help/?kbid=024010
+# 3. Split them into a cert/key file each by following this documentation: https://ca.cern.ch/ca/Help/?kbid=024010 or using this scripts first part
 # 4. Use the below script in the scripts directory (modify variabels if needed) to create a SealedSecret for each one of them and deploy them to the cluster
 # 5. The kubeseal controller will immediately create the kubernetes secret and maintain it, the sealed secret file is safe to commit to the repo
 
 echo "Create RUCIO Secrets Script Start"
+
+# Convert Certificte to PEM Keypair and adjust permission
+CERT_FLENAME="myCert"
+HOSTCERT="hostcert"
+HOSTKEY="hostkey"
+
+openssl pkcs12 -in ${CERT_FLENAME}.p12 -clcerts -nokeys -out ${HOSTCERT}.pem
+openssl pkcs12 -in ${CERT_FLENAME}.p12 -nocerts -out ${HOSTKEY}.pem
+
+chmod 600 ${HOSTCERT}.pem
+chmod 600 ${HOSTKEY}.pem
 
 # kubeseal controller namespace
 CONTROLLER_NS="shared-services"
