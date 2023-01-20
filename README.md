@@ -2,9 +2,9 @@
 
 [![tfsec](https://github.com/EOSC-Future/eosc-future-cern/actions/workflows/tfsec.yml/badge.svg)](https://github.com/EOSC-Future/eosc-future-cern/actions/workflows/tfsec.yml)
 
-# EOSC Future CERN
+# CERN VRE
 
-EOSC Future CERN Infrastructure Code.
+The CERN Virtual Research Environment.
 
 ## Prerequisites
 
