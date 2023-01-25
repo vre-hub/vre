@@ -2,6 +2,23 @@
 
 # Rucio
 
+resource "helm_release" "rucio-server-chart" {
+  name       = "rucio-server-${var.resource-suffix}"
+  repository = "https://rucio.github.io/helm-charts"
+  chart      = "rucio-server"
+  version    = "1.30.0"
+  namespace  = var.ns-rucio
+
+  values = [
+    "${file("rucio/values-server.yaml")}"
+  ]
+
+  set {
+    name = "config.database.default"
+    value = data.kubernetes_secret_v1.rucio_db_secret.data.dbconnectstring
+  }
+}
+
 resource "helm_release" "rucio-daemons-chart" {
   name       = "rucio-daemons-${var.resource-suffix}"
   repository = "https://rucio.github.io/helm-charts"
@@ -19,7 +36,24 @@ resource "helm_release" "rucio-daemons-chart" {
   }
 }
 
-resource "helm_release" "rucio-webui-chart" {
+resource "helm_release" "rucio-ui-chart" {
+  name       = "rucio-bui-${var.resource-suffix}"
+  repository = "https://rucio.github.io/helm-charts"
+  chart      = "rucio-ui"
+  version    = "1.30.0"
+  namespace  = var.ns-rucio
+
+  values = [
+    "${file("rucio/values-ui.yaml")}"
+  ]
+
+  set {
+    name = "config.database.default"
+    value = data.kubernetes_secret_v1.rucio_db_secret.data.dbconnectstring
+  }
+}
+
+/* resource "helm_release" "rucio-webui-chart" {
   name       = "rucio-webui-${var.resource-suffix}"
   repository = "https://rucio.github.io/helm-charts"
   chart      = "rucio-webui"
@@ -34,24 +68,7 @@ resource "helm_release" "rucio-webui-chart" {
     name = "config.database.default"
     value = data.kubernetes_secret_v1.rucio_db_secret.data.dbconnectstring
   }
-}
-
-resource "helm_release" "rucio-server-chart" {
-  name       = "rucio-server-${var.resource-suffix}"
-  repository = "https://rucio.github.io/helm-charts"
-  chart      = "rucio-server"
-  version    = "1.30.0"
-  namespace  = var.ns-rucio
-
-  values = [
-    "${file("rucio/values-server.yaml")}"
-  ]
-
-  set {
-    name = "config.database.default"
-    value = data.kubernetes_secret_v1.rucio_db_secret.data.dbconnectstring
-  }
-}
+} */
 
 # Sealed Secrets
 
