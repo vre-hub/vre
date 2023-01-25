@@ -9,7 +9,7 @@ replicaCount: 1
 exposeErrorLogs: True
 
 service:
-  type: NodePort
+  type: LoadBalancer
   # Run the webui server on port 443 instead of 80 and accept X509 certificates and proxies
   useSSL: true
   port: 443
@@ -31,9 +31,9 @@ minReadySeconds: 5
 
 proxy:
   rucioProxy: "vre-rucio.cern.ch"
-  rucioProxyScheme: "https" # ELENA: OR HTTPS????
+  rucioProxyScheme: "https"
   rucioAuthProxy: "vre-rucio-auth.cern.ch"
-  #rucioAuthProxyScheme: "https"
+  rucioAuthProxyScheme: "https"
   
 ingress:
   enabled: true
@@ -45,11 +45,7 @@ ingress:
   hosts: 
     - "vre-rucio-ui.cern.ch"
 
-additionalSecrets: 
-  - volumeName: rucio-db
-    secretName: rucio-db
-    mountPath: /opt/rucio/etc/rucio-db
-    subPath: rucio-db
+additionalSecrets:
 #   - volumeName: hermes-secret, idpsecret, rse-account
 #     secretName: ...
 #     mountPath: /opt/rucio/etc/...
@@ -115,7 +111,7 @@ config:
     ## config.webui.usercert:  (default "/opt/rucio/etc/usercert_with_key.pem")
     # usercert: "/opt/rucio/etc/usercert_with_key.pem"
 
-resources: {}
+resources:
   limits:
     cpu: 100m
     memory: 800Mi

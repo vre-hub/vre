@@ -37,7 +37,7 @@ resource "helm_release" "rucio-daemons-chart" {
 }
 
 resource "helm_release" "rucio-ui-chart" {
-  name       = "rucio-bui-${var.resource-suffix}"
+  name       = "rucio-ui-${var.resource-suffix}"
   repository = "https://rucio.github.io/helm-charts"
   chart      = "rucio-ui"
   version    = "1.30.0"
