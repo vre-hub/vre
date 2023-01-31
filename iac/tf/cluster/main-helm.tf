@@ -53,23 +53,6 @@ resource "helm_release" "rucio-ui-chart" {
   }
 }
 
-/* resource "helm_release" "rucio-webui-chart" {
-  name       = "rucio-webui-${var.resource-suffix}"
-  repository = "https://rucio.github.io/helm-charts"
-  chart      = "rucio-webui"
-  version    = "1.30.0"
-  namespace  = var.ns-rucio
-
-  values = [
-    "${file("rucio/values-webui.yaml")}"
-  ]
-
-  set {
-    name = "config.database.default"
-    value = data.kubernetes_secret_v1.rucio_db_secret.data.dbconnectstring
-  }
-} */
-
 # Sealed Secrets
 
 resource "helm_release" "sealed-secrets-chart" {
