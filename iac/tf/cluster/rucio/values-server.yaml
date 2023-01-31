@@ -111,7 +111,8 @@ service:
   protocol: TCP
   name: https
   annotations:
-    loadbalancer.openstack.org/network-id: "d874403a-5d7e-451e-96b4-0648586355b1" 
+    # These annotations are only required for cluster templates <=1.18
+    loadbalancer.openstack.org/network-id: "798d00f3-2af9-48a0-a7c3-a26d909a2d64"
     service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
     loadbalancer.openstack.org/cascade-delete: "false"
 
@@ -122,7 +123,8 @@ authService:
   protocol: TCP
   name: https
   annotations:
-    loadbalancer.openstack.org/network-id: "d874403a-5d7e-451e-96b4-0648586355b1"
+    # These annotations are only required for cluster templates <=1.18
+    loadbalancer.openstack.org/network-id: "798d00f3-2af9-48a0-a7c3-a26d909a2d64"
     service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
     loadbalancer.openstack.org/cascade-delete: "false"
 
