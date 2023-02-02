@@ -21,7 +21,7 @@ resource "helm_release" "rucio-server-chart" {
 
 resource "helm_release" "rucio-daemons-chart" {
   name       = "rucio-daemons-${var.resource-suffix}"
-  repository = "https://rucio.github.io/helm-charts"
+  repository = "https://github.com/rucio/helm-charts"
   chart      = "rucio-daemons"
   version    = "1.30.0"
   namespace  = var.ns-rucio
