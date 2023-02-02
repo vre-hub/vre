@@ -541,7 +541,7 @@ config:
     use_ssl: "False"
     # ssl_key_file: "/etc/grid-security/hostkey.pem"
     # ssl_cert_file: "/etc/grid-security/hostcert.pem"
-    destination: "/topic/escape.rucio.events" #ELENA: needs changing !
+    destination: "/topic/eosc.rucio.events" #"/topic/escape.rucio.events" changed from escape
     brokers: "dashb-mb.cern.ch"
     voname: "escape"
     # email_from: "Rucio <atlas-adc-ddm-support@cern.ch"
