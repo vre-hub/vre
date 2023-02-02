@@ -398,7 +398,7 @@ ftsRenewal:
   enabled: 1
   schedule: "12 */6 * * *"
   image:
-    repository: rucio/fts-cron
+    repository: ghcr.io/goseind/fts-cron # rucio/fts-cron (until next release)
     tag: latest
     pullPolicy: Always
   vo: "escape"
