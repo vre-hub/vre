@@ -73,5 +73,5 @@ variable "ns-reana" {
 variable "ns-jupyterhub" {
   description = "The name of the namespace for jupyterhub"
   type        = string
-  default     = "jupyterhub"
+  default     = "jhub"
 }

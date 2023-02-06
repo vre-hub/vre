@@ -72,11 +72,12 @@ resource "helm_release" "sealed-secrets-chart" {
 
 # JupyterHub
 
-module "jupyterhub" {
-  source = "../modules/jupyterhub"
-
-  ns-name        = var.ns-jupyterhub
-  release-suffix = var.resource-suffix
+module "helm_release" "jupyterhub-chart" {
+  name       = "jhub-${var.resource-suffix}"
+  repository = "https://jupyterhub.github.io/helm-chart/"
+  chart      = "jupyterhub"
+  version    = "2.0.0"
+  namespace  = var.ns-jupyterhub
 }
 
 # Reana

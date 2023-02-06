@@ -29,7 +29,7 @@ resource "kubernetes_namespace_v1" "ns_monitoring" {
   }
 }
 
-/* resource "kubernetes_namespace_v1" "ns_jupyterhub" {
+resource "kubernetes_namespace_v1" "ns_jupyterhub" {
   metadata {
     name = var.ns-jupyterhub
   }
