@@ -83,6 +83,10 @@ resource "helm_release" "jupyterhub-chart" {
     "${file("jhub/config.yaml")}"
   ]
 
+  # set {
+  #   name  = "hub.podSecurityContext.fsGroupChangePolicy"
+  #   value = "OnRootMismatch"
+  # }
 }
 
 # Reana

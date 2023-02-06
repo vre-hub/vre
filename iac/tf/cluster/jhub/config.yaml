@@ -16,13 +16,16 @@ hub:
 proxy:
   service:
     type: LoadBalancer
-    loadBalancerIP: 137.138.226.78 # ref.: openstack loadbalancer create --name kube_service_8d85602e-7816-4153-b85b-ea86586e47c1_jhub_proxy-public --vip-network-id 798d00f3-2af9-48a0-a7c3-a26d909a2d64
+    loadBalancerIP: 137.138.226.35 # may change if LB needs to be created manually due to bug ref.: openstack loadbalancer create --name kube_service_8d85602e-7816-4153-b85b-ea86586e47c1_jhub_proxy-public --vip-network-id 798d00f3-2af9-48a0-a7c3-a26d909a2d64
     annotations:
       loadbalancer.openstack.org/network-id: "798d00f3-2af9-48a0-a7c3-a26d909a2d64"
       service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
       loadbalancer.openstack.org/cascade-delete: "false"
 
 singleuser:
+  extraPodConfig:
+    securityContext:
+      fsGroupChangePolicy: "OnRootMismatch" # value is not set, which causes containers to crash
   storage:
     dynamic:
       storageClass: manila-meyrin-cephfs
