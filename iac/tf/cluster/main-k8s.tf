@@ -2,7 +2,7 @@
 
 data "kubernetes_secret_v1" "rucio_db_secret" {
   metadata {
-    name = "rucio-server-cvre-rucio-db"
+    name      = "rucio-server-cvre-rucio-db"
     namespace = "rucio"
   }
 }
@@ -35,7 +35,7 @@ resource "kubernetes_namespace_v1" "ns_jupyterhub" {
   }
 }
 
-resource "kubernetes_namespace_v1" "ns_reana" {
+/* resource "kubernetes_namespace_v1" "ns_reana" {
   metadata {
     name = var.ns-reana
   }
@@ -46,3 +46,27 @@ resource "kubernetes_namespace_v1" "ns_reana" {
 /* resource "kubernetes_manifest" "<tbd>" {
   manifest = "${yamldecode(file("<tbd>.yaml"))}"
 } */
+
+# Storage
+
+# StorageClass
+
+resource "kubernetes_storage_class_v1" "sc_manila-meyrin-cephfs" {
+  metadata {
+    name = "manila-meyrin-cephfs" # ref.: https://kubernetes.docs.cern.ch/docs/storage/fileshares/
+  }
+  storage_provisioner  = "cephfs.manila.csi.openstack.org"
+  reclaim_policy       = "Delete"
+  allow_volume_expansion = true
+  parameters = {
+    type                                                  = "Meyrin CephFS" # ref.: https://clouddocs.web.cern.ch/file_shares/share_types.html
+    "csi.storage.k8s.io/provisioner-secret-name"            = "os-trustee"
+    "csi.storage.k8s.io/provisioner-secret-namespace"       = "kube-system"
+    "csi.storage.k8s.io/controller-expand-secret-name"      = "os-trustee"
+    "csi.storage.k8s.io/controller-expand-secret-namespace" = "kube-system"
+    "csi.storage.k8s.io/node-stage-secret-name"            = "os-trustee"
+    "csi.storage.k8s.io/node-stage-secret-namespace"        = "kube-system"
+    "csi.storage.k8s.io/node-publish-secret-name"           = "os-trustee"
+    "csi.storage.k8s.io/node-publish-secret-namespace"      = "kube-system"
+  }
+}

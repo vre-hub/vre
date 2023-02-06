@@ -4,7 +4,7 @@ output "cluster-api-address" {
 }
 
 output "rucio-db-secret" {
-  value = data.kubernetes_secret_v1.rucio_db_secret.data.dbconnectstring
-  sensitive = true
+  value       = data.kubernetes_secret_v1.rucio_db_secret.data.dbconnectstring
+  sensitive   = true
   description = "The db connection string for rucio helm chart"
 }
