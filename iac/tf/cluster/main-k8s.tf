@@ -35,11 +35,11 @@ resource "kubernetes_namespace_v1" "ns_jupyterhub" {
   }
 }
 
-/* resource "kubernetes_namespace_v1" "ns_reana" {
+resource "kubernetes_namespace_v1" "ns_reana" {
   metadata {
     name = var.ns-reana
   }
-} */
+}
 
 # Secrets (locally created and enrypted with kubeseal and then applied as a ready manifest)
 

@@ -1,0 +1,12 @@
+shared_storage: # or `infrastructure_storage`
+  backend: cephfs
+  volume_size: 1000
+  access_modes: ReadWriteMany
+  cephfs:
+    provisioner: manila-provisioner
+    type: "Meyrin CephFS"
+    availability_zone: nova
+    os_secret_name: os-trustee
+    os_secret_namespace: kube-system
+    cephfs_os_share_id: 1c8a0cef-988b-4614-b072-33f75f9a084c
+    cephfs_os_share_access_id: b0a39b58-9b44-4961-b041-53978552970d
