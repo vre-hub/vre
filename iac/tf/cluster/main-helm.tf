@@ -91,6 +91,9 @@ resource "helm_release" "jupyterhub-chart" {
 
 # Reana
 
+#  manual helm install due to tf helm error
+# helm install --devel reana-cvre reanahub/reana --wait --version 0.9.0 --values reana/values.yaml -n reana
+
 resource "helm_release" "reana-chart" {
   name       = "reana-${var.resource-suffix}"
   repository = "https://reanahub.github.io/reana/"
