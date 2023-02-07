@@ -12,6 +12,11 @@
 hub:
   db:
     type: sqlite-memory # change to postgres ref.: https://z2jh.jupyter.org/en/stable/resources/reference.html?highlight=database#hub-db-type
+  podSecurityContext:
+    fsGroup: 0
+  containerSecurityContext:
+    runAsUser: 0
+    runAsGroup: 0
 
 proxy:
   service:
@@ -23,9 +28,16 @@ proxy:
       loadbalancer.openstack.org/cascade-delete: "false"
 
 singleuser:
-  extraPodConfig:
-    securityContext:
-      fsGroupChangePolicy: "OnRootMismatch" # value is not set, which causes containers to crash
+  # extraPodConfig:
+  #   securityContext:
+  #     fsGroupChangePolicy: "OnRootMismatch" # value is not set, which causes containers to crash
+  extraEnv:
+    GRANT_SUDO: "yes"
+    NOTEBOOK_ARGS: "--allow-root"
+  uid: 0
+  fsGid: 0
+  allowPrivilegeEscalation: true
+  # cmd: "start-singleuser.sh"
   storage:
     dynamic:
       storageClass: manila-meyrin-cephfs
