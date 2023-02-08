@@ -4,7 +4,7 @@
 
 resource "helm_release" "rucio-server-chart" {
   name       = "rucio-server-${var.resource-suffix}"
-  repository = "https://rucio.github.io/helm-charts"
+  repository = "https://rucio.github.io/helm-charts/"
   chart      = "rucio-server"
   version    = "1.30.0"
   namespace  = var.ns-rucio
@@ -21,9 +21,9 @@ resource "helm_release" "rucio-server-chart" {
 
 resource "helm_release" "rucio-daemons-chart" {
   name       = "rucio-daemons-${var.resource-suffix}"
-  repository = "https://github.com/rucio/helm-charts"
+  repository = "https://rucio.github.io/helm-charts/"
   chart      = "rucio-daemons"
-  version    = "1.30.0"
+  version    = "1.30.4"
   namespace  = var.ns-rucio
   
   values = [
@@ -33,6 +33,11 @@ resource "helm_release" "rucio-daemons-chart" {
   set {
     name = "config.database.default"
     value = data.kubernetes_secret_v1.rucio_db_secret.data.dbconnectstring
+  }
+
+  set {
+    name = "config.database.pool_size"
+    value = "100"
   }
 }
 

@@ -8,7 +8,7 @@ abacusCollectionReplicaCount: 1
 abacusRseCount: 1
 automatixCount: 0
 cacheConsumerCount: 0
-conveyorTransferSubmitterCount: 0 #3
+conveyorTransferSubmitterCount: 3
 conveyorPollerCount: 3
 conveyorFinisherCount: 1
 conveyorReceiverCount: 0
@@ -16,14 +16,14 @@ conveyorStagerCount: 0
 conveyorThrottlerCount: 0
 conveyorPreparerCount: 0
 darkReaperCount: 0
-hermesCount: 0 #1
+hermesCount: 1
 hermes2Count: 0
 judgeCleanerCount: 2
 judgeEvaluatorCount: 3
 judgeInjectorCount: 2
 judgeRepairerCount: 2
 oauthManagerCount: 1
-undertakerCount: 0 #1
+undertakerCount: 1
 reaperCount: 4
 replicaRecovererCount: 0
 transmogrifierCount: 1
@@ -402,8 +402,26 @@ ftsRenewal:
     tag: latest
     pullPolicy: Always
   vo: "escape"
-  voms: "cms:/cms/Role=production"
-  servers: "https://fts3-pilot.cern.ch:8446"
+  voms: "escape"
+  gridPassphrase:
+    required: true
+    existingSecret:
+      name: 'rucio-daemons-cvre-grid-passphrase'
+      key: 'passphrase'
+  servers: "https://fts3-devel.cern.ch:8446,https://cmsfts3.fnal.gov:8446,https://fts3.cern.ch:8446,https://lcgfts3.gridpp.rl.ac.uk:8446,https://fts3-pilot.cern.ch:8446"
+  ftsCert:
+    existingSecret:
+      name: 'rucio-daemons-cvre-fts-cert '
+      key: 'usercert.pem'
+  ftsKey:
+    existingSecret:
+      name: 'rucio-daemons-cvre-fts-key'
+      key: 'userkey.pem'
+  longProxy: ''
+  ftsLongProxy:
+    existingSecret:
+      name: '' # e.g., long-proxy
+      key: '' # e.g., long.proxy
   resources:
     limits:
       cpu: 500m
