@@ -91,13 +91,18 @@ resource "helm_release" "jupyterhub-chart" {
 
 # Reana
 
-/* module "reana" {
-  source = "../modules/reana"
+#  manual helm install due to tf helm error
+# helm install --devel reana-cvre reanahub/reana --wait --version 0.9.0 --values reana/values.yaml -n reana
 
-  ns-name         = var.ns-reana
-  release-suffix  = var.resource-suffix
-  storage-backend = "chepfs"
-  share-id        = data.openstack_sharedfilesystem_share_v2.share_1_reana.id
-  share-access-id = openstack_sharedfilesystem_share_access_v2.share_access_2.id
-  cephfs-type     = var.cephfs-type
-} */
+resource "helm_release" "reana-chart" {
+  name       = "reana-${var.resource-suffix}"
+  repository = "https://reanahub.github.io/reana/"
+  chart      = "reana"
+  version    = "0.9.0"
+  namespace  = var.ns-reana
+
+  values = [
+    "${file("reana/values.yaml")}"
+  ]
+
+}

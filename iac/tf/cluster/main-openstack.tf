@@ -6,9 +6,9 @@ data "openstack_containerinfra_clustertemplate_v1" "cluster_template" {
   name = var.cluster-template-name
 }
 
-data "openstack_sharedfilesystem_share_v2" "share_1_reana" {
+/* data "openstack_sharedfilesystem_share_v2" "share_1_reana" {
   name = var.reana-share-name
-}
+} */
 
 # Resources
 
@@ -50,7 +50,7 @@ resource "openstack_containerinfra_cluster_v1" "openstack_cluster" {
   }
 }
 
-/* resource "openstack_sharedfilesystem_share_v2" "share_1_reana" {
+resource "openstack_sharedfilesystem_share_v2" "share_1_reana" {
   name        = var.reana-share-name
   description = "Share for reana"
   share_proto = "CEPHFS"
@@ -63,4 +63,4 @@ resource "openstack_sharedfilesystem_share_access_v2" "share_access_2" {
   access_type  = "cephx"
   access_to    = var.reana-share-name
   access_level = "rw"
-} */
+}
