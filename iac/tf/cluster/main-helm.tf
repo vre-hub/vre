@@ -14,7 +14,7 @@ resource "helm_release" "rucio-server-chart" {
   ]
 
   set {
-    name = "config.database.default"
+    name  = "config.database.default"
     value = data.kubernetes_secret_v1.rucio_db_secret.data.dbconnectstring
   }
 }
@@ -25,14 +25,14 @@ resource "helm_release" "rucio-daemons-chart" {
   chart      = "rucio-daemons"
   version    = "1.30.0"
   namespace  = var.ns-rucio
-  
+
   values = [
     "${file("rucio/values-daemons.yaml")}"
   ]
 
   set {
-    name = "config.database.default"
-    value = data.kubernetes_secret_v1.rucio_db_secret.data.dbconnectstring
+    name  = "config.database.default"
+    value = data.kubernetes_secret_v1.jhub_db_secret.data.dbconnectstring
   }
 }
 
@@ -48,7 +48,7 @@ resource "helm_release" "rucio-ui-chart" {
   ]
 
   set {
-    name = "config.database.default"
+    name  = "config.database.default"
     value = data.kubernetes_secret_v1.rucio_db_secret.data.dbconnectstring
   }
 }
@@ -72,12 +72,22 @@ resource "helm_release" "sealed-secrets-chart" {
 
 # JupyterHub
 
-/* module "jupyterhub" {
-  source = "../modules/jupyterhub"
+resource "helm_release" "jupyterhub-chart" {
+  name       = "jhub-${var.resource-suffix}"
+  repository = "https://jupyterhub.github.io/helm-chart/"
+  chart      = "jupyterhub"
+  version    = "2.0.0"
+  namespace  = var.ns-jupyterhub
 
-  ns-name        = var.ns-jupyterhub
-  release-suffix = var.resource-suffix
-} */
+  values = [
+    "${file("jhub/config.yaml")}"
+  ]
+
+  set {
+    name  = "hub.db.url"
+    value = data.kubernetes_secret_v1.jhub_db_secret.data.dbconnectstring
+  }
+}
 
 # Reana
 

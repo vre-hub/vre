@@ -35,7 +35,7 @@ variable "logging-producer" {
 variable "reana-share-name" {
   description = "The reana share name"
   type        = string
-  default     = "reana_sh1"
+  default     = "cvre-reana"
 }
 
 variable "cephfs-type" {
@@ -73,5 +73,5 @@ variable "ns-reana" {
 variable "ns-jupyterhub" {
   description = "The name of the namespace for jupyterhub"
   type        = string
-  default     = "jupyterhub"
+  default     = "jhub"
 }
