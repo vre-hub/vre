@@ -9,10 +9,6 @@
 # Available chart versions: https://jupyterhub.github.io/helm-chart/
 #
 
-hub:
-  db:
-    type: sqlite-memory # change to postgres ref.: https://z2jh.jupyter.org/en/stable/resources/reference.html?highlight=database#hub-db-type
-
 proxy:
   service:
     type: LoadBalancer
@@ -25,3 +21,4 @@ proxy:
 singleuser:
   storage:
     type: none
+    

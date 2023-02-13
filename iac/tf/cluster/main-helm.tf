@@ -32,7 +32,7 @@ resource "helm_release" "rucio-daemons-chart" {
 
   set {
     name  = "config.database.default"
-    value = data.kubernetes_secret_v1.rucio_db_secret.data.dbconnectstring
+    value = data.kubernetes_secret_v1.jhub_db_secret.data.dbconnectstring
   }
 }
 
@@ -82,6 +82,11 @@ resource "helm_release" "jupyterhub-chart" {
   values = [
     "${file("jhub/config.yaml")}"
   ]
+
+  set {
+    name  = "hub.db.url"
+    value = data.kubernetes_secret_v1.rucio_db_secret.data.dbconnectstring
+  }
 }
 
 # Reana

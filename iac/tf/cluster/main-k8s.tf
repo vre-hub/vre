@@ -7,6 +7,13 @@ data "kubernetes_secret_v1" "rucio_db_secret" {
   }
 }
 
+data "kubernetes_secret_v1" "jhub_db_secret" {
+  metadata {
+    name      = "jhub-cvre-dbconnectstring"
+    namespace = "jhub"
+  }
+}
+
 # Kubernetes Resources
 
 # Namespaces
