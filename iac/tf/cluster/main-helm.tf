@@ -32,7 +32,7 @@ resource "helm_release" "rucio-daemons-chart" {
 
   set {
     name  = "config.database.default"
-    value = data.kubernetes_secret_v1.jhub_db_secret.data.dbconnectstring
+    value = data.kubernetes_secret_v1.rucio_db_secret.data.dbconnectstring
   }
 
   set {
@@ -68,13 +68,6 @@ resource "helm_release" "sealed-secrets-chart" {
   namespace  = var.ns-shared-services
 }
 
-/* module "sealed-secrets" {
-  source = "../modules/sealed-secrets"
-
-  ns-name        = var.ns-shared-services
-  release-suffix = var.resource-suffix
-} */
-
 # JupyterHub
 
 resource "helm_release" "jupyterhub-chart" {
@@ -96,18 +89,17 @@ resource "helm_release" "jupyterhub-chart" {
 
 # Reana
 
-#  manual helm install due to tf helm error
+# manual helm install due to tf helm error
 # helm install --devel reana-cvre reanahub/reana --wait --version 0.9.0 --values reana/values.yaml -n reana
 
-resource "helm_release" "reana-chart" {
-  name       = "reana-${var.resource-suffix}"
-  repository = "https://reanahub.github.io/reana/"
-  chart      = "reana"
-  version    = "0.9.0"
-  namespace  = var.ns-reana
+# resource "helm_release" "reana-chart" {
+#   name       = "reana-${var.resource-suffix}"
+#   repository = "https://reanahub.github.io/reana/"
+#   chart      = "reana"
+#   version    = "0.9.0"
+#   namespace  = var.ns-reana
 
-  values = [
-    "${file("reana/values.yaml")}"
-  ]
-
-}
+#   values = [
+#     "${file("reana/values.yaml")}"
+#   ]
+# }
