@@ -35,7 +35,7 @@ variable "logging-producer" {
 variable "reana-share-name" {
   description = "The reana share name"
   type        = string
-  default     = "reana_sh1"
+  default     = "cvre-reana"
 }
 
 variable "cephfs-type" {
