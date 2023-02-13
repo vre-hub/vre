@@ -1,6 +1,6 @@
 :construction: *This repository is still under construction*
 
-[![Merge Check](https://github.com/cern-vre/cern-vre/actions/workflows/tfsec.yml/badge.svg)](https://github.com/cern-vre/cern-vre/actions/workflows/tfsec.yml)
+[![Merge Check](https://github.com/cern-vre/cern-vre/actions/workflows/merge-check.yml/badge.svg)](https://github.com/cern-vre/cern-vre/actions/workflows/merge-check.yml)
 
 # CERN VRE
 
