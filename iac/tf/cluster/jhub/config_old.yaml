@@ -12,10 +12,19 @@
 hub:
   db:
     type: sqlite-memory # change to postgres ref.: https://z2jh.jupyter.org/en/stable/resources/reference.html?highlight=database#hub-db-type
-  # config:
-  #   KubeSpawner:
-  #     pod_security_context:
-  #       fsGroupChangePolicy: "OnRootMismatch"
+  config:
+    KubeSpawner:
+      pod_security_context:
+        fsGroupChangePolicy: "OnRootMismatch"
+  extraConfig:
+    00-first-config: |
+      c.KubeSpawner.pod_security_context.update({'fsGroupChangePolicy': 'OnRootMismatch'})
+  # podSecurityContext:
+  #   fsGroup: 0
+  # containerSecurityContext:
+  #   runAsUser: 0
+  #   runAsGroup: 0
+
 proxy:
   service:
     type: LoadBalancer
@@ -28,8 +37,14 @@ proxy:
 singleuser:
   # extraPodConfig:
   #   securityContext:
-  #     fsGroupChangePolicy: 'OnRootMismatch'
+  #     fsGroupChangePolicy: "OnRootMismatch" # value is not set, which causes containers to crash
+  # extraEnv:
+  #   GRANT_SUDO: "yes"
+  #   NOTEBOOK_ARGS: "--allow-root"
+  # uid: 0
+  # fsGid: 0
+  # allowPrivilegeEscalation: true
+  # cmd: "start-singleuser.sh"
   storage:
-    type: none
-    # dynamic:
-    #   storageClass: manila-meyrin-cephfs
+    dynamic:
+      storageClass: manila-meyrin-cephfs
