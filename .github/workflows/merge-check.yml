@@ -1,10 +1,9 @@
 name: "Merge Check"
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
+    paths:
+      - '**.tf'
 
 jobs:
   terraform:
