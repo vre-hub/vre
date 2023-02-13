@@ -1,0 +1,1 @@
+# Secrets for Rucio K8s
