@@ -13,6 +13,25 @@ hub:
   db:
     type: postgres
     upgrade: true
+  # config:
+  #   Authenticator:
+  #     auto_login: true
+  #     enable_auth_state: true
+  #   GenericOAuthenticator:
+  #     client_id: your-client-id
+  #     client_secret: your-client-secret
+  #     oauth_callback_url: https://your-jupyterhub-domain/hub/oauth_callback
+  #     authorize_url: https://your-domain.us.auth0.com/authorize
+  #     token_url: https://your-domain.us.auth0.com/oauth/token
+  #     userdata_url: https://your-domain.us.auth0.com/userinfo
+  #     scope:
+  #       - openid
+  #       - name
+  #       - profile
+  #       - email
+  #     username_key: name
+  #   JupyterHub:
+  #     authenticator_class: generic-oauth
 
 proxy:
   service:
@@ -22,6 +41,16 @@ proxy:
       loadbalancer.openstack.org/network-id: "798d00f3-2af9-48a0-a7c3-a26d909a2d64"
       service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
       loadbalancer.openstack.org/cascade-delete: "false"
+  https:
+    enabled: true
+    type: manual
+    manual:
+      kei
+
+    # hosts:
+    #   - vre-hub.cern.ch
+    # letsencrypt:
+    #   contactEmail: eosc.future@cern.ch
 
 singleuser:
   storage:
