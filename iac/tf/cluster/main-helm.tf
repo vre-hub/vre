@@ -85,6 +85,14 @@ resource "helm_release" "jupyterhub-chart" {
     name  = "hub.db.url"
     value = data.kubernetes_secret_v1.jhub_db_secret.data.dbconnectstring
   }
+  set {
+    name  = "hub.config.GenericOAuthenticator.client_id"
+    value = data.kubernetes_secret_v1.jhub_iam_secret.data.client_id
+  }
+  set {
+    name  = "hub.config.GenericOAuthenticator.client_secret"
+    value = data.kubernetes_secret_v1.jhub_iam_secret.data.client_secret
+  }
 }
 
 # Reana
