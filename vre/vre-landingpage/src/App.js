@@ -1,4 +1,4 @@
-import logo from './logo.svg';
+import logo from './data-science.png';
 import './App.css';
 
 function App() {
@@ -7,17 +7,20 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          Welcome to the CERN VRE!
         </p>
         <a
           className="App-link"
-          href="https://reactjs.org"
+          href="https://nb-vre.cern.ch/"
           target="_blank"
           rel="noopener noreferrer"
         >
-          Learn React
+          Start using the VRE
         </a>
       </header>
+      <footer>
+      <a href="https://www.flaticon.com/free-icons/data-science" title="data science icons">Data science icons created by Paul J. - Flaticon</a>
+      </footer>
     </div>
   );
 }
