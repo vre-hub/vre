@@ -13,6 +13,23 @@ hub:
   db:
     type: postgres
     upgrade: true
+  config:
+  # Could be enabled later to persist login info and redirect directly to OAuth SignIn
+  #   Authenticator:
+  #     auto_login: true
+  #     enable_auth_state: true
+    GenericOAuthenticator:
+      oauth_callback_url: https://nb-vre.cern.ch/hub/oauth_callback
+      authorize_url: https://iam-escape.cloud.cnaf.infn.it/authorize
+      token_url: https://iam-escape.cloud.cnaf.infn.it/token
+      userdata_url: https://iam-escape.cloud.cnaf.infn.it/userinfo
+      scope:
+        - openid
+        - profile
+        - email
+      username_key: preferred_username
+    JupyterHub:
+      authenticator_class: generic-oauth
 
 proxy:
   service:
@@ -22,6 +39,19 @@ proxy:
       loadbalancer.openstack.org/network-id: "798d00f3-2af9-48a0-a7c3-a26d909a2d64"
       service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
       loadbalancer.openstack.org/cascade-delete: "false"
+  https:
+    enabled: true
+    hosts:
+      - nb-vre.cern.ch
+    type: secret
+    secret:
+      name: cern-sectigo-tls-certificate # using our own certificate
+
+    # Option with letsenrypt (not working, cert gets not issued, the problem could be with LBaaS timing)  
+    # hosts:
+    #   - vre-hub.cern.ch
+    # letsencrypt:
+    #   contactEmail: eosc.future@cern.ch
 
 singleuser:
   storage:

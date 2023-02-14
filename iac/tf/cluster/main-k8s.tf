@@ -14,6 +14,13 @@ data "kubernetes_secret_v1" "jhub_db_secret" {
   }
 }
 
+data "kubernetes_secret_v1" "jhub_iam_secret" {
+  metadata {
+    name      = "jhub-cvre-iam-secrets"
+    namespace = "jhub"
+  }
+}
+
 # Kubernetes Resources
 
 # Namespaces
