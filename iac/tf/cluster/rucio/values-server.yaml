@@ -156,6 +156,10 @@ additionalSecrets:
     secretName: rucio-db
     mountPath: /opt/rucio/etc/rucio-db
     subPath: rucio-db
+  - volumeName: idpsecrets
+    secretName: idpsecrets
+    mountPath: /opt/rucio/etc/idpsecrets.json
+    subPath: idpsecrets.json
   # - volumeName: auth-hostcert
   #   secretName: auth-hostcert
   #   mountPath: /etc/grid-security/hostcert.pem
@@ -163,10 +167,7 @@ additionalSecrets:
   # - volumeName: rucio-server-cvre-auth-hostkey
   #   secretName: rucio-server-cvre-auth-hostkey
   #   mountPath: /etc/grid-security/hostkey.pem
-#   - volumeName: hermes-secret, idpsecret, rse-account
-#     secretName: ...
-#     mountPath: /opt/rucio/etc/...
-#     subPath: ...
+
   # - volumeName: gcssecret
   #   secretName: gcssecret
   #   mountPath: /opt/rucio/etc/gcs_rucio.json
@@ -218,11 +219,11 @@ config:
     ## config.database.powuseraccount: password for user used to check the DB
     # powuserpassword: ""
     
-  # oidc:
-  #   idpsecrets: "/opt/rucio/etc/idpsecrets.json"
-  #   admin_issuer: "escape"
-  #   expected_audience: "rucio"
-  #   expected_scope: "openid profile"
+  oidc:
+    idpsecrets: "/opt/rucio/etc/idpsecrets.json"
+    admin_issuer: "escape"
+    expected_audience: "rucio"
+    expected_scope: "openid profile"
 
   policy:
     ## config.permission.policy: (default "generic")

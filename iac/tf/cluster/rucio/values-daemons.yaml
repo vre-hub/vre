@@ -451,10 +451,11 @@ additionalSecrets:
     secretName: rucio-db
     mountPath: /opt/rucio/etc/rucio-db
     subPath: rucio-db
-#   - volumeName: hermes-secret, idpsecret, rse-account
-#     secretName: ...
-#     mountPath: /opt/rucio/etc/...
-#     subPath: ...
+
+  - volumeName: idpsecrets
+    secretName: idpsecrets
+    mountPath: /opt/rucio/etc/idpsecrets.json
+    subPath: idpsecrets.json
 
 ## common config values used to configure the Rucio daemons
 config:
@@ -463,6 +464,7 @@ config:
     idpsecrets: "/opt/rucio/etc/idpsecrets.json"
     admin_issuer: "escape"
     expected_audience: "rucio"
+    expected_scope: "openid profile"
 
   # accounts:
     # special_accounts: "panda, tier0"
