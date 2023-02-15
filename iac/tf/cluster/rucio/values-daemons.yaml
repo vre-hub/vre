@@ -314,7 +314,7 @@ undertaker:
       cpu: "700m"
 
 reaper:
-  includeRses: "(rse=EULAKE-EC|rse=EULAKE-1|rse=CNAF-STORM|rse=CESNET-S3)"
+  includeRses: "(rse=EULAKE-1|rse=CNAF-STORM|rse=LAPP-DCACHE | rse=CESNET-S3)"
   greedy: 0
   scheme: ""
   threads: 6
@@ -456,6 +456,11 @@ additionalSecrets:
     secretName: idpsecrets
     mountPath: /opt/rucio/etc/idpsecrets.json
     subPath: idpsecrets.json
+
+  - volumeName: rse-accounts
+    secretName: rse-accounts
+    mountPath: /opt/rucio/etc/rse-accounts.json
+    subPath: rse-accounts.json
 
 ## common config values used to configure the Rucio daemons
 config:
