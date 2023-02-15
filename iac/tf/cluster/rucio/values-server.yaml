@@ -160,6 +160,10 @@ additionalSecrets:
     secretName: idpsecrets
     mountPath: /opt/rucio/etc/idpsecrets.json
     subPath: idpsecrets.json
+  - volumeName: rse-accounts
+    secretName: rse-accounts
+    mountPath: /opt/rucio/etc/rse-accounts.json
+    subPath: rse-accounts.json
   # - volumeName: auth-hostcert
   #   secretName: auth-hostcert
   #   mountPath: /etc/grid-security/hostcert.pem
