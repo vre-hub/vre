@@ -17,10 +17,10 @@ YAML_PRFX="ss_"
 
 SECRETS_STORE="../secrets/rucio/"
 
-kubectl create secret generic ${HELM_RELEASE_SERVER}-rse-accounts --dry-run=client --from-file=rse-s3_config.json -o yaml \
+kubectl create secret generic ${HELM_RELEASE_SERVER}-rse-accounts --dry-run=client --from-file=rse-accounts.json -o yaml \
 | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_SERVER}-rse-accounts.yaml
 kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_SERVER}-rse-accounts.yaml
 
-kubectl create secret generic ${HELM_RELEASE_DAEMONS}-rse-accounts --dry-run=client --from-file=rse-s3_config.json -o yaml \
+kubectl create secret generic ${HELM_RELEASE_DAEMONS}-rse-accounts --dry-run=client --from-file=rse-accounts.json -o yaml \
 | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_DAEMONS}-rse-accounts.yaml
 kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_DAEMONS}-rse-accounts.yaml
