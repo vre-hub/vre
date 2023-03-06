@@ -4,7 +4,7 @@
 
 # CERN VRE
 
-![](cern-vre-logo.png)  
+![](vre@CERN-logo.png)  
 *Designed with [freelogodesign](https://www.freelogodesign.org/)*
 
 The CERN Virtual Research Environment.
