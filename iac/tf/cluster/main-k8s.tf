@@ -21,6 +21,14 @@ data "kubernetes_secret_v1" "jhub_iam_secret" {
   }
 }
 
+data "kubernetes_secret_v1" "daskhub-tokens" {
+  metadata {
+    name      = "daskhub-tokens"
+    namespace = "daskhub"
+  }
+}
+
+
 # Kubernetes Resources
 
 # Namespaces
@@ -54,6 +62,19 @@ resource "kubernetes_namespace_v1" "ns_reana" {
     name = var.ns-reana
   }
 }
+
+resource "kubernetes_namespace_v1" "ns_dask-gateway" {
+  metadata {
+    name = var.ns-dask-gateway
+  }
+}
+
+resource "kubernetes_namespace_v1" "ns_daskhub" {
+  metadata {
+    name = var.ns-daskhub
+  }
+}
+
 
 # Secrets (locally created and enrypted with kubeseal and then applied as a ready manifest)
 
