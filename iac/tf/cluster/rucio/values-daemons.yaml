@@ -24,7 +24,7 @@ judgeInjectorCount: 2
 judgeRepairerCount: 2
 oauthManagerCount: 1
 undertakerCount: 1
-reaperCount: 4
+reaperCount: 1 #4 ELENA changed to debug
 replicaRecovererCount: 0
 transmogrifierCount: 1
 tracerKronosCount: 0
