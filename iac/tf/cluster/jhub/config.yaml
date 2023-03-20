@@ -10,6 +10,10 @@
 #
 
 hub:
+  services: # added for dask config 
+    dask-gateway:
+      # apiToken: "<API TOKEN>"  # ELENA: needs to be added!
+      display: false
   db:
     type: postgres
     upgrade: true
