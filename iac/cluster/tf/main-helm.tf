@@ -127,10 +127,10 @@ resource "helm_release" "dask-gateway-chart" {
   values = [
     "${file("dask-gateway/values.yaml")}"
   ]
-}
-set {
-  name  = "dask-gateway.gateway.auth.jupyterhub.apiToken"
-  value = data.kubernetes_secret_v1.daskhub-tokens.data.api-token
+  set {
+    name  = "dask-gateway.gateway.auth.jupyterhub.apiToken"
+    value = data.kubernetes_secret_v1.daskhub-tokens.data.api-token
+  }
 }
 
 # Daskhub installs dask gateway + jupyterhub (in same namespace for better resource management)
