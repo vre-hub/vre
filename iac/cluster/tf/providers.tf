@@ -17,6 +17,10 @@ terraform {
       source  = "hashicorp/helm"
       version = "2.8.0"
     }
+    flux = {
+      source  = "fluxcd/flux"
+      version = "0.25.2"
+    }
   }
 }
 
@@ -42,4 +46,11 @@ provider "helm" {
     client_certificate     = openstack_containerinfra_cluster_v1.openstack_cluster.kubeconfig.client_certificate
     client_key             = openstack_containerinfra_cluster_v1.openstack_cluster.kubeconfig.client_key
   }
+}
+
+provider "flux" {
+  host                   = openstack_containerinfra_cluster_v1.openstack_cluster.kubeconfig.host
+  cluster_ca_certificate = openstack_containerinfra_cluster_v1.openstack_cluster.kubeconfig.cluster_ca_certificate
+  client_certificate     = openstack_containerinfra_cluster_v1.openstack_cluster.kubeconfig.client_certificate
+  client_key             = openstack_containerinfra_cluster_v1.openstack_cluster.kubeconfig.client_key
 }
