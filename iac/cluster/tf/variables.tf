@@ -87,3 +87,26 @@ variable "ns-daskhub" {
   type        = string
   default     = "daskhub"
 }
+
+# GitHub
+
+variable "github-token" {
+  sensitive = true
+  type      = string
+}
+
+variable "github-org" {
+  type = string
+}
+
+variable "github-repository" {
+  type = string
+}
+
+# Flux Configuration
+
+variable "flux-target-path" {
+  description = "Target path to sync flux manifests"
+  type        = string
+  default     = "iac/cluster/flux"
+}
