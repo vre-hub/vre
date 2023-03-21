@@ -36,7 +36,7 @@ resource "helm_release" "rucio-daemons-chart" {
   }
 
   set {
-    name = "config.database.pool_size"
+    name  = "config.database.pool_size"
     value = "100"
   }
 }
@@ -128,10 +128,10 @@ resource "helm_release" "dask-gateway-chart" {
     "${file("dask-gateway/values.yaml")}"
   ]
 }
-  set {
-    name  = "dask-gateway.gateway.auth.jupyterhub.apiToken"
-    value = data.kubernetes_secret_v1.daskhub-tokens.data.api-token
-  }
+set {
+  name  = "dask-gateway.gateway.auth.jupyterhub.apiToken"
+  value = data.kubernetes_secret_v1.daskhub-tokens.data.api-token
+}
 
 # Daskhub installs dask gateway + jupyterhub (in same namespace for better resource management)
 
@@ -159,7 +159,7 @@ resource "helm_release" "daskhub-chart" {
     value = data.kubernetes_secret_v1.daskhub-tokens.data.api-token
   }
 
-   set {
+  set {
     name  = "dask-gateway.gateway.auth.jupyterhub.apiToken"
     value = data.kubernetes_secret_v1.daskhub-tokens.data.api-token
   }
