@@ -15,7 +15,7 @@ RUN yum -y install git htop voms-clients-cpp
 WORKDIR /home/user/
 
 # # clone repos
-RUN git clone https://github.com/cern-vre/cern-vre/tree/main/containers/iam-rucio-sync
+RUN git clone https://github.com/cern-vre/cern-vre.git
 
 # install python requirments
 RUN pip install --upgrade pip
