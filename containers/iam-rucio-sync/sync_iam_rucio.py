@@ -201,6 +201,7 @@ class IAM_RUCIO_SYNC():
         for user in iam_users:
 
             username = user['userName']
+            print ('Sync x509 for user', username)
             email = user['emails'][0]['value']
 
             if not user['active']:
