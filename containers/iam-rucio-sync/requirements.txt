@@ -1,0 +1,6 @@
+cx_Oracle
+requests
+colorama
+yapf
+rucio==1.30.0
+rucio-clients==1.30.0
