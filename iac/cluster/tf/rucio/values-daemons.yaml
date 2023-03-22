@@ -345,7 +345,6 @@ undertaker:
       cpu: "700m"
 
 reaper:
-  includeRses: "(rse=EULAKE-1|rse=CNAF-STORM|rse=LAPP-DCACHE | rse=CESNET-S3)"
   greedy: 0
   scheme: ""
   threads: 6
