@@ -22,7 +22,7 @@ RUN pip install --upgrade pip
 
 RUN echo $(pwd)
 
-RUN pip install -r /home/user/cern-vre/cern-vre/containers/iam-rucio-sync/requirements.txt
+RUN pip install -r /home/user/cern-vre/containers/iam-rucio-sync/requirements.txt
 
 # RUN pip install rucio-clients==$RUCIO_VERSION
 # RUN pip install rucio==$RUCIO_VERSION
