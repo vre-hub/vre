@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: rucio-clientv1
+  name: rucio-client
   namespace: rucio
 spec:
   containers:
-  - name: rucio-clientv1
+  - name: rucio-client
     image: ghcr.io/cern-vre/cern-vre-rucio-client:latest
     imagePullPolicy: Always
     env:
