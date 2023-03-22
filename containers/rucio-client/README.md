@@ -2,7 +2,7 @@
 
 This repository contains the Dockerfile for the Rucio client enabled for the [ESCAPE](https://projectescape.eu/) VO, used to authenticate users to the VRE.
 
-Please refer to the official [Rucio  clients repo](https://github.com/rucio/containers/tree/master/clients) for more information. 
+Please refer to the official [Rucio  clients repo](https://github.com/rucio/containers/tree/master/clients) for more information.  
 
 ## Rucio-clients version change
 
