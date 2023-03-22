@@ -1,3 +1,5 @@
+## IAM Rucio sync
+
 1) Configure iam-config.conf or set up the Environment Variables to point to the correct IAM Server and provide Client ID and Secret.
 Instructions on how to configure the IAM clients are in the Wiki of the main `cern-vre` repo. 
 2) The Rucio Server should be installed and the DB should be configured before running the script.
@@ -9,3 +11,6 @@ export IAM_CLIENT_SECRET=my_secret
 
 python sync_iam_rucio.py
 ```
+
+## Version change
+Change the version in the `requirements.txt` and in the Dockerfile's `BASETAG`. 
