@@ -22,7 +22,7 @@ RUN mkdir -p /etc/grid-security/vomsdir/escape \
     && wget https://indigo-iam.github.io/escape-docs/voms-config/voms-escape.cloud.cnaf.infn.it.lsc -O /etc/grid-security/vomsdir/escape/voms-escape.cloud.cnaf.infn.it.lsc
 
 # ESCAPE Rucio setup
-ADD --chown=user:user rucio.cfg.escape.j2 rucio.cfg.j2
+ADD --chown=user:user rucio.cfg.escape.j2 /opt/user/rucio.cfg.j2
 
 # install reana-client 
 ENV LC_ALL=en_US.UTF-8
