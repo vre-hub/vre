@@ -1,0 +1,21 @@
+[client]
+rucio_host = {{ RUCIO_CFG_RUCIO_HOST | default('https://vre-rucio.cern.ch') }} 
+auth_host = {{ RUCIO_CFG_AUTH_HOST | default('https://vre-rucio-auth.cern.ch') }} 
+ca_cert = {{ RUCIO_CFG_CA_CERT | default('/etc/pki/tls/certs/CERN-bundle.pem') }}
+auth_type = {{ RUCIO_CFG_AUTH_TYPE | default('x509') }}
+username = {{ RUCIO_CFG_USERNAME | default('') }}
+password = {{ RUCIO_CFG_PASSWORD | default('') }}
+account = {{ RUCIO_CFG_ACCOUNT | default('') }}
+client_cert = {{ RUCIO_CFG_CLIENT_CERT | default('/opt/rucio/etc/client.crt') }}
+client_key = {{ RUCIO_CFG_CLIENT_KEY | default('/opt/rucio/etc/client.key') }}
+client_x509_proxy = {{ RUCIO_CFG_CLIENT_X509_PROXY | default('') }}
+request_retries = {{ RUCIO_CFG_REQUEST_RETRIES | default('3') }}
+oidc_issuer = {{ RUCIO_CFG_OIDC_ISSUER | default('escape') }}
+oidc_polling = {{ RUCIO_CFG_OIDC_POLLING | default('true') }}
+
+[policy]
+permission = {{ RUCIO_CFG_POLICY_PERMISSION | default('escape')}}
+schema = {{ RUCIO_CFG_POLICY_SCHEMA | default('escape') }}
+lfn2pfn_algorithm_default = {{ RUCIO_CFG_POLICY_LFN2PFN_ALGORITHM_DEFAULT | default('hash') }}
+support = {{ RUCIO_CFG_POLICY_SUPPORT | default('https://github.com/rucio/rucio/issues/') }}
+support_rucio = {{ RUCIO_CFG_POLICY_SUPPORT_RUCIO | default('https://github.com/rucio/rucio/issues/') }}
