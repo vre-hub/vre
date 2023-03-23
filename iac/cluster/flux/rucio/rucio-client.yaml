@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: rucio-client
+  namespace: rucio
+spec:
+  containers:
+  - name: rucio-client
+    image: ghcr.io/cern-vre/cern-vre-rucio-client:latest
+    imagePullPolicy: Always
+    env:
+    - name: RUCIO_CFG_RUCIO_HOST
+      value: "https://vre-rucio.cern.ch"
+    - name: RUCIO_CFG_AUTH_HOST
+      value: "https://vre-rucio-auth.cern.ch"
+    - name: RUCIO_CFG_ACCOUNT
+      value: "root"
+    - name: RUCIO_CFG_AUTH_TYPE
+      value: "userpass"
+    - name: RUCIO_CFG_USERNAME
+      valueFrom:
+        secretKeyRef:
+          name: root-account
+          key: root-username
+    - name: RUCIO_CFG_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: root-account
+          key: root-password 
+    command: ["sleep","3600"]
+    resources:
+      limits:
+        cpu: 100m
+        memory: 50Mi
+      requests:
+        cpu: 100m
+        memory: 50Mi
