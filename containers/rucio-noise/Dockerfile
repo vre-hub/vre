@@ -15,13 +15,13 @@ RUN yum -y install git htop voms-clients-cpp
 WORKDIR /home/user/
 
 # # clone repos
-RUN git clone https://github.com/cern-vre/cern-vre/containers.git
+RUN git clone https://github.com/cern-vre/cern-vre.git
 
 # install python requirments
 RUN pip install --upgrade pip
 RUN echo $(pwd)
 
-RUN pip install -r /home/user/containers/rucio-noise/requirements.txt
+RUN pip install -r /home/user/cern-vre/containers/rucio-noise/requirements.txt
 
 #RUN pip install rucio-clients==$RUCIO_VERSION
 #RUN pip install rucio==$RUCIO_VERSION
