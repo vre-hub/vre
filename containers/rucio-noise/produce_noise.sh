@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# not needed if not CRIC
 # python3 /home/user/eosc-crons/cric-info-tools/list_rses_from_cric.py -o /home/user/eosc-crons/cric-info-tools/list_rses_from_cric.txt -i /home/user/eosc-crons/cric-info-tools/disabled_rses.txt
 
 rses=()
