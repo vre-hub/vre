@@ -108,5 +108,5 @@ variable "github-repository" {
 variable "flux-target-path" {
   description = "Target path to sync flux manifests"
   type        = string
-  default     = "iac/cluster/flux"
+  default     = "iac/cluster/flux/**"
 }
