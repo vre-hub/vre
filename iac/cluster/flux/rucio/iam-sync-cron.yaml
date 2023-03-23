@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: iam-syncv1
+  name: iam-sync
   namespace: rucio
 spec:
   schedule: "*/10 * * * *"
@@ -13,7 +13,7 @@ spec:
         spec:
           restartPolicy: OnFailure 
           containers:
-            - name: iam-syncv1
+            - name: iam-sync
               image: ghcr.io/cern-vre/cern-vre-iam-rucio-sync:latest
               volumeMounts:
               - name: rucio-cfg
