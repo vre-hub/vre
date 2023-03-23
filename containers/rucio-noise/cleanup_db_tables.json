@@ -1,0 +1,9 @@
+{
+    "DAYS_TO_KEEP": 30,
+    "truncate_table" : {
+        "MESSAGES_HISTORY": true,
+        "REQUESTS_HISTORY": false,
+        "RULES_HISTORY": false,
+        "RULES_HIST_RECENT": false
+    }
+}
