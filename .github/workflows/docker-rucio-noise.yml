@@ -1,4 +1,4 @@
-ame: Docker rucio noise build
+name: Docker rucio noise build
 
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
