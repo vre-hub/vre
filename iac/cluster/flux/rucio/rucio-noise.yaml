@@ -1,0 +1,42 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: rucio-noise
+  namespace: rucio
+spec:
+  schedule: "*/10 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure 
+          containers:
+            - name: rucio-noise
+              image: ghcr.io/cern-vre/cern-vre-rucio-noise:latest
+              volumeMounts:
+              - name: rucio-sso-cfg
+                mountPath: /opt/rucio/etc/
+              env:
+              - name: RUCIO_CFG_CLIENT_X509_PROXY 
+                valueFrom:
+                  secretKeyRef:
+                    name: prod-rucio-x509up
+                    key: x509up
+              - name: X509_USER_PROXY
+                valueFrom:
+                  secretKeyRef:
+                    name: prod-rucio-x509up
+                    key: x509up
+              tty: true
+              imagePullPolicy: Always
+              command:
+              - /bin/sh
+              - -c
+              - date; echo Hello from rucio-noise container; rucio whoami
+                # FILE_SIZE=10M /bin/bash gh-containers/rucio-noise/produce_noise.sh; echo 'DB cleanup Done!'
+          volumes:
+            - name: rucio-sso-cfg
+              secret:
+                secretName: rucio-sso-cfg
