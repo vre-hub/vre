@@ -7,7 +7,7 @@ USER root
 # EGI trust anchors
 RUN curl -Lo /etc/yum.repos.d/EGI-trustanchors.repo https://repository.egi.eu/sw/production/cas/1/current/repo-files/EGI-trustanchors.repo \
     && yum -y update
-
+ 
 RUN yum clean metadata
 RUN yum -y install wget
 RUN yum -y install ca-certificates ca-policy-egi-core
