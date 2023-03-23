@@ -1,0 +1,45 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: iam-syncv1
+  namespace: rucio
+spec:
+  schedule: "*/10 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure 
+          containers:
+            - name: iam-syncv1
+              image: ghcr.io/cern-vre/cern-vre-iam-rucio-sync:latest
+              volumeMounts:
+              - name: rucio-cfg
+                mountPath: /opt/rucio/etc/
+              env:
+              - name: IAM_SERVER
+                value: "https://iam-escape.cloud.cnaf.infn.it"
+              - name: IAM_CLIENT_SECRET
+                valueFrom:
+                  secretKeyRef:
+                    name: iam-client
+                    key: admin-client_secret
+              - name: IAM_CLIENT_ID
+                valueFrom:
+                  secretKeyRef:
+                    name: iam-client
+                    key: admin-client_id
+              tty: true
+              imagePullPolicy: Always
+              command:
+              - /bin/sh
+              - -c
+              - date; echo Hello from iam-rucio-sync container; 
+                pwd; ls;
+                echo $IAM_SERVER; python3 cern-vre/containers/iam-rucio-sync/sync_iam_rucio.py; echo '* Sync to IAM * Done!'
+          volumes:
+            - name: rucio-cfg
+              secret:
+                secretName: rucio-cfg
