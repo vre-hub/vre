@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    name: some-new-ns
+  name: some-new-ns
+  
