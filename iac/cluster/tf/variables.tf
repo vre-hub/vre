@@ -108,7 +108,7 @@ variable "github-repository" {
   default     = "vre"
 }
 
-# Flux Configuration
+# Flux
 
 variable "flux-target-path" {
   description = "Target path to sync flux manifests"
