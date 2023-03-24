@@ -76,18 +76,18 @@ singleuser:
   extraEnv:
     EOS_OAUTH_ID: "eos-eulake"
     RUCIO_OAUTH_ID: "rucio"
-    RUCIO_MODE: "replica"
+    RUCIO_MODE: "download"
     RUCIO_DESTINATION_RSE: "EULAKE-1"
     RUCIO_RSE_MOUNT_PATH: "/eos/eulake_1"
     RUCIO_PATH_BEGINS_AT: "5"
     RUCIO_WILDCARD_ENABLED: "1"
     RUCIO_REPLICATION_RULE_LIFETIME_DAYS: "7"
-    RUCIO_OIDC_AUTH: "env"
-    RUCIO_OIDC_FILE_NAME: "/tmp/rucio_oauth.token"
+    RUCIO_OIDC_AUTH: "file" # env
+    RUCIO_OIDC_FILE_NAME: "/tmp/jovyan/.rucio_jovyan/auth_token_for_account_dogosein" # "/tmp/rucio_oauth.token"
     RUCIO_OIDC_ENV_NAME: "TOKEN"
     RUCIO_DEFAULT_AUTH_TYPE: "oidc"
     OAUTH2_TOKEN: "FILE:/tmp/eos_oauth.token"
-    TOKEN: "" # test workaround
+    TOKEN: "CHANGE_ME" # test workaround when using RUCIO_OIDC_AUTH: "env"
   storage:
     type: none
     extraVolumes:
