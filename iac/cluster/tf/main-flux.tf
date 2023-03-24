@@ -7,7 +7,7 @@ resource "tls_private_key" "flux" {
 }
 
 resource "github_repository_deploy_key" "this" {
-  title      = "Flux"
+  title      = "flux-cern-vre"
   repository = var.github-repository
   key        = tls_private_key.flux.public_key_openssh
   read_only  = "false"

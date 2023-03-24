@@ -91,16 +91,21 @@ variable "ns-daskhub" {
 # GitHub
 
 variable "github-token" {
-  sensitive = true
-  type      = string
+  description = "Personal access token for GitHub with repo scope"
+  sensitive   = true
+  type        = string
 }
 
 variable "github-org" {
-  type = string
+  description = "Name of GitHub organisation"
+  type        = string
+  default     = "vre-hub"
 }
 
 variable "github-repository" {
-  type = string
+  description = "Name of GitHub repo"
+  type        = string
+  default     = "vre"
 }
 
 # Flux Configuration
@@ -108,5 +113,5 @@ variable "github-repository" {
 variable "flux-target-path" {
   description = "Target path to sync flux manifests"
   type        = string
-  default     = "iac/cluster/flux/**"
+  default     = "iac/cluster/flux"
 }
