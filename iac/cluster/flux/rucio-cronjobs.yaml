@@ -39,7 +39,7 @@ spec:
               - -c
               - date; echo Hello from iam-rucio-sync container; 
                 pwd; ls;
-                echo $IAM_SERVER; python3 cern-vre/containers/iam-rucio-sync/sync_iam_rucio.py; echo '* Sync to IAM * Done!'
+                echo $IAM_SERVER; python3 vre/containers/iam-rucio-syn/sync_iam_rucio.py; echo '* Sync to IAM * Done!'
           volumes:
             - name: rucio-cfg
               secret:
@@ -81,7 +81,7 @@ spec:
               command:
               - /bin/sh
               - -c
-              - date; echo Hello from rucio-noise container; rucio whoami
+              - date; echo Hello from rucio-noise container; rucio whoami # TEST
                 # FILE_SIZE=10M /bin/bash gh-containers/rucio-noise/produce_noise.sh; echo 'DB cleanup Done!'
           volumes:
             - name: rucio-sso-cfg
