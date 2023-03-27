@@ -15,7 +15,7 @@ spec:
           restartPolicy: OnFailure 
           containers:
             - name: iam-sync
-              image: ghcr.io/cern-vre/cern-vre-iam-rucio-sync:latest
+              image: ghcr.io/vre-hub/vre-iam-rucio-sync:latest
               volumeMounts:
               - name: rucio-cfg
                 mountPath: /opt/rucio/etc/
@@ -61,7 +61,7 @@ spec:
           restartPolicy: OnFailure 
           containers:
             - name: rucio-noise
-              image: ghcr.io/cern-vre/cern-vre-rucio-noise:latest
+              image: ghcr.io/vre-hub/vre-rucio-noise:latest
               volumeMounts:
               - name: rucio-sso-cfg
                 mountPath: /opt/rucio/etc/
@@ -96,7 +96,7 @@ metadata:
 spec:
   containers:
   - name: rucio-client
-    image: ghcr.io/cern-vre/cern-vre-rucio-client:latest
+    image: ghcr.io/vre-hub/vre-rucio-client:latest
     imagePullPolicy: Always
     env:
     - name: RUCIO_CFG_RUCIO_HOST
