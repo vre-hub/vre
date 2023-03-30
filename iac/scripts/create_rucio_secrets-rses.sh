@@ -4,7 +4,8 @@
 #  http://rucio.cern.ch/documentation/s3_rse_config/
 
 HELM_RELEASE_SERVER="rucio-server-cvre"
-HELM_RELEASE_DAEMONS="rucio-daemons-cvre"
+# Secret should only be applied to server, not daemons. Testing (to blame E. Garcia).
+# HELM_RELEASE_DAEMONS="rucio-daemons-cvre"
 
 CONTROLLER_NS="shared-services"
 CONTROLLER_NAME="sealed-secrets-cvre"
@@ -17,10 +18,10 @@ YAML_PRFX="ss_"
 
 SECRETS_STORE="../secrets/rucio/"
 
-kubectl create secret generic ${HELM_RELEASE_SERVER}-rse-accounts --dry-run=client --from-file=rse-accounts.json -o yaml \
+kubectl create secret generic ${HELM_RELEASE_SERVER}-rse-accounts --dry-run=client --from-file=../secrets/tmp_local_secrets/rse-accounts.json -o yaml \
 | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_SERVER}-rse-accounts.yaml
 kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_SERVER}-rse-accounts.yaml
 
-kubectl create secret generic ${HELM_RELEASE_DAEMONS}-rse-accounts --dry-run=client --from-file=rse-accounts.json -o yaml \
-| kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_DAEMONS}-rse-accounts.yaml
-kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_DAEMONS}-rse-accounts.yaml
+# kubectl create secret generic ${HELM_RELEASE_DAEMONS}-rse-accounts --dry-run=client --from-file=../secrets/tmp_local_secrets/rse-accounts.json -o yaml \
+# | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_DAEMONS}-rse-accounts.yaml
+# kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_DAEMONS}-rse-accounts.yaml
