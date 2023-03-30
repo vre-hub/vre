@@ -185,7 +185,7 @@ httpd_config:
   mpm_mode: "event"
   timeout: "300"
   enable_status: "True"
-  legacy_dn: "False"
+  legacy_dn: "True"
   keep_alive: "On"
   keep_alive_timeout: "5"
   max_keep_alive_requests: "128"
