@@ -48,7 +48,7 @@ spec:
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: rucio-noise1
+  name: rucio-noise
   namespace: rucio
 spec:
   schedule: "*/10 * * * *"
@@ -60,7 +60,7 @@ spec:
         spec:
           restartPolicy: OnFailure 
           containers:
-            - name: rucio-noise1
+            - name: rucio-noise
               image: ghcr.io/vre-hub/vre-rucio-noise:latest
               volumeMounts:
               - name: rucio-sso-cfg
