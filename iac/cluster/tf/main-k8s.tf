@@ -7,6 +7,13 @@ data "kubernetes_secret_v1" "rucio_db_secret" {
   }
 }
 
+data "kubernetes_secret_v1" "rucio_hermes_secret" {
+  metadata {
+    name      = "hermes-secret"
+    namespace = "rucio"
+  }
+}
+
 data "kubernetes_secret_v1" "jhub_db_secret" {
   metadata {
     name      = "jhub-cvre-dbconnectstring"

@@ -36,6 +36,16 @@ resource "helm_release" "rucio-daemons-chart" {
   }
 
   set {
+    name  = "config.messaging-hermes.username"
+    value = data.kubernetes_secret_v1.rucio_hermes_secret.data.username
+  }  
+
+  set {
+    name  = "config.messaging-hermes.password"
+    value = data.kubernetes_secret_v1.rucio_hermes_secret.data.password
+  }  
+
+  set {
     name  = "config.database.pool_size"
     value = "100"
   }
@@ -117,61 +127,61 @@ resource "helm_release" "jupyterhub-chart" {
 # if not working
 # helm repo add dask https://helm.dask.org/ && helm repo update && helm upgrade --wait --install --render-subchart-notes dask-gateway dask/dask-gateway --namespace dask-gateway --values dask-gateway/values.yaml 
 
-resource "helm_release" "dask-gateway-chart" {
-  name       = "dask-gateway-${var.resource-suffix}"
-  repository = "https://helm.dask.org/"
-  chart      = "dask/dask-gateway"
-  version    = "2023.1.0"
-  namespace  = var.ns-dask-gateway
+#resource "helm_release" "dask-gateway-chart" {
+ # name       = "dask-gateway-${var.resource-suffix}"
+ # repository = "https://helm.dask.org/"
+ # chart      = "dask/dask-gateway"
+# version    = "2023.1.0"
+#  namespace  = var.ns-dask-gateway
 
-  values = [
-    "${file("dask-gateway/values.yaml")}"
-  ]
-  set {
-    name  = "dask-gateway.gateway.auth.jupyterhub.apiToken"
-    value = data.kubernetes_secret_v1.daskhub-tokens.data.api-token
-  }
-}
+ # values = [
+  #  "${file("dask-gateway/values.yaml")}"
+  #]
+ # set {
+ #   name  = "dask-gateway.gateway.auth.jupyterhub.apiToken"
+ #   value = data.kubernetes_secret_v1.daskhub-tokens.data.api-token
+ #}
+#}
 
 # Daskhub installs dask gateway + jupyterhub (in same namespace for better resource management)
 
 # if not working: 
 # helm repo add dask https://helm.dask.org/ && helm repo update && helm upgrade --wait --install --render-subchart-notes daskhub dask/daskhub --values=dask-secrets.yaml --values=dask-config.yaml --namespace daskhub
 
-resource "helm_release" "daskhub-chart" {
-  name       = "daskhub-${var.resource-suffix}"
-  repository = "https://helm.dask.org/"
-  chart      = "daskhub"
-  version    = "2023.1.0"
-  namespace  = var.ns-daskhub
+#resource "helm_release" "daskhub-chart" {
+#  name       = "daskhub-${var.resource-suffix}"
+#  repository = "https://helm.dask.org/"
+#  chart      = "daskhub"
+#  version    = "2023.1.0"
+#  namespace  = var.ns-daskhub
 
-  values = [
-    "${file("daskhub/values.yaml")}"
-  ]
+#  values = [
+#    "${file("daskhub/values.yaml")}"
+#  ]
 
-  set {
-    name  = "jupyterhub.proxy.secretToken"
-    value = data.kubernetes_secret_v1.daskhub-tokens.data.secret-token
-  }
+#  set {
+#    name  = "jupyterhub.proxy.secretToken"
+#    value = data.kubernetes_secret_v1.daskhub-tokens.data.secret-token
+#  }
 
-  set {
-    name  = "jupyterhub.hub.services.dask-gateway-apiToken"
-    value = data.kubernetes_secret_v1.daskhub-tokens.data.api-token
-  }
+#  set {
+#    name  = "jupyterhub.hub.services.dask-gateway-apiToken"
+#    value = data.kubernetes_secret_v1.daskhub-tokens.data.api-token
+#  }
 
-  set {
-    name  = "dask-gateway.gateway.auth.jupyterhub.apiToken"
-    value = data.kubernetes_secret_v1.daskhub-tokens.data.api-token
-  }
+#  set {
+#    name  = "dask-gateway.gateway.auth.jupyterhub.apiToken"
+#    value = data.kubernetes_secret_v1.daskhub-tokens.data.api-token
+#  }
 
-  set {
-    name  = "hub.config.GenericOAuthenticator.client_id"
-    value = data.kubernetes_secret_v1.jhub_iam_secret.data.client_id
-  }
-  set {
-    name  = "hub.config.GenericOAuthenticator.client_secret"
-    value = data.kubernetes_secret_v1.jhub_iam_secret.data.client_secret
-  }
-}
+#  set {
+#    name  = "hub.config.GenericOAuthenticator.client_id"
+#    value = data.kubernetes_secret_v1.jhub_iam_secret.data.client_id
+#  }
+#  set {
+#    name  = "hub.config.GenericOAuthenticator.client_secret"
+#    value = data.kubernetes_secret_v1.jhub_iam_secret.data.client_secret
+#  }
+#}
 
 

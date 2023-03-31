@@ -76,17 +76,17 @@ variable "ns-jupyterhub" {
   default     = "jhub"
 }
 
-variable "ns-dask-gateway" {
-  description = "The name of the namespace for dask-gateway"
-  type        = string
-  default     = "dask-gateway"
-}
+# variable "ns-dask-gateway" {
+ # description = "The name of the namespace for dask-gateway"
+ # type        = string
+ # default     = "dask-gateway"
+#}
 
-variable "ns-daskhub" {
-  description = "The name of the namespace for daskhub"
-  type        = string
-  default     = "daskhub"
-}
+#variable "ns-daskhub" {
+#  description = "The name of the namespace for daskhub"
+#  type        = string
+#  default     = "daskhub"
+#}
 
 # GitHub
 
