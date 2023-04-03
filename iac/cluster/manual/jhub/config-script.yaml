@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jupyter-config-script
+  namespace: jhub
+data:
+  configure-datalake.sh: |
+    #!/bin/bash
+    set -e
+
+    if [[ $ACCESS_TOKEN != "" ]]; then
+        EOS_OAUTH_ID="${EOS_OAUTH_ID:-eos-eulake}"
+        RUCIO_OAUTH_ID="${RUCIO_OAUTH_ID:-rucio}"
+        echo "c.SwanOauthRenew.files = [
+            ('/tmp/oauth.token', 'access_token', '{token}'),
+            ('/tmp/rucio_oauth.token', 'exchanged_tokens/$RUCIO_OAUTH_ID', '{token}'),
+            ('/tmp/eos_oauth.token', 'exchanged_tokens/$EOS_OAUTH_ID', 'oauth2:{token}:$OAUTH_INSPECTION_ENDPOINT')
+        ]" >> /etc/jupyter/jupyter_notebook_config.py
+        
+        touch /tmp/oauth.token && chmod 600 /tmp/oauth.token && chown -R $NB_UID /tmp/oauth.token
+        touch /tmp/rucio_oauth.token && chmod 600 /tmp/rucio_oauth.token && chown -R $NB_UID /tmp/rucio_oauth.token
+        printf "oauth2:$EOS_OAUTH_TOKEN:$OAUTH_INSPECTION_ENDPOINT" > /tmp/eos_oauth.token && chmod 600 /tmp/eos_oauth.token && chown -R $NB_UID /tmp/eos_oauth.token
+        
+        mkdir -p /opt/rucio/etc
+        
+        echo "[client]
+    rucio_host = $RUCIO_BASE_URL
+    auth_host = $RUCIO_AUTH_URL
+    ca_cert = $RUCIO_CA_CERT
+    account = $JUPYTERHUB_USER
+    vo = $RUCIO_VO
+    auth_type = oidc
+    auth_token_file_path = $RUCIO_OIDC_FILE_NAME
+    " > /opt/rucio/etc/rucio.cfg
+    fi
+
+    mkdir -p /scratch/$JUPYTERHUB_USER
+    touch /scratch/$JUPYTERHUB_USER || true
+
+    exec env SCRATCH=/scratch/$JUPYTERHUB_USER PATH=$PATH:/usr/local/bin/datalakectl-scripts "$@"

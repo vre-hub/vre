@@ -10,6 +10,13 @@
 #
 
 hub:
+  image:
+    name: ghcr.io/vre-hub/hub
+    tag: latest
+  args:
+    - "authstatejupyterhub"
+    - "--config"
+    - "/usr/local/etc/jupyterhub/jupyterhub_config.py"
   services: # added for dask config 
     dask-gateway:
       # apiToken: "<API TOKEN>"  # ELENA: needs to be added!
@@ -32,9 +39,33 @@ hub:
         - profile
         - email
       username_key: preferred_username
+
     JupyterHub:
       authenticator_class: generic-oauth
 
+    SpawnHookOAuthenticator:
+      client_id: ""
+      client_secret: ""
+    GenericOAuthenticator:
+      client_id: ""
+      client_secret: ""
+    OIDCAuthenticator:
+      client_id: ""
+      client_secret: ""
+
+  extraEnv:
+    JUPYTERHUB_CRYPT_KEY: ""
+
+  extraConfig:
+    authConf.py: |
+      def pre_spawn_hook(authenticator, spawner, auth_state):
+        spawner.environment['ACCESS_TOKEN'] = auth_state['access_token']
+        spawner.environment['REFRESH_TOKEN'] = auth_state['refresh_token']
+        spawner.environment['OAUTH_INSPECTION_ENDPOINT'] = authenticator.userdata_url.replace('https://', '')
+        spawner.environment['EOS_OAUTH_TOKEN'] = auth_state['exchanged_tokens']['eos-eulake']
+
+      c.OIDCAuthenticator.pre_spawn_hook = pre_spawn_hook
+      
 proxy:
   service:
     type: LoadBalancer
@@ -58,8 +89,53 @@ proxy:
     #   contactEmail: eosc.future@cern.ch
 
 singleuser:
+  profileList:
+  - display_name: "Minimal environment"
+    description: "Based on jupyter/scipy-notebook (active reana-client)"
+    default: true
+  defaultUrl: "/lab"
+  cmd:
+    - /bin/bash
+    - /usr/local/bin/datalake-config/configure-datalake.sh
+    - configure.sh
+    - jupyterhub-singleuser
+  image:
+    name: gitlab-registry.cern.ch/escape-wp2/docker-images/datalake-singleuser
+    tag: "cc7a62a9"
+    pullPolicy: Always
+  extraTolerations:
+    - key: jupyter-role
+      operator: Equal
+      value: singleuser
+      effect: NoSchedule
+  extraEnv:
+    EOS_OAUTH_ID: "eos-eulake"
+    RUCIO_OAUTH_ID: "rucio"
+    RUCIO_MODE: "download" # replica
+    # RUCIO_DESTINATION_RSE: "EULAKE-1"
+    # RUCIO_RSE_MOUNT_PATH: "/eos/eulake_1"
+    # RUCIO_PATH_BEGINS_AT: "5"
+    # RUCIO_WILDCARD_ENABLED: "1"
+    # RUCIO_REPLICATION_RULE_LIFETIME_DAYS: "7"
+    RUCIO_OIDC_AUTH: "file"
+    RUCIO_OIDC_FILE_NAME: "/tmp/rucio_oauth.token"
+    RUCIO_DEFAULT_AUTH_TYPE: "oidc"
+    OAUTH2_TOKEN: "FILE:/tmp/eos_oauth.token"
   storage:
     type: none
+    extraVolumes:
+      - name: config-script
+        configMap:
+          name: jupyter-config-script
+      - name: eulake-scratch
+        hostPath:
+          path: /var/
+    extraVolumeMounts:
+      - name: config-script
+        mountPath: /usr/local/bin/datalake-config
+      - name: eulake-scratch
+        mountPath: /scratch/dogosein/
+        mountPropagation: HostToContainer
 
 # ingress:
 #   enabled: true # can be an alternative for LBaaS in combination with proxy.service.type: ClusterIP
