@@ -1,3 +1,4 @@
+---
 kind: Deployment
 apiVersion: apps/v1
 metadata:
@@ -15,7 +16,7 @@ spec:
     spec:
       containers:
       - name: vre-landingpage
-        image: ghcr.io/cern-vre/vre-landingpage:latest
+        image: ghcr.io/vre-hub/vre-landingpage:latest
         ports:
         - containerPort: 80
 ---
@@ -38,4 +39,4 @@ spec:
     protocol: TCP
     nodePort: 31000
   selector:
-    app: vre-landingpage        
+    app: vre-landingpage
