@@ -87,31 +87,3 @@ variable "ns-jupyterhub" {
 #  type        = string
 #  default     = "daskhub"
 #}
-
-# GitHub
-
-variable "github-token" {
-  description = "Personal access token for GitHub with repo scope"
-  sensitive   = true
-  type        = string
-}
-
-variable "github-org" {
-  description = "Name of GitHub organisation"
-  type        = string
-  default     = "vre-hub"
-}
-
-variable "github-repository" {
-  description = "Name of GitHub repo"
-  type        = string
-  default     = "vre"
-}
-
-# Flux
-
-variable "flux-target-path" {
-  description = "Target path to sync flux manifests"
-  type        = string
-  default     = "iac/cluster/flux"
-}
