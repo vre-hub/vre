@@ -43,5 +43,5 @@ jobs:
         uses: ./.github/actions/tools
 
       - name: Validate Flux Manifests
-        run: |
-          ./infrastructure/scripts/flux_validate.sh
+        run: ./infrastructure/scripts/flux_validate.sh
+        
