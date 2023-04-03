@@ -10,3 +10,7 @@
 The CERN Virtual Research Environment.
 
 Please find the technical documentation for this repository here [CERN VRE Wiki](https://github.com/cern-vre/cern-vre/wiki).
+
+## IT Architecture of the VRE
+
+![](architecture.png)
