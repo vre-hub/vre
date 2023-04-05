@@ -10,61 +10,66 @@
 #
 
 hub:
-  image:
-    name: ghcr.io/vre-hub/hub
-    tag: latest
-  args:
-    - "authstatejupyterhub"
-    - "--config"
-    - "/usr/local/etc/jupyterhub/jupyterhub_config.py"
+  # image:
+  #   name: ghcr.io/vre-hub/hub
+  #   tag: latest
+  # args:
+  #   - "authstatejupyterhub"
+  #   - "--config"
+  #   - "/usr/local/etc/jupyterhub/jupyterhub_config.py"
   services: # added for dask config 
     dask-gateway:
-      # apiToken: "<API TOKEN>"  # ELENA: needs to be added!
-      display: false
+      url: http://traefik-dask-gateway
+      apiToken: 886a08835985f73c7a600588f7d0991af76c70992f479b3b6650cbc2d3dd9575
+
+      # display: false
+  cookieSecret: 886a08835985f73c7a600588f7d0991af76c70992f479b3b6650cbc2d3dd9575
+
   db:
     type: postgres
     upgrade: true
-  config:
-  # Could be enabled later to persist login info and redirect directly to OAuth SignIn
-  #   Authenticator:
-  #     auto_login: true
-  #     enable_auth_state: true
-    GenericOAuthenticator:
-      oauth_callback_url: https://nb-vre.cern.ch/hub/oauth_callback
-      authorize_url: https://iam-escape.cloud.cnaf.infn.it/authorize
-      token_url: https://iam-escape.cloud.cnaf.infn.it/token
-      userdata_url: https://iam-escape.cloud.cnaf.infn.it/userinfo
-      scope:
-        - openid
-        - profile
-        - email
-      username_key: preferred_username
+  # config:
+  # # Could be enabled later to persist login info and redirect directly to OAuth SignIn
+  # #   Authenticator:
+  # #     auto_login: true
+  # #     enable_auth_state: true
+  #   GenericOAuthenticator:
+  #     oauth_callback_url: https://nb-vre.cern.ch/hub/oauth_callback
+  #     authorize_url: https://iam-escape.cloud.cnaf.infn.it/authorize
+  #     token_url: https://iam-escape.cloud.cnaf.infn.it/token
+  #     userdata_url: https://iam-escape.cloud.cnaf.infn.it/userinfo
+  #     scope:
+  #       - openid
+  #       - profile
+  #       - email
+  #       - offline_access
+  #     username_key: preferred_username
 
-    JupyterHub:
-      authenticator_class: generic-oauth
+  #   JupyterHub:
+  #     authenticator_class: generic-oauth
 
-    SpawnHookOAuthenticator:
-      client_id: ""
-      client_secret: ""
-    GenericOAuthenticator:
-      client_id: ""
-      client_secret: ""
-    OIDCAuthenticator:
-      client_id: ""
-      client_secret: ""
+    # SpawnHookOAuthenticator:
+    #   client_id: ""
+    #   client_secret: ""
+    # GenericOAuthenticator:
+    #   client_id: ""
+    #   client_secret: ""
+    # OIDCAuthenticator:
+    #   client_id: ""
+    #   client_secret: ""
 
-  extraEnv:
-    JUPYTERHUB_CRYPT_KEY: ""
+  # extraEnv:
+  #   JUPYTERHUB_CRYPT_KEY: ""
 
-  extraConfig:
-    authConf.py: |
-      def pre_spawn_hook(authenticator, spawner, auth_state):
-        spawner.environment['ACCESS_TOKEN'] = auth_state['access_token']
-        spawner.environment['REFRESH_TOKEN'] = auth_state['refresh_token']
-        spawner.environment['OAUTH_INSPECTION_ENDPOINT'] = authenticator.userdata_url.replace('https://', '')
-        spawner.environment['EOS_OAUTH_TOKEN'] = auth_state['exchanged_tokens']['eos-eulake']
+  # extraConfig:
+  #   authConf.py: |
+  #     def pre_spawn_hook(authenticator, spawner, auth_state):
+  #       spawner.environment['ACCESS_TOKEN'] = auth_state['access_token']
+  #       spawner.environment['REFRESH_TOKEN'] = auth_state['refresh_token']
+  #       spawner.environment['OAUTH_INSPECTION_ENDPOINT'] = authenticator.userdata_url.replace('https://', '')
+  #       spawner.environment['EOS_OAUTH_TOKEN'] = auth_state['exchanged_tokens']['eos-eulake']
 
-      c.OIDCAuthenticator.pre_spawn_hook = pre_spawn_hook
+  #     c.OIDCAuthenticator.pre_spawn_hook = pre_spawn_hook
       
 proxy:
   service:
@@ -81,61 +86,67 @@ proxy:
     type: secret
     secret:
       name: cern-sectigo-tls-certificate # using our own certificate
-
-    # Option with letsenrypt (not working, cert gets not issued, the problem could be with LBaaS timing)  
+  secretToken: e4dc654b0436d0f081b18d2790612331bf90ecc31bedd5623e68152c018b14fb
+  # Option with letsenrypt (not working, cert gets not issued, the problem could be with LBaaS timing)  
     # hosts:
     #   - vre-hub.cern.ch
     # letsencrypt:
     #   contactEmail: eosc.future@cern.ch
 
 singleuser:
-  profileList:
-  - display_name: "Minimal environment"
-    description: "Based on jupyter/scipy-notebook (active reana-client)"
-    default: true
-  defaultUrl: "/lab"
-  cmd:
-    - /bin/bash
-    - /usr/local/bin/datalake-config/configure-datalake.sh
-    - configure.sh
-    - jupyterhub-singleuser
-  image:
-    name: gitlab-registry.cern.ch/escape-wp2/docker-images/datalake-singleuser
-    tag: "cc7a62a9"
-    pullPolicy: Always
-  extraTolerations:
-    - key: jupyter-role
-      operator: Equal
-      value: singleuser
-      effect: NoSchedule
-  extraEnv:
-    EOS_OAUTH_ID: "eos-eulake"
-    RUCIO_OAUTH_ID: "rucio"
-    RUCIO_MODE: "download" # replica
-    # RUCIO_DESTINATION_RSE: "EULAKE-1"
-    # RUCIO_RSE_MOUNT_PATH: "/eos/eulake_1"
-    # RUCIO_PATH_BEGINS_AT: "5"
-    # RUCIO_WILDCARD_ENABLED: "1"
-    # RUCIO_REPLICATION_RULE_LIFETIME_DAYS: "7"
-    RUCIO_OIDC_AUTH: "file"
-    RUCIO_OIDC_FILE_NAME: "/tmp/rucio_oauth.token"
-    RUCIO_DEFAULT_AUTH_TYPE: "oidc"
-    OAUTH2_TOKEN: "FILE:/tmp/eos_oauth.token"
   storage:
     type: none
-    extraVolumes:
-      - name: config-script
-        configMap:
-          name: jupyter-config-script
-      - name: eulake-scratch
-        hostPath:
-          path: /var/
-    extraVolumeMounts:
-      - name: config-script
-        mountPath: /usr/local/bin/datalake-config
-      - name: eulake-scratch
-        mountPath: /scratch/dogosein/
-        mountPropagation: HostToContainer
+  image:
+    name: pangeo/base-notebook
+    tag: 2021.06.05
+# singleuser:
+#   profileList:
+#   - display_name: "Minimal environment"
+#     description: "Based on jupyter/scipy-notebook (active reana-client)"
+#     default: true
+#   defaultUrl: "/lab"
+#   cmd:
+#     - /bin/bash
+#     - /usr/local/bin/datalake-config/configure-datalake.sh
+#     - configure.sh
+#     - jupyterhub-singleuser
+#   image:
+#     name: gitlab-registry.cern.ch/escape-wp2/docker-images/datalake-singleuser
+#     tag: "cc7a62a9"
+#     pullPolicy: Always
+#   extraTolerations:
+#     - key: jupyter-role
+#       operator: Equal
+#       value: singleuser
+#       effect: NoSchedule
+#   extraEnv:
+#     EOS_OAUTH_ID: "eos-eulake"
+#     RUCIO_OAUTH_ID: "rucio"
+#     RUCIO_MODE: "download" # replica
+#     # RUCIO_DESTINATION_RSE: "EULAKE-1"
+#     # RUCIO_RSE_MOUNT_PATH: "/eos/eulake_1"
+#     # RUCIO_PATH_BEGINS_AT: "5"
+#     # RUCIO_WILDCARD_ENABLED: "1"
+#     # RUCIO_REPLICATION_RULE_LIFETIME_DAYS: "7"
+#     RUCIO_OIDC_AUTH: "file"
+#     RUCIO_OIDC_FILE_NAME: "/tmp/rucio_oauth.token"
+#     RUCIO_DEFAULT_AUTH_TYPE: "oidc"
+#     OAUTH2_TOKEN: "FILE:/tmp/eos_oauth.token"
+#   storage:
+#     type: none
+#     extraVolumes:
+#       - name: config-script
+#         configMap:
+#           name: jupyter-config-script
+#       # - name: eulake-scratch
+#       #   hostPath:
+#       #     path: /var/
+#     extraVolumeMounts:
+#       - name: config-script
+#         mountPath: /usr/local/bin/datalake-config
+#       # - name: eulake-scratch
+#       #   mountPath: /scratch/dogosein/
+#       #   mountPropagation: HostToContainer
 
 # ingress:
 #   enabled: true # can be an alternative for LBaaS in combination with proxy.service.type: ClusterIP
