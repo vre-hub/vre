@@ -1,0 +1,13 @@
+name: "Merge Check for non-Terraform and Flux files"
+
+on: [push, pull_request]
+  paths-ignore:
+      - '**.tf'
+      - 'infrastructure/cluster/flux/**'
+      
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: 'echo "No build required"'  
+
