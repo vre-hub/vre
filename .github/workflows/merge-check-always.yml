@@ -7,7 +7,12 @@ on:
       - 'infrastructure/cluster/flux/**'
 
 jobs:
-  build:
+  terraform-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - run: 'echo "No check required"'
+      
+  flux-validate:
     runs-on: ubuntu-latest
     steps:
       - run: 'echo "No check required"'
