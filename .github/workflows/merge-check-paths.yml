@@ -1,4 +1,4 @@
-name: "Merge Check"
+name: mc # Merge Check Workflow for Terraform and Flux Files if changed
 
 on:
   workflow_dispatch:

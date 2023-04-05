@@ -1,0 +1,13 @@
+name: mc # Merge Check Workflow for Terraform and Flux Files if not changed ref. to : https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/defining-the-mergeability-of-pull-requests/troubleshooting-required-status-checks#handling-skipped-but-required-checks
+
+on: 
+  pull_request:
+    paths-ignore:
+      - '**.tf'
+      - 'infrastructure/cluster/flux/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: 'echo "No check required"'
