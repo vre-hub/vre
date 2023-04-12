@@ -14,3 +14,7 @@ Please find the technical documentation for this repository here [CERN VRE Wiki]
 ## IT Architecture of the VRE
 
 ![](architecture.png)
+
+## Code Base
+
+![Visualization of the codebase](./diagram.svg)
