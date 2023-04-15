@@ -91,10 +91,10 @@ resource "helm_release" "jupyterhub-chart" {
     "${file("jhub/config.yaml")}"
   ]
 
-  set {
-    name  = "hub.db.url"
-    value = data.kubernetes_secret_v1.jhub_db_secret.data.dbconnectstring
-  }
+  # set {
+  #   name  = "hub.db.url"
+  #   value = data.kubernetes_secret_v1.jhub_db_secret.data.dbconnectstring
+  # }
   set {
     name  = "hub.config.GenericOAuthenticator.client_id"
     value = data.kubernetes_secret_v1.jhub_iam_secret.data.client_id
