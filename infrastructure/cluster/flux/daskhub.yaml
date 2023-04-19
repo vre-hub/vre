@@ -7,15 +7,15 @@ spec:
   interval: 1m
   url: https://github.com/dask/helm-chart/
   releaseName: daskhub
-  chart:
-    spec:
-      chart: daskhub
-      version: "2023.1.0"
-      sourceRef:
-        kind: HelmRepository
-        name: daskhub
-        namespace: daskhub
-      interval: 1m
+#   chart:
+#     spec:
+#       chart: daskhub
+#       version: "2023.1.0"
+#       sourceRef:
+#         kind: HelmRepository
+#         name: daskhub
+#         namespace: daskhub
+#       interval: 1m
   valuesFrom:
     - kind: Secret
       name: jhub-cvre-iam-secrets
