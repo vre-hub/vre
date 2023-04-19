@@ -4,13 +4,12 @@ metadata:
   name: daskhub
   namespace: daskhub
 spec:
-spec:
   interval: 1m
   url: https://github.com/dask/helm-chart/
   releaseName: daskhub
   chart:
     spec:
-      chart: dask/daskhub
+      chart: daskhub
       version: "2023.1.0"
       sourceRef:
         kind: HelmRepository
