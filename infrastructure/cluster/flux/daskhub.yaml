@@ -4,7 +4,9 @@ metadata:
   name: daskhub
   namespace: daskhub
 spec:
-  interval: 2m
+spec:
+  interval: 1m
+  url: https://github.com/dask/helm-chart/
   releaseName: daskhub
   chart:
     spec:
@@ -18,4 +20,5 @@ spec:
   valuesFrom:
     - kind: Secret
       name: jhub-cvre-iam-secrets
+      
   
