@@ -67,15 +67,15 @@ singleuser:
   storage:
     type: none
   image:
-    name: gitlab-registry.cern.ch/escape-wp2/docker-images/datalake-singleuser # replace with updated image in vre-hub
+    name: ghcr.io/goseind/singleuser-base  # replace with updated image in vre-hub
     tag: latest
     pullPolicy: Always
   cmd: null
   extraEnv:
     RUCIO_MODE: "download"
     RUCIO_WILDCARD_ENABLED: "1"
-    RUCIO_BASE_URL: "https://escape-rucio.cern.ch"
-    RUCIO_AUTH_URL: "https://escape-rucio-auth.cern.ch"
+    RUCIO_BASE_URL: "https://vre-rucio.cern.ch"
+    RUCIO_AUTH_URL: "https://vre-rucio-auth.cern.ch"
     RUCIO_DISPLAY_NAME: "VRE-RUCIO"
     RUCIO_NAME: "vre-rucio.cern.ch"
     RUCIO_SITE_NAME: "ROAMING"
