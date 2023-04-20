@@ -66,6 +66,16 @@ hub:
 singleuser:
   storage:
     type: none
+    extraVolumes:
+      - name: cvfms-from-vre
+        persistentVolumeClaim:
+          claimName: cvfms
+    extraVolumeMounts:
+      - name: cvfms-from-vre
+        mountPath: /cvfms
+        # CVMFS automount volumes must be mounted with HostToContainer mount propagation.
+        mountPropagation: HostToContainer  
+        
   image:
     name: ghcr.io/goseind/singleuser-base  # replace with updated image in vre-hub
     tag: latest
