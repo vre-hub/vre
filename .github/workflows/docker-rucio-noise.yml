@@ -64,4 +64,5 @@ jobs:
           docker build . --tag  ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           docker run ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           docker push  ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-       
+          docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha::6 }}
+          docker push  ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha::6 }}
