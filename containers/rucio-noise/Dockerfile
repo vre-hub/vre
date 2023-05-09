@@ -33,7 +33,10 @@ RUN curl -o /etc/yum.repos.d/EGI-trustanchors.repo https://repository.egi.eu/sw/
 
 RUN yum install -y gfal2* python3-gfal2
 RUN yum install -y ca-certificates ca-policy-egi-core
-RUN curl -Lo /etc/pki/tls/certs/CERN-bundle.pem https://gitlab.cern.ch/plove/rucio/-/raw/7121c7200257a4c537b56ce6e7e438f0b35c6e48/etc/web/CERN-bundle.pem
+
+# Install CERN CA certs from CERN maintained mirrors
+COPY ./linuxsupport7s-stable.repo /etc/yum.repos.d/
+RUN yum install -y CERN-CA-certs
 
 # ESCAPE VOMS setup
 RUN mkdir -p /etc/vomses \
