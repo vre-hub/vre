@@ -11,6 +11,7 @@ on:
       - new_CA_rucio_noise
     paths:
       - containers/rucio-noise/**
+      - ../../infrastructure/cluster/flux/rucio-cronjobs.yaml  # Triggers CI if changes on the cronjobs file
 
 env:
   # Use docker.io for Docker Hub if empty
