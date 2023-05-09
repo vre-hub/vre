@@ -8,7 +8,7 @@ name: Docker rucio noise build
 on:
   push:
     branches: 
-      - main
+      - new_CA_rucio_noise
     paths:
       - containers/rucio-noise/**
 
