@@ -43,4 +43,4 @@ helm install cvmfs cern/cvmfs-csi -n kube-system --set-json 'nodeplugin.tolerati
 #   storageClassName: cvmfs
 # ```
 
-Kubectl apply -f cvmfs-cs-pvc.yaml
+Kubectl apply -f cvmfs-sc-pvc.yaml
