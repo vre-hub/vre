@@ -19,7 +19,7 @@ RUN git clone https://github.com/vre-hub/vre.git
 
 # install python requirments
 RUN pip install --upgrade pip
-# RUN echo $(pwd) # Editting to trigger CI
+RUN echo $(pwd) 
 
 RUN pip install -r /home/user/vre/containers/rucio-noise/requirements.txt
 
