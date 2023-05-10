@@ -82,16 +82,16 @@ spec:
               #- date; pwd; cd /opt/rucio/etc/; ls; echo Hello from rucio-noise container; export RUCIO_CONFIG=/opt/rucio/etc/rucio-sso.cfg; echo Exported config; rucio -vvv whoami; FILE_SIZE=10M /bin/bash /home/user/vre/containers/rucio-noise/produce_noise.sh; echo 'DB cleanup Done!'
               #- date; pwd; cd /opt/rucio/etc/; ls; cat rucio-sso.cfg; ll /etc/pki/tls/certs/CERN-bundle.pem; ll /opt/rucio/etc/usercert.pem; ll /opt/rucio/etc/userkey.pem; echo 'ls /tmp'; ls /tmp; echo Hello from rucio-noise container; export RUCIO_CONFIG=/opt/rucio/etc/rucio-sso.cfg; echo Exported config; rucio -vvv whoami; FILE_SIZE=10M /bin/bash /home/user/vre/containers/rucio-noise/produce_noise.sh; echo 'RUCIO noise ${FILE_SIZE} DONE!'
               - >
-              date; 
-              pwd; 
-              echo "ls /opt/rucio/etc/"; ls /opt/rucio/etc/; 
-              echo "cat /opt/rucio/etc/rucio-sso.cfg"; cat /opt/rucio/etc/rucio-sso.cfg; 
-              echo "ls & cat of /etc/pki/tls/certs/CERN-bundle.pem"; ls -l /etc/pki/tls/certs/CERN-bundle.pem; cat /etc/pki/tls/certs/CERN-bundle.pem;
-              echo "ls & cat of /opt/rucio/etc/usercert.pem"; ls -l /opt/rucio/etc/usercert.pem; cat /opt/rucio/etc/usercert.pem;
-              echo "ls & cat of /opt/rucio/etc/userkey.pem"; ls -l /opt/rucio/etc/userkey.pem; cat /opt/rucio/etc/userkey.pem; 
-              echo "ls /tmp"; ls /tmp; 
-              echo "cat /tmp/x509up"; cat /tmp/x509up;
-              echo Hello from rucio-noise container; export RUCIO_CONFIG=/opt/rucio/etc/rucio-sso.cfg; echo Exported config; rucio -vvv whoami;
+                date; 
+                pwd; 
+                echo "ls /opt/rucio/etc/"; ls /opt/rucio/etc/; 
+                echo "cat /opt/rucio/etc/rucio-sso.cfg"; cat /opt/rucio/etc/rucio-sso.cfg; 
+                echo "ls & cat of /etc/pki/tls/certs/CERN-bundle.pem"; ls -l /etc/pki/tls/certs/CERN-bundle.pem; cat /etc/pki/tls/certs/CERN-bundle.pem;
+                echo "ls & cat of /opt/rucio/etc/usercert.pem"; ls -l /opt/rucio/etc/usercert.pem; cat /opt/rucio/etc/usercert.pem;
+                echo "ls & cat of /opt/rucio/etc/userkey.pem"; ls -l /opt/rucio/etc/userkey.pem; cat /opt/rucio/etc/userkey.pem; 
+                echo "ls /tmp"; ls /tmp; 
+                echo "cat /tmp/x509up"; cat /tmp/x509up;
+                echo Hello from rucio-noise container; export RUCIO_CONFIG=/opt/rucio/etc/rucio-sso.cfg; echo Exported config; rucio -vvv whoami;
           volumes:
             - name: rucio-sso-cfg
               secret:
