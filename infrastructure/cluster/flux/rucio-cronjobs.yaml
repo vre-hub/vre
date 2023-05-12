@@ -39,7 +39,7 @@ spec:
               - -c
               - date; echo Hello from iam-rucio-sync container; 
                 pwd; ls;
-                echo $IAM_SERVER; python3 /home/user/vre/containers/iam-rucio-sync/sync_iam_rucio.py; echo '* Sync to IAM * Done!'
+                echo $IAM_SERVER; python3 /home/user/vre/infrastructure/scripts/cron_scripts/iam-rucio-sync/sync_iam_rucio.py; echo '* Sync to IAM * Done!'
           volumes:
             - name: rucio-cfg
               secret:
