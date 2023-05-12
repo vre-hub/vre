@@ -8,7 +8,7 @@ while read line
 do
     rses+=($line) 
 
-done < /home/user/vre/containers/rucio-noise/rses.txt
+done < /home/user/vre/infrastructure/scripts/cron_scripts/rucio-noise/rses.txt
 
 len=${#rses[@]}
 
