@@ -1,0 +1,58 @@
+name: Docker base container for VRE ops build
+
+on:
+  push:
+    branches: 
+      - main
+    paths:
+      - containers/base-ops/**
+
+env:
+  CONTAINER: base-ops
+  # Use docker.io for Docker Hub if empty
+  REGISTRY: ghcr.io
+  # github.repository as <account>/<repo>
+  IMAGE_NAME: ${{ github.repository }}-$CONTAINER
+
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      # This is used to complete the identity challenge
+      # with sigstore/fulcio when running outside of PRs.
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Login against a Docker registry except on PR
+      # https://github.com/docker/login-action
+      - name: Log into registry ${{ env.REGISTRY }}
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        id: build-and-push
+        working-directory: containers/iam-rucio-sync
+        run: |
+          docker build . --tag  ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          docker push  ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          export sha=${{ github.sha }} 
+          export short_sha=${sha:0:7}
+          git clone https://github.com/vre-hub/vre.git
+          cd vre
+          export the_tag=$(git tag | sort --version-sort | tail -n1)
+          cd ..
+          docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${the_tag}_${short_sha}
+          docker push  ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${the_tag}_${short_sha}
+          rm -rf vre
+          
