@@ -2,7 +2,7 @@ ARG BASEIMAGE=rucio/rucio-server
 ARG BASETAG=release-1.30.0
  
 FROM $BASEIMAGE:$BASETAG
-LABEL maintainer="VRE Team @ CERN 22/23 - D. Gosein, E. Gazzarrini, E. Garcia"
+LABEL maintainer="VRE Team @ CERN 22/23 - E. Garcia, E. Gazzarrini, D. Gosein"
 
 # cleanup yum cache
 RUN yum upgrade -y \
