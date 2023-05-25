@@ -34,6 +34,5 @@ RUN curl -o /usr/bin/kubectl -L https://storage.googleapis.com/kubernetes-releas
 RUN chmod +x /usr/bin/kubectl
 
 USER $NB_UID
-WORKDIR $HOME
 
 ENTRYPOINT ["/bin/bash"]
