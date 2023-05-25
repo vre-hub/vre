@@ -63,30 +63,45 @@ spec:
             - name: rucio-noise
               image: ghcr.io/vre-hub/vre-rucio-noise:latest
               volumeMounts:
-              - name: rucio-sso-cfg
+              - name: escape-service-account
                 mountPath: /opt/rucio/etc/
               - name: prod-rucio-x509up
                 mountPath: /tmp/
-
               env:
               - name: RUCIO_CFG_CLIENT_X509_PROXY 
                 valueFrom:
                   secretKeyRef:
                     name: prod-rucio-x509up
                     key: x509up
+              - name: RUCIO_CFG_CLIENT_CERT 
+                valueFrom:
+                  secretKeyRef:
+                    name: escape-service-account
+                    key: usercert.pem
+              - name: RUCIO_CFG_CLIENT_key 
+                valueFrom:
+                  secretKeyRef:
+                    name: escape-service-account
+                    key: userkey.pem
+              - name: RUCIO_CFG_CA_CERT
+                valueFrom:
+                    secretKeyRef:
+                      name: rucio-server-cvre-server-cafile
+                      key: ca.pem
               tty: true
               imagePullPolicy: Always
               command:
               - /bin/sh
               - -c
-              - date; pwd; cd /opt/rucio/etc/; ls; echo Hello from rucio-noise container; export RUCIO_CONFIG=/opt/rucio/etc/rucio-sso.cfg; echo Exported config; rucio -vvv whoami; FILE_SIZE=10M /bin/bash /home/user/vre/containers/rucio-noise/produce_noise.sh; echo 'DB cleanup Done!'
+              - date; pwd; cd /root/.globus/; ls; chmod 400 userkey.pem; cd /opt/rucio/etc/; ls; echo Hello from rucio-noise container; export RUCIO_CONFIG=/opt/rucio/etc/rucio.cfg; echo Exported config; rucio -vvv whoami; FILE_SIZE=10M /bin/bash /home/user/vre/containers/rucio-noise/produce_noise.sh; echo 'DB cleanup Done!'
           volumes:
-            - name: rucio-sso-cfg
-              secret:
-                secretName: rucio-sso-cfg
             - name: prod-rucio-x509up
               secret:
                 secretName: prod-rucio-x509up
+            - name: escape-service-account
+              secret:
+                secretName: escape-service-account
+                defaultMode: 256  # equivalent to chmod 400 for the userkey.pem 
 ---
 apiVersion: v1
 kind: Pod
