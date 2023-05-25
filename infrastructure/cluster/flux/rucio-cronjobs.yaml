@@ -79,7 +79,7 @@ spec:
               command:
               - /bin/sh
               - -c
-              - date; pwd; cd /opt/rucio/etc/; ls; echo Hello from rucio-noise container; export RUCIO_CONFIG=/opt/rucio/etc/rucio-sso.cfg; echo Exported config; rucio -vvv whoami; export FSIZE=10M; FILE_SIZE=${FSIZE} /bin/bash /home/user/vre/infrastructure/scripts/cron_scripts/rucio-noise/produce_noise.sh; echo 'Rucio noise ${FSIZE} Done!'
+              - date; pwd; cd /opt/rucio/etc/; ls; echo Hello from rucio-noise container; export RUCIO_CONFIG=/opt/rucio/etc/rucio-sso.cfg; echo Exported config; rucio -vvv whoami; cd; export FSIZE=10M; FILE_SIZE=${FSIZE} /bin/bash produce_noise.sh; echo 'Rucio noise ${FSIZE} Done!'
           volumes:
             - name: rucio-sso-cfg
               secret:
