@@ -1,9 +1,8 @@
+# Should point latest version of `vre-base-ops` image
 ARG BASETAG=v0.1.0
  
-# To be changed to specific version+hsa
 FROM ghcr.io/vre-hub/vre-base-ops:${BASETAG}
 LABEL maintainer="VRE Team @ CERN 22/23 - E. Garcia, E. Gazzarrini, D. Gosein"
-
 
 # ESCAPE Rucio setup
 ADD --chown=user:user rucio.cfg.escape.j2 /opt/user/rucio.cfg.j2
