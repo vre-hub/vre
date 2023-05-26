@@ -33,7 +33,6 @@ RUN mkdir -p /etc/grid-security/vomsdir/escape \
 RUN curl -o /usr/bin/kubectl -L https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
 RUN chmod +x /usr/bin/kubectl
 
-USER $NB_UID
-WORKDIR $HOME
+WORKDIR /home
 
 ENTRYPOINT ["/bin/bash"]

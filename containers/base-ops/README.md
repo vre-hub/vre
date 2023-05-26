@@ -3,9 +3,11 @@
 Common base container for all VRE operations.
 
 It contains:
- - A fixed version of rucio-server
- - Useful basic tools (including latests kubectl)
+ - A fixed version of rucio-server: `rucio/rucio-server:release-1.30.0`
+   - uses `centos:7`
+ - Useful basic programs
+   - `git`, `wget`, `htop`, latest version of `kubectl`
  - CERN CA certs installed from CERN maintained mirror
  - ESCAPE VOMS and its setup
- - EFI trust anchors
+ - EGI trust anchors
  

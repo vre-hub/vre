@@ -44,15 +44,14 @@ jobs:
 
       - name: Build and push Docker image
         id: build-and-push
-        working-directory: containers/iam-rucio-sync
+        working-directory: containers/base-ops
         run: |
           docker build . --tag  ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           docker push  ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-
           git clone https://github.com/vre-hub/vre.git
           cd vre
-#         Echo the output, substitute the `-g` with a `-` and export the result.
-#         The `-g` is by default on git describe because of historical reasons.
+          # Echo the output, substitute the `-g` with a `-` and export the result.
+          # The `-g` is by default on git describe because of historical reasons.
           echo "tag_describe=$(git describe --tags | sed 's/-g/-/g')"
           export tag_describe=$(git describe --tags | sed 's/-g/-/g')
           cd ..
