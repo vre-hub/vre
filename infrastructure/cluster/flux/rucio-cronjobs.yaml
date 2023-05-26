@@ -39,7 +39,7 @@ spec:
               - -c
               - date; echo Hello from iam-rucio-sync container; 
                 pwd; ls;
-                echo $IAM_SERVER; python3 ~/sync_iam_rucio.py; echo '* Sync to IAM * Done!'
+                echo $IAM_SERVER; python3 /home/sync_iam_rucio.py; echo '* Sync to IAM * Done!'
           volumes:
             - name: rucio-cfg
               secret:
@@ -93,7 +93,7 @@ spec:
               command:
               - /bin/sh
               - -c
-              - date; pwd; cd /opt/rucio/etc/; ls; echo Hello from rucio-noise container; export RUCIO_CONFIG=/opt/rucio/etc/rucio-sso.cfg; echo Exported config; rucio -vvv whoami; cd; export FSIZE=10M; FILE_SIZE=${FSIZE} /bin/bash produce_noise.sh; echo 'Rucio noise ${FSIZE} Done!'
+              - date; pwd; cd /opt/rucio/etc/; ls; echo Hello from rucio-noise container; export RUCIO_CONFIG=/opt/rucio/etc/rucio-sso.cfg; echo Exported config; rucio -vvv whoami; cd /home; export FSIZE=10M; FILE_SIZE=${FSIZE} /bin/bash produce_noise.sh; echo 'Rucio noise ${FSIZE} Done!'
               #- date; pwd; cd /root/.globus/; ls; chmod 400 userkey.pem; cd /opt/rucio/etc/; ls; echo Hello from rucio-noise container; export RUCIO_CONFIG=/opt/rucio/etc/rucio.cfg; echo Exported config; rucio -vvv whoami; FILE_SIZE=10M /bin/bash /home/user/vre/containers/rucio-noise/produce_noise.sh; echo 'DB cleanup Done!'
           volumes:
             - name: prod-rucio-x509up

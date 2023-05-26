@@ -1,3 +1,4 @@
+# Image doesn't depend on vre-base-ops as it starts from rucio/rucio-clients intead of rucio/rucio-server
 ARG BASEIMAGE=rucio/rucio-clients
 ARG BASETAG=release-1.30.0
 
@@ -11,8 +12,7 @@ RUN curl -Lo /etc/yum.repos.d/EGI-trustanchors.repo https://repository.egi.eu/sw
     && yum -y update
  
 RUN yum clean metadata
-RUN yum -y install wget
-RUN yum -y install ca-certificates ca-policy-egi-core
+RUN yum -y install wget ca-certificates ca-policy-egi-core
 
 # CERN cert 
 COPY ./linuxsupport7s-stable.repo /etc/yum.repos.d/
