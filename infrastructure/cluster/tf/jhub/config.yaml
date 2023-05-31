@@ -1,6 +1,10 @@
 hub:
+  # network policy needs to be modified to allow access to the Rucio server
+  # (disabling it for now as a workaround, see also the ones for singeluser and proxy below)
+  networkPolicy:
+    enabled: false
   db:
-    type: sqlite-memory # change to postgresql with DBOD from CERN (secret already exists in tf set)
+    type: postgres # secret dbconnect string set in main-helm.tf
   config:
     RucioAuthenticator:
       # client_id: "" # set through secret
@@ -14,14 +18,14 @@ hub:
         - profile
         - email
   extraConfig:
-    00-first-config: |
+    token-exchange: |
       import pprint
       import os
       import warnings
       import requests
-
       from oauthenticator.generic import GenericOAuthenticator
 
+      # custom authenticator to exchange the access token for a refresh token for rucio OIDC to work
       class RucioAuthenticator(GenericOAuthenticator):
           def __init__(self, **kwargs):
               super().__init__(**kwargs)
@@ -47,10 +51,10 @@ hub:
                   # user has no auth state
                   return
               
-              # define some environment variables from auth_state
-              spawner.environment['ACCESS_TOKEN'] = auth_state['access_token']
+              # define token environment variable from auth_state
               spawner.environment['REFRESH_TOKEN'] = self.exchange_token(auth_state['access_token'])
-
+      
+      # set the above authenticator as the default
       c.JupyterHub.authenticator_class = RucioAuthenticator
 
       # enable authentication state
@@ -64,49 +68,206 @@ hub:
           c.CryptKeeper.keys = [os.urandom(32)]
 
 singleuser:
+  # The liefcycle hooks are used to create the Rucio configuration file,
+  # and the token file by copying the REFRESH_TOKEN from the environment variable to the token file.
+  lifecycleHooks:
+    postStart:
+      exec:
+        command:
+          - "sh"
+          - "-c"
+          - >
+            echo -n $REFRESH_TOKEN > /home/jovyan/token;
+            mkdir -p /opt/rucio/etc;
+            echo "[client]" >> /opt/rucio/etc/rucio.cfg;
+            echo "rucio_host = https://vre-rucio.cern.ch" >> /opt/rucio/etc/rucio.cfg;
+            echo "auth_host = https://vre-rucio-auth.cern.ch" >> /opt/rucio/etc/rucio.cfg;
+            echo "ca_cert = /opt/cert.pem" >> /opt/rucio/etc/rucio.cfg;
+            echo "account = $JUPYTERHUB_USER" >> /opt/rucio/etc/rucio.cfg;
+            echo "auth_type = oidc" >> /opt/rucio/etc/rucio.cfg;
+            echo "oidc_audience = rucio" >> /opt/rucio/etc/rucio.cfg;
+            echo "auth_token_file_path = /home/jovyan/token" >> /opt/rucio/etc/rucio.cfg;
+
+  networkPolicy:
+    enabled: false
+  nodeSelector:
+    jupyter: singleuser # select node 2 to see debug network time out issue
+  defaultUrl: "/lab" # leads the user directly to JupyterLab UI
   storage:
-    type: none
+    type: none # static
+    # static:
+    #   pvcName: jhub-singleuser # manually created StorageClass with Retain policy and PVC with 800Gi (refer to main-k8s.tf)
     extraVolumes:
-      - name: cvfms-from-vre
-        persistentVolumeClaim:
-          claimName: cvfms
+      # - name: cvfms-from-vre # commented out not working
+      #   persistentVolumeClaim:
+      #     claimName: cvfms
+      - name: eulake-escape-data # mounts the EOS RSE needed for the Rucio JupiterLab extension
+        hostPath:
+          path: /var/eos-eulake-home/eulake/escape/data
     extraVolumeMounts:
-      - name: cvfms-from-vre
-        mountPath: /cvfms
-        # CVMFS automount volumes must be mounted with HostToContainer mount propagation.
-        mountPropagation: HostToContainer  
+      # - name: cvfms-from-vre # commented out not working
+      #   mountPath: /cvfms
+      #   # CVMFS automount volumes must be mounted with HostToContainer mount propagation.
+      #   mountPropagation: HostToContainer
+      - name: eulake-escape-data # mounts the EOS RSE needed for the Rucio JupiterLab extension
+        mountPath: /eos/escape/
+        mountPropagation: HostToContainer
+        readOnly: true
         
   image:
     name: ghcr.io/goseind/singleuser-base  # replace with updated image in vre-hub
     tag: latest
     pullPolicy: Always
+  extraFiles:
+    ca:
+      mountPath: /opt/cert.pem
+      stringData: |
+        -----BEGIN CERTIFICATE-----
+        MIIGqTCCBJGgAwIBAgIQAojDcLlcbrhBX0qrEka4mzANBgkqhkiG9w0BAQ0FADBK
+        MQswCQYDVQQGEwJjaDENMAsGA1UEChMEQ0VSTjEsMCoGA1UEAxMjQ0VSTiBSb290
+        IENlcnRpZmljYXRpb24gQXV0aG9yaXR5IDIwHhcNMTMwMzE5MTI1NTM2WhcNMzMw
+        MzE5MTMwNTM0WjBKMQswCQYDVQQGEwJjaDENMAsGA1UEChMEQ0VSTjEsMCoGA1UE
+        AxMjQ0VSTiBSb290IENlcnRpZmljYXRpb24gQXV0aG9yaXR5IDIwggIiMA0GCSqG
+        SIb3DQEBAQUAA4ICDwAwggIKAoICAQDxqYPFW2qVVi3Rw1NKlEf7x70xF+6a8uE/
+        Tu4ZVQF/K2RXI95QLkYfKItZvy9Az3ib/VlUho5f8fBaqy4n70uwC7+qd3Aq1/xQ
+        ysykPCbBBAsOSQQpTlhrMD2V5Ya9zrirphOhutddiqV96zBCyMM+Gz5uYv9u+cm4
+        tg1EOmAMGh2UNxfTFNVmXKkk7eFTSC1+zgb28H6nd3xzV27sn9bfOfGh//ZPy5gm
+        Qx0Oh/tc6WMreWzRZBQm5SJiK0QOzPv09p5WmdY2WxZoqNTFBDACQO7ysFOktc74
+        fPVFX/lmt4jFNSZRIOvvaACI/qlEaAJTR4FHIY9uSMsV8DrtzhI1Ucyv3kqlQpbF
+        jDouq44IryA/np4s/124bW+x8+n/v+at/AxPjvHBLiGhB+J38Z6KcJogoDnGzIXR
+        S+YUr/vGz34jOmkRuDN5STuuAXzyCKFXaoAm0AwjTziIv3E0jxC1taw6FpKevnd1
+        CLsTLAEUiEjzStFkDhd/Hpipc57zmMFY8VYet2wVqSFjnt2REWOVbZlbCiMHmSeD
+        u5EuZLiU8xlkiaCfn4A5XZ6X0qprbgDviGJtwxzNvTg7Hn0ziW5/ELryfQXCwZJ+
+        FVne8Zu8sbgy/sDkX+pyFuyB4XgiM0eMNkoexIXJaRdlMWDIL5ysiIXQKjhynAv5
+        KLHbRjciVwIDAQABo4IBiTCCAYUwCwYDVR0PBAQDAgGGMA8GA1UdEwEB/wQFMAMB
+        Af8wHQYDVR0OBBYEFPp7+96bDaPyUrds7VsPC6KmpvgEMBAGCSsGAQQBgjcVAQQD
+        AgEAMIIBMgYDVR0gBIIBKTCCASUwggEhBgorBgEEAWAKBAEBMIIBETCBwgYIKwYB
+        BQUHAgIwgbUegbIAQwBFAFIATgAgAFIAbwBvAHQAIABDAGUAcgB0AGkAZgBpAGMA
+        YQB0AGkAbwBuACAAQQB1AHQAaABvAHIAaQB0AHkAIAAyACAAQwBlAHIAdABpAGYA
+        aQBjAGEAdABlACAAUABvAGwAaQBjAHkAIABhAG4AZAAgAEMAZQByAHQAaQBmAGkA
+        YwBhAHQAZQAgAFAAcgBhAGMAdABpAGMAZQAgAFMAdABhAHQAZQBtAGUAbgB0MEoG
+        CCsGAQUFBwIBFj5odHRwOi8vY2FmaWxlcy5jZXJuLmNoL2NhZmlsZXMvY3AtY3Bz
+        L2Nlcm4tcm9vdC1jYTItY3AtY3BzLnBkZjANBgkqhkiG9w0BAQ0FAAOCAgEAo0Px
+        l4CZ6C6bDH+b6jV5uUO0NIHtvLuVgQLMdKVHtQ2UaxeIrWwD+Kz1FyJCHTRXrCvE
+        OFOca9SEYK2XrbqZGvRKdDRsq+XYts6aCampXj5ahh6r4oQJ8U7aLVfziKTK13Gy
+        dYFoAUeUrlNklICt3v2wWBaa1tg2oSlU2g4iCg9kYpRnIW3VKSrVsdVk2lUa4EXs
+        nTEJ30OS7rqX3SdqZp8G+awtBEReh2XPhRgJ6w3xiScP/UdWYUam2LflCGX3RibB
+        /DZhgGHRRoE4/D0kQMP2XTz6cClbNklECTlp0qZIbiaf350HbcDEFzYRSSIi0emv
+        kRGcMgsi8yTTU87q8Cr4hETxAF3ZbSVNC0ZaTZ8RBbM9BXguhYzKkVBgG/cMpUjs
+        B6tY2HMZbAZ3TKQRb/bRyUigM9DniKWeXkeL/0Nsno+XbcpAqLjtVIRwCg6jTLUi
+        1NRsl3BP6C824dVaoI8Ry7m+o6O+mtocw4BMhHfTcoWCO8CWjT0ME67JzaAYa5eM
+        +OqoWtgbgweBlfO0/3GMnVGMAmI4FlhH2oWKWQgWdgr0Wgh9K05VcxSpJ87/zjhb
+        MQn/bEojWmp6eUppPaqNFcELvud41qoe6hLsOYQVUQ1sHi7n6ouhg4BAbwS2iyD2
+        uiA6FHTCeLreFGUzs5osPKiz3GE5D6V9she9xIQ=
+        -----END CERTIFICATE-----
+        -----BEGIN CERTIFICATE-----
+        MIIJnDCCB4SgAwIBAgIKYQQltAAAAAAACzANBgkqhkiG9w0BAQ0FADBKMQswCQYD
+        VQQGEwJjaDENMAsGA1UEChMEQ0VSTjEsMCoGA1UEAxMjQ0VSTiBSb290IENlcnRp
+        ZmljYXRpb24gQXV0aG9yaXR5IDIwHhcNMjIwMzI5MDgyNDIyWhcNMzIwMzI5MDgz
+        NDIyWjBWMRIwEAYKCZImiZPyLGQBGRYCY2gxFDASBgoJkiaJk/IsZAEZFgRjZXJu
+        MSowKAYDVQQDEyFDRVJOIEdyaWQgQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkwggIi
+        MA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQDS9Ypy1csm0aZA4/QnWe2oaiQI
+        LqfeekV8kSSvOhW2peo5cLNIKbXATOo1l2iwIbCWV8SRU2TLKxHIL8fAOJud5n9K
+        mEKBew7nzubl1wG93B4dY0KREdb3/QB/7OkG8ZZvLqrvQZVGT1CgJ+NFFUiJ315D
+        FWkKctZv27LjQamzCxpX+gZSsmwZmSReY67cnm6P7z+/3xVNhwb+4Z+1Ww4vHhMc
+        dh1Dsrkv9vXU01UN752QtQ6l56uQLYEB2+vaHB6IpyC9zAQ/33GulCq8Gbj7ykPd
+        9AcRVBeJAErSK+oMHThtdLD7mhTkZivakaNe4O1EhPFH0rWwV45IFN7ipELA5qDx
+        djdzo6JtLJQMaSV/TV+amEf2CaKlD0giqGhjfSNiOX5HCmpqV14kbl+7Qho6ykZy
+        b1DGpf70yILnX+AUtdpd8lulTu1yg1Bg5cFQskUIk5+s4nsC1VpmeNxYaeFEcYZj
+        Ph2mdD7zLo889MtF7kZv7+6J6p4NBL3fQ9Os8/h8XVlfDatzbpVH4jYKKAd4nwJb
+        knJaKPE0LzLzVfJBwnDxqe8hb64gI8Frludp+jaOYzvMqlzAe9z4a9971iXIWaaG
+        unbAoEkXj69y7MsvCjWXB7o9HdBaS9FL+ZtXTKCyXl+XLFseYQoQburKr+eTcRed
+        KLJNj4tRF1799PO69wIDAQABo4IEdjCCBHIwEAYJKwYBBAGCNxUBBAMCAQEwIwYJ
+        KwYBBAGCNxUCBBYEFGPCgXhtlBTXUVYziSFk8YWmsNHgMB0GA1UdDgQWBBSloP1m
+        WP253Xrhsp2fo9HlUBiU5zCCAS4GA1UdIASCASUwggEhMIIBHQYKKwYBBAFgCgQB
+        ATCCAQ0wgb4GCCsGAQUFBwICMIGxHoGuAEMARQBSAE4AIABHAHIAaQBkACAAQwBl
+        AHIAdABpAGYAaQBjAGEAdABpAG8AbgAgAEEAdQB0AGgAbwByAGkAdAB5ACAAQwBl
+        AHIAdABpAGYAaQBjAGEAdABlACAAUABvAGwAaQBjAHkAIABhAG4AZAAgAEMAZQBy
+        AHQAaQBmAGkAYwBhAHQAZQAgAFAAcgBhAGMAdABpAGMAZQAgAFMAdABhAHQAZQBt
+        AGUAbgB0MEoGCCsGAQUFBwIBFj5odHRwOi8vY2FmaWxlcy5jZXJuLmNoL2NhZmls
+        ZXMvY3AtY3BzL2Nlcm4tZ3JpZC1jYS1jcC1jcHMucGRmADAZBgkrBgEEAYI3FAIE
+        DB4KAFMAdQBiAEMAQTALBgNVHQ8EBAMCAYYwDwYDVR0TAQH/BAUwAwEB/zAfBgNV
+        HSMEGDAWgBT6e/vemw2j8lK3bO1bDwuipqb4BDCCAUQGA1UdHwSCATswggE3MIIB
+        M6CCAS+gggErhlJodHRwOi8vY2FmaWxlcy5jZXJuLmNoL2NhZmlsZXMvY3JsL0NF
+        Uk4lMjBSb290JTIwQ2VydGlmaWNhdGlvbiUyMEF1dGhvcml0eSUyMDIuY3JshoHU
+        bGRhcDovLy9DTj1DRVJOJTIwUm9vdCUyMENlcnRpZmljYXRpb24lMjBBdXRob3Jp
+        dHklMjAyLENOPUNFUk5QS0lST09UMDIsQ049Q0RQLENOPVB1YmxpYyUyMEtleSUy
+        MFNlcnZpY2VzLENOPVNlcnZpY2VzLENOPUNvbmZpZ3VyYXRpb24sREM9Y2VybixE
+        Qz1jaD9jZXJ0aWZpY2F0ZVJldm9jYXRpb25MaXN0P2Jhc2U/b2JqZWN0Q2xhc3M9
+        Y1JMRGlzdHJpYnV0aW9uUG9pbnQwggFEBggrBgEFBQcBAQSCATYwggEyMGcGCCsG
+        AQUFBzAChltodHRwOi8vY2FmaWxlcy5jZXJuLmNoL2NhZmlsZXMvY2VydGlmaWNh
+        dGVzL0NFUk4lMjBSb290JTIwQ2VydGlmaWNhdGlvbiUyMEF1dGhvcml0eSUyMDIu
+        Y3J0MIHGBggrBgEFBQcwAoaBuWxkYXA6Ly8vQ049Q0VSTiUyMFJvb3QlMjBDZXJ0
+        aWZpY2F0aW9uJTIwQXV0aG9yaXR5JTIwMixDTj1BSUEsQ049UHVibGljJTIwS2V5
+        JTIwU2VydmljZXMsQ049U2VydmljZXMsQ049Q29uZmlndXJhdGlvbixEQz1jZXJu
+        LERDPWNoP2NBQ2VydGlmaWNhdGU/YmFzZT9vYmplY3RDbGFzcz1jZXJ0aWZpY2F0
+        aW9uQXV0aG9yaXR5MA0GCSqGSIb3DQEBDQUAA4ICAQAv56iMPo0VUkrHxPYLjfyW
+        IL/TmYxxYldO8kCTKXyaRO4ZmwD6JjLaclTgSHz7gOKFL35ZF0Rv4nWk/ZJBl+dU
+        1udgBjF/uKK0v0m+7iEIOG0HORCCQCDgayuiLomI5eQp8KTgHrswHWL+ESxa3Hdv
+        vr7GBG/7EhrYwstm/tOJ8cKaeiooSxHw5Lgsqq229SxfO8fSyS8DAa5eUdWT/dVU
+        RDR8lGQShx4R9JOHSDg0y6rE7V0cw/BO3NQuaxMunFXkQprtWneJfR4uugMOKk/v
+        tMhQGCDB7o3CVhLGSb+76Tny+eSa2g+Zv17PGVfhnF9oynkCII+shX9TmOUsDEnS
+        7MWES58YwnpBZrxdeJVPEzVVuYEZP4QsLrIL1ynFqBwFAnPU48Hs6s+kOI/9BFJz
+        v+Fp/iw8BZSOclpJzA5rkW6yQ7LVfjFBV1CgyhO8GH5jhYBd5ZLvG8eLNm8Gpt+H
+        n30awoaDoMuHcGS5B6NOZLfwE+suTxMw8pjHhKXx7RkSoeZy72PinlbWn1tWLiPa
+        UMdkrb/WHOdMKaadQTDO/VyibBL49iJ8BAlERgIl9QaRDLjAIdD45rLdBe95HxSl
+        zpZqsxuI09eJ8+iLFJhTDH2BODoEuqbn6PB/5z2d5zuG5sr85Vzn81ddapuUT9Ra
+        /dB5eJQeFZ0WjtUOO3gS/A==
+        -----END CERTIFICATE-----
+
   cmd: null
   extraEnv:
-    RUCIO_MODE: "download"
+    JUPYTERHUB_SINGLEUSER_APP: "jupyter_server.serverapp.ServerApp"
+    RUCIO_MODE: "replica"
     RUCIO_WILDCARD_ENABLED: "1"
     RUCIO_BASE_URL: "https://vre-rucio.cern.ch"
     RUCIO_AUTH_URL: "https://vre-rucio-auth.cern.ch"
     RUCIO_DISPLAY_NAME: "VRE-RUCIO"
     RUCIO_NAME: "vre-rucio.cern.ch"
     RUCIO_SITE_NAME: "ROAMING"
-    RUCIO_CA_CERT: "/certs/rucio_ca.pem" # set in the gitlab image from the gitlab runner, thus needs to be set in the new image in a different way
     RUCIO_OIDC_AUTH: "env"
     RUCIO_OIDC_ENV_NAME: "REFRESH_TOKEN"
     RUCIO_DEFAULT_AUTH_TYPE: "oidc"
     RUCIO_OAUTH_ID: "rucio"
     RUCIO_DEFAULT_INSTANCE: "vre-rucio.cern.ch"
-
+    RUCIO_DESTINATION_RSE: "CERN-EOS"
+    RUCIO_RSE_MOUNT_PATH: "/eos/escape"
+    RUCIO_PATH_BEGINS_AT: "5"
+    RUCIO_CA_CERT: "/opt/cert.pem"
+    # RUCIO_CA_CERT: "/certs/rucio_ca.pem" # set in the gitlab image from the gitlab runner, thus needs to be set in the new image in a different way
+  
 proxy:
+  chp:
+    networkPolicy:
+      enabled: false
+  traefik:
+    networkPolicy:
+      enabled: false
   service:
-    type: LoadBalancer
-    loadBalancerIP: 137.138.6.77
-    annotations:
-      loadbalancer.openstack.org/network-id: "798d00f3-2af9-48a0-a7c3-a26d909a2d64"
-      service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
-      loadbalancer.openstack.org/cascade-delete: "false"
+    type: ClusterIP
+
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  hosts:
+    - jhub-vre.cern.ch 
+
+# LB over DNS via:
+# openstack server set --property landb-alias=jhub-vre.cern.ch--load-1- cern-vre-XYZ-node-0
+
+# old LBaaS config:
+# proxy:
+#   service:
+#     type: LoadBalancer
+#     loadBalancerIP: 137.138.6.77
+#     annotations:
+#       loadbalancer.openstack.org/network-id: "798d00f3-2af9-48a0-a7c3-a26d909a2d64"
+#       service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
+#       loadbalancer.openstack.org/cascade-delete: "false"
   # https:
   #   enabled: true
   #   hosts:
   #     - jhub-vre.cern.ch # change cert and url later if necessary
   #   letsencrypt: # autoprovisioning of certificate not working
   #     contactEmail: vre-admin@cern.ch
+  
