@@ -14,42 +14,48 @@
 echo "Create RUCIO Secrets Script Start"
 
 # Convert Certificte to PEM Keypair and adjust permission
-CERT_FLENAME="myCert"
-HOSTCERT="hostcert"
-HOSTKEY="hostkey"
+# CERT_FLENAME="myCert"
+# HOSTCERT="hostcert"
+# HOSTKEY="hostkey"
 
-openssl pkcs12 -in ${CERT_FLENAME}.p12 -clcerts -nokeys -out ${HOSTCERT}.pem
-openssl pkcs12 -in ${CERT_FLENAME}.p12 -nocerts -out ${HOSTKEY}.pem
+# openssl pkcs12 -in ${CERT_FLENAME}.p12 -clcerts -nokeys -out ${HOSTCERT}.pem
+# openssl pkcs12 -in ${CERT_FLENAME}.p12 -nocerts -out ${HOSTKEY}.pem
 
-chmod 600 ${HOSTCERT}.pem
-chmod 600 ${HOSTKEY}.pem
+# chmod 600 ${HOSTCERT}.pem
+# chmod 600 ${HOSTKEY}.pem
+
+# Once the certificates have been split, provide their path to be read when creating the secrets (NEEDS TO BE EXCLUDED FROM COMMITS!!):
+
+RAW_SECRETS_MAIN="/root/clusters/vre-cluster/rucio-secrets/main/"
+AUTHPROXIES="/root/clusters/vre-cluster/rucio-secrets/auth/"
+RAW_SECRETS_UI="/root/clusters/vre-cluster/rucio-secrets/webui/"
+RAW_SECRETS_BUNDLE="/root/clusters/vre-cluster/rucio-secrets/ca-bundle/"
+
+# RAW_SECRETS="secrets/tmp_local_secrets/"
+# RAW_SECRETS_MAIN="secrets/tmp_local_secrets/main/"
+# RAW_SECRETS_AUTH="secrets/tmp_local_secrets/auth/"
+# RAW_SECRETS_UI="secrets/tmp_local_secrets/ui/"
+# RAW_SECRETS_NB="secrets/tmp_local_secrets/notebook/"
+# RAW_SECRETS_BUNDLE="secrets/tmp_local_secrets/bundle/"
+# RAW_SECRETS_FTS="secrets/tmp_local_secrets/bundle/fts/"
 
 # kubeseal controller namespace
 CONTROLLER_NS="shared-services"
 CONTROLLER_NAME="sealed-secrets-cvre"
 
 # helm release names
-HELM_RELEASE_SERVER="rucio-server-cvre"
-helm_release_name_ui="rucio-ui-cvre"
-HELM_RELEASE_DAEMONS="rucio-daemons-cvre"
+HELM_RELEASE_SERVER="servers-vre"
+HELM_RELEASE_UI="webui-vre"
+HELM_RELEASE_DAEMONS="daemons-vre"
 
 # rucio namespace
-RUCIO_NS="rucio"
+RUCIO_NS="rucio-vre"
 
 # sealed secret output yaml prefix
 YAML_PRFX="ss_"
 
-# file location of raw certificate files (dir excluded from commit)
-RAW_SECRETS="secrets/tmp_local_secrets/"
-RAW_SECRETS_MAIN="secrets/tmp_local_secrets/main/"
-RAW_SECRETS_AUTH="secrets/tmp_local_secrets/auth/"
-RAW_SECRETS_UI="secrets/tmp_local_secrets/ui/"
-RAW_SECRETS_NB="secrets/tmp_local_secrets/notebook/"
-RAW_SECRETS_BUNDLE="secrets/tmp_local_secrets/bundle/"
-RAW_SECRETS_FTS="secrets/tmp_local_secrets/bundle/fts/"
-
 # Output dir
-SECRETS_STORE="secrets/"
+SECRETS_STORE="../secrets/rucio-vre/"
 
 echo "Create and apply main server secrets"
 
@@ -88,20 +94,20 @@ kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_SERVER}-auth-cafile.
 
 echo "Create and apply ui secrets"
 
-kubectl create secret generic ${helm_release_name_ui}-hostcert --dry-run=client --from-file=${RAW_SECRETS_UI}hostcert.pem -o yaml | \
-kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${helm_release_name_ui}-hostcert.yaml
+kubectl create secret generic ${HELM_RELEASE_UI}-hostcert --dry-run=client --from-file=${RAW_SECRETS_UI}hostcert.pem -o yaml | \
+kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_UI}-hostcert.yaml
 
-kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${helm_release_name_ui}-hostcert.yaml
+kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_UI}-hostcert.yaml
 
-kubectl create secret generic ${helm_release_name_ui}-hostkey --dry-run=client --from-file=${RAW_SECRETS_UI}hostkey.pem -o yaml | \
-kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${helm_release_name_ui}-hostkey.yaml
+kubectl create secret generic ${HELM_RELEASE_UI}-hostkey --dry-run=client --from-file=${RAW_SECRETS_UI}hostkey.pem -o yaml | \
+kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_UI}-hostkey.yaml
 
-kubectl apply -f  ${SECRETS_STORE}${YAML_PRFX}${helm_release_name_ui}-hostkey.yaml
+kubectl apply -f  ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_UI}-hostkey.yaml
 
-kubectl create secret generic ${HELM_RELEASE_SERVER}-cafile --dry-run=client --from-file=/etc/pki/tls/certs/ca.pem -o yaml | \
-kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${helm_release_name_ui}-cafile.yaml
+kubectl create secret generic ${HELM_RELEASE_UI}-cafile --dry-run=client --from-file=/etc/pki/tls/certs/ca.pem -o yaml | \
+kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_UI}-cafile.yaml
 
-kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${helm_release_name_ui}-cafile.yaml
+kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_UI}-cafile.yaml
 
 echo "Create rucio CA bundle for daemons"
 
@@ -110,33 +116,85 @@ mkdir ${RAW_SECRETS_BUNDLE}
 cp /etc/grid-security/certificates/*.0 ${RAW_SECRETS_BUNDLE}
 cp /etc/grid-security/certificates/*.signing_policy ${RAW_SECRETS_BUNDLE}
 
-kubectl create secret generic ${HELM_RELEASE_DAEMONS}-rucio-ca-bundle-reaper --from-file=${RAW_SECRETS_BUNDLE} -n rucio # kubeseal has problems with secretsthis large, so it needs to be created manually
-kubectl create secret generic ${HELM_RELEASE_DAEMONS}-rucio-ca-bundle --from-file=${RAW_SECRETS_BUNDLE} -n rucio
+kubectl create secret generic ${HELM_RELEASE_DAEMONS}-rucio-ca-bundle-reaper --from-file=${RAW_SECRETS_BUNDLE} --namespace=${RUCIO_NS} # kubeseal has problems with secretsthis large, so it needs to be created manually
+kubectl create secret generic ${HELM_RELEASE_DAEMONS}-rucio-ca-bundle --from-file=${RAW_SECRETS_BUNDLE} --namespace=${RUCIO_NS}
 
 echo "Create TLS secret"
 
-# kubectl create secret tls vre-rucio-server.tls-secret --key=${RAW_SECRETS_MAIN}hostkey.pem --cert=${RAW_SECRETS_MAIN}hostcert.pem -n=rucio 
+kubectl create secret tls rucio-server.tls-secret --dry-run=client --key=${RAW_SECRETS_MAIN}hostkey.pem --cert=${RAW_SECRETS_MAIN}hostcert.pem -o yaml | \
+kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}rucio-server.tls-secret
+
+kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}rucio-server.tls-secret
+
+echo "Create RSE secret for server to recognise S3 storage"
+
+kubectl create secret generic ${HELM_RELEASE_SERVER}-rse-accounts --dry-run=client --from-file=/root/clusters/vre-cluster/rucio-secrets/rse-accounts.json -o yaml \
+| kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_SERVER}-rse-accounts.yaml
+kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_SERVER}-rse-accounts.yaml
 
 echo "Create rucio DB secret"
 
-kubectl -n rucio create secret generic ${HELM_RELEASE_SERVER}-rucio-db --from-literal=dbconnectstring=${DB_CONNECT_STRING} --dry-run=client -o yaml | \
-kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_SERVER}-rucio-db.yaml # DB_CONNECT_STRING should be set manually in console beforehand
+yaml_file_secret="/root/clusters/vre-cluster/rucio-secrets/rucio-db.yaml"
 
-kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_SERVER}-rucio-db.yaml
+# name of output secret to apply
+OUTPUT_SECRET="rucio-db.yaml"
+cat ${yaml_file_secret} | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${OUTPUT_SECRET}
+kubectl apply -f ${OUTPUT_SECRET}
+rm -rf ${OUTPUT_SECRET}
 
-echo "Create service account secret for rucio client container to check initial server connection"
+echo "Create hermes secret"
 
-cat ${RAW_SECRETS}sso-secret.yaml | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}-sso-account.yaml
-kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}-sso-account.yaml
+yaml_file_secret="/root/clusters/vre-cluster/rucio-secrets/rucio-hermes.yaml"
 
-echo "Create and apply fts secrets"
+# name of output secret to apply
+OUTPUT_SECRET="rucio-hermes.yaml"
+cat ${yaml_file_secret} | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${OUTPUT_SECRET}
+kubectl apply -f ${OUTPUT_SECRET}
 
-kubectl create secret generic ${HELM_RELEASE_DAEMONS}-fts-cert --dry-run=client --from-file=${RAW_SECRETS_FTS}usercert.pem -o yaml | \
-kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${YAML_PRFX}${HELM_RELEASE_DAEMONS}-fts-cert.yaml
+rm -rf ${OUTPUT_SECRET}
 
-kubectl apply -f ${YAML_PRFX}${HELM_RELEASE_DAEMONS}-fts-cert.yaml
+echo "Create idp (IAM client for rucio accounts sync) secret"
 
-kubectl create secret generic ${HELM_RELEASE_DAEMONS}-fts-key --dry-run=client --from-file=${RAW_SECRETS_FTS}new_userkey.pem -o yaml | \
-kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${YAML_PRFX}${HELM_RELEASE_DAEMONS}-fts-key.yaml
+yaml_file_secret="/root/clusters/vre-cluster/rucio-secrets/idpsecrets.yaml"
 
-kubectl apply -f ${YAML_PRFX}${HELM_RELEASE_DAEMONS}-fts-key.yaml
+# name of output secret to apply
+OUTPUT_SECRET="idpsecrets.yaml"
+cat ${yaml_file_secret} | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${OUTPUT_SECRET}
+kubectl apply -f ${OUTPUT_SECRET}
+
+rm -rf ${OUTPUT_SECRET}
+
+kubectl create secret generic ${HELM_RELEASE_SERVER}-idpsecrets --dry-run=client --from-file=/root/clusters/vre-cluster/rucio-secrets/idpsecrets.json -o yaml | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_SERVER}-idpsecrets.yaml
+
+kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_SERVER}-idpsecrets.yaml
+
+kubectl create secret generic ${HELM_RELEASE_UI}-idpsecrets --dry-run=client --from-file=/root/clusters/vre-cluster/rucio-secrets/idpsecrets.json -o yaml | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_UI}-idpsecrets.yaml
+
+kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_UI}-idpsecrets.yaml
+
+kubectl create secret generic ${HELM_RELEASE_DAEMONS}-idpsecrets --dry-run=client --from-file=/root/clusters/vre-cluster/rucio-secrets/idpsecrets.json -o yaml | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_DAEMONS}-idpsecrets.yaml
+
+kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_DAEMONS}-idpsecrets.yaml
+
+echo "Create escape-service-account secret"
+
+yaml_file_secret="/root/clusters/vre-cluster/rucio-secrets/escape-service-account.yaml"
+
+# name of output secret to apply
+OUTPUT_SECRET="escape-service-account.yaml"
+cat ${yaml_file_secret} | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${OUTPUT_SECRET}
+kubectl apply -f ${OUTPUT_SECRET}
+
+rm -rf ${OUTPUT_SECRET}
+
+# echo "Create and apply fts secrets"
+
+# kubectl create secret generic ${HELM_RELEASE_DAEMONS}-fts-cert --dry-run=client --from-file=${RAW_SECRETS_FTS}usercert.pem -o yaml | \
+# kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${YAML_PRFX}${HELM_RELEASE_DAEMONS}-fts-cert.yaml
+
+# kubectl apply -f ${YAML_PRFX}${HELM_RELEASE_DAEMONS}-fts-cert.yaml
+
+# kubectl create secret generic ${HELM_RELEASE_DAEMONS}-fts-key --dry-run=client --from-file=${RAW_SECRETS_FTS}new_userkey.pem -o yaml | \
+# kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${YAML_PRFX}${HELM_RELEASE_DAEMONS}-fts-key.yaml
+
+# kubectl apply -f ${YAML_PRFX}${HELM_RELEASE_DAEMONS}-fts-key.yaml
