@@ -4,6 +4,10 @@ metadata:
   name: servers-vre
   namespace: rucio-vre
 spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
   sources:
   - repoURL: 'https://rucio.github.io/helm-charts/'
     chart: rucio-server
