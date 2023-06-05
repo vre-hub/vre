@@ -1,10 +1,8 @@
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+apiVersion: argoproj.io/v1alpha1
 kind: HelmRelease
 metadata:
   name: servers-vre
   namespace: rucio-vre
-  annotations:
-    flux.weave.works/automated: "false"
 
 spec:
   releaseName: servers-vre
