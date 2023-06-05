@@ -15,7 +15,7 @@ spec:
       - rucio-server-values.yaml
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: kubeseal
+    namespace: default
     
 
  
