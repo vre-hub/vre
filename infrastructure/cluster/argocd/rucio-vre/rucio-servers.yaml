@@ -22,7 +22,7 @@ spec:
   valuesFrom:
     - kind: Secret
       name: rucio-db
-      valuesKey: dbconnectstring
+      valuesKey: values.yaml
 
   values:
 
