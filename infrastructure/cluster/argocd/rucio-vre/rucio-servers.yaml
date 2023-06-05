@@ -1,4 +1,4 @@
-apiVersion: argoproj.io/v1alpha1
+apiVersion: source.toolkit.fluxcd.io/v1beta1
 kind: HelmRelease
 metadata:
   name: servers-vre
