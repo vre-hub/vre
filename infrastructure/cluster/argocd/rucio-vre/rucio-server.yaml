@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: servers-vre
+  namespace: rucio-vre
+spec:
+  project: default
+  source:
+    chart: server-vre
+    repoURL: https://rucio.github.io/helm-charts/
+    targetRevision: 1.30.0
+    helm:
+      releaseName: servers-vre
+      valueFiles:
+      - rucio-server-values.yaml
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: kubeseal
+    
+
+ 
+    
