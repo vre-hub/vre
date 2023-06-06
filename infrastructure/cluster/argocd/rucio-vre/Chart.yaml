@@ -1,9 +1,9 @@
 apiVersion: v2
 name: servers-vre-subchart
 type: application
-version: 1.30.0
+version: 1.0.0
 appVersion: "1.0.0"
 dependencies: 
 - name: rucio-server
   version: 1.30.0
-  repository: https://rucio.github.io/helm-charts/
+  repository: https://rucio.github.io/helm-charts
