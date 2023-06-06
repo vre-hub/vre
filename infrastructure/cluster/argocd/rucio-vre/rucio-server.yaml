@@ -8,16 +8,16 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: rucio-vre
-source:
-  path: infrastructure/cluster/argocd/rucio-vre/
-  repoURL: 'https://github.com/vre-hub/vre.git'
-  targetRevision: main
-syncPolicy:
-  automated: 
-    prune: true
-    selfHeal: true 
-  syncOptions: 
-  - CreateNamespace=true 
+  source:
+    path: infrastructure/cluster/argocd/rucio-vre/
+    repoURL: 'https://github.com/vre-hub/vre.git'
+    targetRevision: main
+  syncPolicy:
+    automated: 
+      prune: true
+      selfHeal: true 
+    syncOptions: 
+    - CreateNamespace=true 
   
 #   helm:
 #     parameters:
