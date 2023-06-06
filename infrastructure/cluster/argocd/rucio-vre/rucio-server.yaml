@@ -2,12 +2,12 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: servers-vre-subchart
-  namespace: rucio-vre
+  namespace: argocd
 spec:
   project: default
   destination:
     server: https://kubernetes.default.svc
-    namespace: rucio-vre
+    namespace: argocd
   source:
     path: infrastructure/cluster/argocd/rucio-vre/
     repoURL: 'https://github.com/vre-hub/vre.git'
