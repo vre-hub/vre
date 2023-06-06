@@ -7,31 +7,21 @@ spec:
   project: default
   destination:
     server: https://kubernetes.default.svc
-    namespace: default
+    namespace: rucio-vre
+#     namespace: default
   sources:
   - repoURL: 'https://rucio.github.io/helm-charts/'
     chart: rucio-server
     targetRevision: 1.30.0
     helm:
+      version: 1.30.0
+      releaseName: servers-vre
       valueFiles:
       - $values/infrastructure/cluster/argocd/rucio-vre/rucio-server-values.yaml
   - repoURL: 'https://github.com/vre-hub/vre.git'
-    targetRevision: dev
-    ref: values
-    
-# spec:
-#   project: default
-#   source:
-#     chart: server-vre
-#     repoURL: https://rucio.github.io/helm-charts/
-#     targetRevision: 1.30.0
-#     helm:
-#       releaseName: servers-vre
-#       valueFiles:
-#       - rucio-server-values.yaml
-#   destination:
-#     server: "https://kubernetes.default.svc"
-#     namespace: default
+#     targetRevision: dev
+#     ref: values
+
     
 
  
