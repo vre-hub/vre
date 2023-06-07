@@ -90,13 +90,11 @@ singleuser:
 
   networkPolicy:
     enabled: false
-  nodeSelector:
-    jupyter: singleuser # select node 2 to see debug network time out issue
   defaultUrl: "/lab" # leads the user directly to JupyterLab UI
   storage:
-    type: none # static
-    # static:
-    #   pvcName: jhub-singleuser # manually created StorageClass with Retain policy and PVC with 800Gi (refer to main-k8s.tf)
+    type: static
+    static:
+      pvcName: jhub-singleuser # manually created StorageClass with Retain policy and PVC with 800Gi (refer to main-k8s.tf)
     extraVolumes:
       # - name: cvfms-from-vre # commented out not working
       #   persistentVolumeClaim:
@@ -217,7 +215,6 @@ singleuser:
 
   cmd: null
   extraEnv:
-    # JUPYTERHUB_SINGLEUSER_APP: "jupyter_server.serverapp.ServerApp"
     RUCIO_MODE: "replica"
     RUCIO_WILDCARD_ENABLED: "1"
     RUCIO_BASE_URL: "https://vre-rucio.cern.ch"
@@ -233,41 +230,16 @@ singleuser:
     RUCIO_DESTINATION_RSE: "CERN-EOS"
     RUCIO_RSE_MOUNT_PATH: "/eos/escape"
     RUCIO_PATH_BEGINS_AT: "5"
-    RUCIO_CA_CERT: "/opt/cert.pem"
-    # RUCIO_CA_CERT: "/certs/rucio_ca.pem" # set in the gitlab image from the gitlab runner, thus needs to be set in the new image in a different way
-  
-proxy:
-  chp:
-    networkPolicy:
-      enabled: false
-  traefik:
-    networkPolicy:
-      enabled: false
-  service:
-    type: ClusterIP
+    RUCIO_CA_CERT: "/opt/cert.pem" # this could be set in the image as well
 
 ingress:
   enabled: true
   ingressClassName: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt" # this issues a certificate for the domain through cert-manager automatically
   hosts:
     - jhub-vre.cern.ch 
-
-# LB over DNS via:
-# openstack server set --property landb-alias=jhub-vre.cern.ch--load-1- cern-vre-XYZ-node-0
-
-# old LBaaS config:
-# proxy:
-#   service:
-#     type: LoadBalancer
-#     loadBalancerIP: 137.138.6.77
-#     annotations:
-#       loadbalancer.openstack.org/network-id: "798d00f3-2af9-48a0-a7c3-a26d909a2d64"
-#       service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
-#       loadbalancer.openstack.org/cascade-delete: "false"
-  # https:
-  #   enabled: true
-  #   hosts:
-  #     - jhub-vre.cern.ch # change cert and url later if necessary
-  #   letsencrypt: # autoprovisioning of certificate not working
-  #     contactEmail: vre-admin@cern.ch
-  
+  tls:
+    - hosts:
+        - jhub-vre.cern.ch
+      secretName: cert-manager-tls-ingress-secret-jhub
