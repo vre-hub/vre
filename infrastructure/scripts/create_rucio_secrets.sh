@@ -11,7 +11,7 @@
 # 4. Use the below script in the scripts directory (modify variabels if needed) to create a SealedSecret for each one of them and deploy them to the cluster
 # 5. The kubeseal controller will immediately create the kubernetes secret and maintain it, the sealed secret file is safe to commit to the repo
 
-echo "Create RUCIO Secrets Script Start"
+echo "Create RUCIO Secrets Script START"
 
 # Convert Certificte to PEM Keypair and adjust permission
 # CERT_FLENAME="myCert"
@@ -138,9 +138,9 @@ yaml_file_secret="/root/clusters/vre-cluster/rucio-secrets/rucio-db.yaml"
 
 # name of output secret to apply
 OUTPUT_SECRET="rucio-db.yaml"
-cat ${yaml_file_secret} | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${OUTPUT_SECRET}
-kubectl apply -f ${OUTPUT_SECRET}
-rm -rf ${OUTPUT_SECRET}
+cat ${yaml_file_secret} | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${OUTPUT_SECRET}
+kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${OUTPUT_SECRET}
+# rm -rf ${OUTPUT_SECRET}
 
 echo "Create hermes secret"
 
@@ -148,10 +148,10 @@ yaml_file_secret="/root/clusters/vre-cluster/rucio-secrets/rucio-hermes.yaml"
 
 # name of output secret to apply
 OUTPUT_SECRET="rucio-hermes.yaml"
-cat ${yaml_file_secret} | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${OUTPUT_SECRET}
-kubectl apply -f ${OUTPUT_SECRET}
+cat ${yaml_file_secret} | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${OUTPUT_SECRET}
+kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${OUTPUT_SECRET}
 
-rm -rf ${OUTPUT_SECRET}
+# rm -rf ${OUTPUT_SECRET}
 
 echo "Create idp (IAM client for rucio accounts sync) secret"
 
@@ -159,10 +159,10 @@ yaml_file_secret="/root/clusters/vre-cluster/rucio-secrets/idpsecrets.yaml"
 
 # name of output secret to apply
 OUTPUT_SECRET="idpsecrets.yaml"
-cat ${yaml_file_secret} | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${OUTPUT_SECRET}
-kubectl apply -f ${OUTPUT_SECRET}
+cat ${yaml_file_secret} | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${OUTPUT_SECRET}
+kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${OUTPUT_SECRET}
 
-rm -rf ${OUTPUT_SECRET}
+# rm -rf ${OUTPUT_SECRET}
 
 kubectl create secret generic ${HELM_RELEASE_SERVER}-idpsecrets --dry-run=client --from-file=/root/clusters/vre-cluster/rucio-secrets/idpsecrets.json -o yaml | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_SERVER}-idpsecrets.yaml
 
@@ -182,10 +182,13 @@ yaml_file_secret="/root/clusters/vre-cluster/rucio-secrets/escape-service-accoun
 
 # name of output secret to apply
 OUTPUT_SECRET="escape-service-account.yaml"
-cat ${yaml_file_secret} | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${OUTPUT_SECRET}
-kubectl apply -f ${OUTPUT_SECRET}
+cat ${yaml_file_secret} | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${OUTPUT_SECRET}
+kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${OUTPUT_SECRET}
 
-rm -rf ${OUTPUT_SECRET}
+
+echo "Create RUCIO Secrets Script END"
+
+# rm -rf ${OUTPUT_SECRET}
 
 # echo "Create and apply fts secrets"
 
