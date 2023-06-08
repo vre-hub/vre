@@ -5,7 +5,7 @@ metadata:
   namespace: rucio-vre
   annotations:
     flux.weave.works/automated: "false"
-
+ 
 spec:
   releaseName: servers-vre
   interval: 5m
