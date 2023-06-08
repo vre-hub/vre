@@ -4,7 +4,7 @@ metadata:
   name: servers-vre
   namespace: rucio-vre
   annotations:
-    flux.weave.works/automated: "false"
+    flux.weave.works/automated: "false" 
  
 spec:
   releaseName: servers-vre
