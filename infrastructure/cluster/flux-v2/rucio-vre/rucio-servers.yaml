@@ -94,13 +94,13 @@ spec:
         pullPolicy: IfNotPresent
       schedule: "17 1 * * *"
       selectorLabel: "'app in (rucio-server,rucio-server-trace,rucio-server-auth)'"
-      resources:
-        limits:
-        cpu: 500m
-        memory: 256Mi
-        requests:
-        cpu: 100m
-        memory: 128Mi
+#       resources:
+#         limits:
+#         cpu: 500m
+#         memory: 256Mi
+#         requests:
+#         cpu: 100m
+#         memory: 128Mi
 
     additionalSecrets:
       - volumeName: rucio-db
