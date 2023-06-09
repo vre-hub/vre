@@ -133,7 +133,7 @@ kubectl create secret generic ${HELM_RELEASE_DAEMONS}-rucio-ca-bundle --from-fil
 
 
 kubectl create secret generic ${HELM_RELEASE_DAEMONS}-rucio-db --dry-run=client --from-file=${RAW_SECRETS}rucio-db -o yaml | \
-kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_DAEMON}-rucio-db.yaml
+kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_DAEMONS}-rucio-db.yaml
 
 kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_DAEMONS}-rucio-db.yaml
 

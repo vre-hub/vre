@@ -22,7 +22,7 @@ spec:
   valuesFrom:
     - kind: Secret
       name: servers-vre-rucio-db
-      valuesKey: values.yaml
+      valuesKey: rucio-db
 
   values:
 
