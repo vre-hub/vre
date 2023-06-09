@@ -7,6 +7,13 @@ metadata:
     flux.weave.works/automated: "false" 
   
 spec:
+
+  install:
+   disableWait: true
+  upgrade:
+   disableWait: true
+   
+   
   releaseName: servers-vre
   interval: 2m
   chart:
