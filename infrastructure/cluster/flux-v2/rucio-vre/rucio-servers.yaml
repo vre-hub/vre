@@ -171,9 +171,9 @@ spec:
 
     authServerResources:
       limits:
-          cpu: "4000m"
-          memory: "4000Mi"
+          cpu: "1000m"
+          memory: "1000Mi"
       requests:
-        cpu: "2000m"
-        memory: "2000Mi"
+        cpu: "200m"
+        memory: "500Mi"
 
