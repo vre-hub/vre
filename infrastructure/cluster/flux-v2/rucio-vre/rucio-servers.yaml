@@ -9,20 +9,24 @@ metadata:
 spec:
 
   install:
-   disableWait: true
+#    disableWait: true
+   remediation:
+      retries: 3
   upgrade:
-   disableWait: true
+#    disableWait: true
+   remediation:
+      retries: 3
    
    
   releaseName: servers-vre
-  interval: 2m
+  interval: 10m
   chart:
     spec:
       sourceRef:
         kind: HelmRepository
         name: rucio-charts
         namespace: rucio-vre
-      interval: 1m
+      interval: 10m
       chart: rucio-server
       version: 1.30.0
 
