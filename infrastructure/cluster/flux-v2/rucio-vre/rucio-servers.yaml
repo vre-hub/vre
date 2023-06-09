@@ -8,14 +8,14 @@ metadata:
   
 spec:
 
-  install:
-#    disableWait: true
-   remediation:
-      retries: 3
-  upgrade:
-#    disableWait: true
-   remediation:
-      retries: 3
+#   install:
+# #    disableWait: true
+#    remediation:
+#       retries: 3
+#   upgrade:
+# #    disableWait: true
+#    remediation:
+#       retries: 3
    
    
   releaseName: servers-vre
