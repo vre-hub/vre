@@ -33,8 +33,8 @@ spec:
 
   values:
 
-    replicaCount: 2
-    authReplicaCount: 2
+    replicaCount: 1
+    authReplicaCount: 1
 
     useSSL:
       server: true
