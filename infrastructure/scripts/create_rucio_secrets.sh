@@ -25,7 +25,7 @@ echo "Create RUCIO Secrets Script START"
 # chmod 600 ${HOSTKEY}.pem
 
 # Once the certificates have been split, provide their path to be read when creating the secrets (NEEDS TO BE EXCLUDED FROM COMMITS!!):
-
+RAW_SECRETS="/root/clusters/vre-cluster/rucio-secrets/"
 RAW_SECRETS_MAIN="/root/clusters/vre-cluster/rucio-secrets/main/"
 AUTHPROXIES="/root/clusters/vre-cluster/rucio-secrets/auth/"
 RAW_SECRETS_UI="/root/clusters/vre-cluster/rucio-secrets/webui/"
@@ -75,6 +75,12 @@ kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLE
 
 kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_SERVER}-server-cafile.yaml
 
+kubectl create secret generic ${HELM_RELEASE_SERVER}-rucio-db --dry-run=client --from-file=${RAW_SECRETS}rucio-db -o yaml | \
+kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_SERVER}-rucio-db.yaml
+
+kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_SERVER}-rucio-db.yaml
+
+
 echo "Create and apply auth server secrets"
 
 kubectl create secret generic ${HELM_RELEASE_SERVER}-auth-hostcert --dry-run=client --from-file=${AUTHPROXIES}hostcert.pem -o yaml | \
@@ -109,6 +115,12 @@ kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLE
 
 kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_UI}-cafile.yaml
 
+kubectl create secret generic ${HELM_RELEASE_UI}-rucio-db --dry-run=client --from-file=${RAW_SECRETS}rucio-db -o yaml | \
+kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_UI}-rucio-db.yaml
+
+kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_UI}-rucio-db.yaml
+
+
 echo "Create rucio CA bundle for daemons"
 
 rm -rf ${RAW_SECRETS_BUNDLE}
@@ -118,6 +130,12 @@ cp /etc/grid-security/certificates/*.signing_policy ${RAW_SECRETS_BUNDLE}
 
 kubectl create secret generic ${HELM_RELEASE_DAEMONS}-rucio-ca-bundle-reaper --from-file=${RAW_SECRETS_BUNDLE} --namespace=${RUCIO_NS} # kubeseal has problems with secretsthis large, so it needs to be created manually
 kubectl create secret generic ${HELM_RELEASE_DAEMONS}-rucio-ca-bundle --from-file=${RAW_SECRETS_BUNDLE} --namespace=${RUCIO_NS}
+
+
+kubectl create secret generic ${HELM_RELEASE_DAEMONS}-rucio-db --dry-run=client --from-file=${RAW_SECRETS}rucio-db -o yaml | \
+kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_DAEMON}-rucio-db.yaml
+
+kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_DAEMONS}-rucio-db.yaml
 
 echo "Create TLS secret"
 
@@ -132,15 +150,15 @@ kubectl create secret generic ${HELM_RELEASE_SERVER}-rse-accounts --dry-run=clie
 | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_SERVER}-rse-accounts.yaml
 kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_SERVER}-rse-accounts.yaml
 
-echo "Create rucio DB secret"
+# echo "Create rucio DB secret"
 
-yaml_file_secret="/root/clusters/vre-cluster/rucio-secrets/rucio-db.yaml"
+# yaml_file_secret="/root/clusters/vre-cluster/rucio-secrets/rucio-db.yaml"
 
-# name of output secret to apply
-OUTPUT_SECRET="rucio-db.yaml"
-cat ${yaml_file_secret} | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${OUTPUT_SECRET}
-kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${OUTPUT_SECRET}
-# rm -rf ${OUTPUT_SECRET}
+# # name of output secret to apply
+# OUTPUT_SECRET="rucio-db.yaml"
+# cat ${yaml_file_secret} | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${OUTPUT_SECRET}
+# kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${OUTPUT_SECRET}
+# # rm -rf ${OUTPUT_SECRET}
 
 echo "Create hermes secret"
 
