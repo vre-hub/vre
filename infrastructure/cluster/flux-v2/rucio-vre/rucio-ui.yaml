@@ -17,7 +17,7 @@ spec:
       interval: 1m
   valuesFrom:
     - kind: Secret
-      name: rucio-db
+      name: webui-vre-rucio-db
       valuesKey: values.yaml
   values:
 

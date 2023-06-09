@@ -21,7 +21,7 @@ spec:
 
   valuesFrom:
     - kind: Secret
-      name: rucio-db
+      name: daemons-vre-rucio-db
       valuesKey: values.yaml
     - kind: Secret
       name: hermes-secret
