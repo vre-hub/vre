@@ -10,7 +10,7 @@ spec:
   releaseName: daemons-vre
   interval: 5m
   chart: 
-    spec:
+    spec: 
       sourceRef:
         kind: HelmRepository
         name: rucio-charts
