@@ -30,7 +30,7 @@ spec:
     authReplicaCount: 1
 
     useSSL:
-      server: true
+#       server: true
       authServer: true 
 
     image:
@@ -41,13 +41,13 @@ spec:
   # The API server listens on port 6443 (by default). 
   # Therefore, expose the API server on port 443 and listen to 6443. 
 
-    service:
-      type: ClusterIP
-      port: 80
-      targetPort: 80
-      protocol: TCP
-      name: http
-      annotations: {}
+#     service:
+#       type: ClusterIP
+#       port: 80
+#       targetPort: 80
+#       protocol: TCP
+#       name: http
+#       annotations: {}
 
     authService:
       type: ClusterIP
