@@ -9,7 +9,7 @@ metadata:
 spec:
   releaseName: daemons-vre
   interval: 5m
-  chart:
+  chart: 
     spec:
       sourceRef:
         kind: HelmRepository
