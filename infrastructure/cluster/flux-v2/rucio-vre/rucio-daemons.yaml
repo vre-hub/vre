@@ -27,8 +27,8 @@ spec:
       name: rucio-hermes
       valuesKey: username
     - kind: Secret
-      name: rucio-hermes
-      valuesKey: password
+      name: hermes-secret
+      valuesKey: values.yaml
 
   values:
 
