@@ -29,6 +29,6 @@ override.tf.json
 # example: *tfplan*
 
 # Exclude temporary local secrets dir except README
-!iac/secrets/tmp_local_secrets
-iac/secrets/tmp_local_secrets/*
-!iac/secrets/tmp_local_secrets/README.md
+!infrastructure/secrets/tmp_local_secrets
+!infrastructure/secrets/tmp_local_secrets/README.md
+infrastructure/secrets/tmp_local_secrets/*
