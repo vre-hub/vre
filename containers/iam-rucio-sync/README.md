@@ -13,4 +13,4 @@ python /vre/infrastructure/scripts/cron_scripts/sync_iam_rucio.py
 ```
 
 ## Version change
-Change the version in the `requirements.txt` and in the Dockerfile's `BASETAG`. 
+Change any file within the folder or the Dockerfile's `BASETAG` tag. 

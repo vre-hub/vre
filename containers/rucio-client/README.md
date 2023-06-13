@@ -1,4 +1,4 @@
-## VRE rucio-client container
+# VRE rucio-client container
 
 This directory contains the Dockerfile for the Rucio client enabled for the [ESCAPE](https://projectescape.eu/) VO, used to authenticate users to the VRE.
 
@@ -6,7 +6,7 @@ Please refer to the official [Rucio  clients repo](https://github.com/rucio/cont
 
 ## Rucio-clients version change
 
-This container depends on the `vre-base-ops` container, which in turn depends on the `rucio/rucio-server:release-1.30.0`. Therefore, to change the version of the rucio-client, please change the `vre-base-ops` container first.    
+This container depends on the `rucio/rucio-client:release-1.30.0`. Change any file within the folder or the Dockerfile's `BASETAG` tag. 
 
 ## Run with X.509 authentication
 
