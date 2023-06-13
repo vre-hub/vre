@@ -9,7 +9,7 @@ export IAM_SERVER=https://iam-escape.cloud.cnaf.infn.it
 export IAM_CLIENT_ID=my_client_id
 export IAM_CLIENT_SECRET=my_secret
 
-python sync_iam_rucio.py
+python /vre/infrastructure/scripts/cron_scripts/sync_iam_rucio.py
 ```
 
 ## Version change
