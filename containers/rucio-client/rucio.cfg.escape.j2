@@ -10,8 +10,8 @@ client_cert = {{ RUCIO_CFG_CLIENT_CERT | default('/opt/rucio/etc/client.crt') }}
 client_key = {{ RUCIO_CFG_CLIENT_KEY | default('/opt/rucio/etc/client.key') }}
 client_x509_proxy = {{ RUCIO_CFG_CLIENT_X509_PROXY | default('') }}
 request_retries = {{ RUCIO_CFG_REQUEST_RETRIES | default('3') }}
-oidc_issuer = {{ RUCIO_CFG_OIDC_ISSUER | default('escape') }}
-oidc_polling = {{ RUCIO_CFG_OIDC_POLLING | default('true') }}
+oidc_issuer = {{ RUCIO_CFG_OIDC_ISSUER | default('escape') }}  # TODO update 
+oidc_polling = {{ RUCIO_CFG_OIDC_POLLING | default('true') }}  # TODO update 
 
 [policy]
 permission = {{ RUCIO_CFG_POLICY_PERMISSION | default('escape')}}
