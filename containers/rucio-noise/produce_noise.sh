@@ -8,7 +8,7 @@ while read line
 do
     rses+=($line) 
 
-done < ./rses.txt
+done < /home/rses.txt
 
 len=${#rses[@]}
 
@@ -31,7 +31,7 @@ upload_and_transfer_and_delete () {
             RANDOM_STRING=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
             echo '*** generated random file identifier: '"$RANDOM_STRING"' ***'
 
-            filename=~/auto_uploaded_$RANDOM_STRING
+            filename=/home/auto_uploaded_$RANDOM_STRING
             did=auto_uploaded_$RANDOM_STRING
             
             echo '*** generating '"$FILE_SIZE"' file on local storage ***'
