@@ -2,7 +2,7 @@ ARG BASEIMAGE=rucio/rucio-server
 ARG BASETAG=release-1.30.0
  
 FROM $BASEIMAGE:$BASETAG
-LABEL maintainer="VRE Team @ CERN 22/23 - D. Gosein, E. Gazzarrini, E. Garcia"
+LABEL maintainer="VRE Team @ CERN 22/23 - E. Garcia, E. Gazzarrini, D. Gosein"
 
 # cleanup yum cache
 RUN yum upgrade -y \
@@ -33,7 +33,6 @@ RUN mkdir -p /etc/grid-security/vomsdir/escape \
 RUN curl -o /usr/bin/kubectl -L https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
 RUN chmod +x /usr/bin/kubectl
 
-USER $NB_UID
-WORKDIR $HOME
+WORKDIR /home
 
 ENTRYPOINT ["/bin/bash"]
