@@ -1,13 +1,12 @@
-ARG BASETAG=latest
+ARG BASETAG=v0.1.0
  
 # To be changed to specific version+hsa
-FROM ghcr.io/vre-hub/vre-base-layer-ops:${BASETAG}
-LABEL maintainer="VRE Team @ CERN"
+FROM ghcr.io/vre-hub/vre-base-ops:${BASETAG}
+LABEL maintainer="VRE Team @ CERN 22/23 - E. Garcia, E. Gazzarrini, D. Gosein"
 
-WORKDIR /home/user/
+# Workdir is /home
+COPY requirements.txt sync_iam_rucio.py iam-sync.conf /home/
 
-# # clone repo
-RUN git clone https://github.com/vre-hub/vre.git
-RUN pip install -r /home/user/vre/infrastructure/scripts/cron_scripts/iam-rucio-sync/requirements.txt
+RUN pip install -r /home/requirements.txt
 
 ENTRYPOINT ["/bin/bash"]

@@ -1,13 +1,13 @@
 ARG BASETAG=v0.1.0
- 
-# To be changed to specific version+hsa
-FROM ghcr.io/vre-hub/vre-base-layer-ops:${BASETAG}
+
+FROM ghcr.io/vre-hub/vre-base-ops:${BASETAG}
 LABEL maintainer="VRE Team @ CERN 22/23 - E. Garcia, E. Gazzarrini, D. Gosein"
 
-WORKDIR /home/user/
+# Workdir is /home
+COPY produce_noise.sh requirements.txt rses.txt /home/
+RUN pip install -r /home/requirements.txt
 
-# # clone repo
-RUN git clone https://github.com/vre-hub/vre.git
-RUN pip install -r /home/user/vre/infrastructure/scripts/cron_scripts/rucio-noise/requirements.txt
+# TODO check certs inside destination folder, it already contains a CA file
+# COPY ca-bundle.pem /etc/pki/tls/certs/
 
 ENTRYPOINT ["/bin/bash"]
