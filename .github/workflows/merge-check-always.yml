@@ -4,7 +4,7 @@ on:
   pull_request:
     paths-ignore:
       - '**.tf'
-      - 'infrastructure/cluster/flux/**'
+      - 'infrastructure/cluster/flux-v2/**'
 
 jobs:
   terraform-validate:

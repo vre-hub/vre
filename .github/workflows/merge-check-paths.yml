@@ -5,13 +5,13 @@ on:
   pull_request:
     paths:
       - '**.tf'
-      - 'infrastructure/cluster/flux/**'
+      - 'infrastructure/cluster/flux-v2/**'
   push:
     branches:
       - main
     paths:
       - '**.tf'
-      - 'infrastructure/cluster/flux/**'
+      - 'infrastructure/cluster/flux-v2/**'
 
 jobs:
   terraform-validate:
@@ -43,7 +43,7 @@ jobs:
         uses: ./.github/actions/tools
 
       - name: Validate Flux Manifests
-        working-directory: ./infrastructure/cluster/flux
+        working-directory: infrastructure/cluster/flux-v2
         run: |
           #!/usr/bin/env bash
           
