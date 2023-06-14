@@ -34,7 +34,6 @@ spec:
 
     additionalSecrets:
       idpsecrets:
-
         secretName: servers-vre-idpsecrets
         mountPath: /opt/rucio/etc/
         subPaths:
