@@ -5,5 +5,6 @@ metadata:
   name: dask-charts
   namespace: dask
 spec:
-  interval: 10m
-  url: https://helm.dask.org/
+  interval: 5m
+  url: https://dask.github.io/helm-chart/
+  # url: https://helm.dask.org/
