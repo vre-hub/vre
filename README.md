@@ -1,20 +1,16 @@
 :construction: *This repository is still under construction*
 
-[![Merge Check](https://github.com/cern-vre/cern-vre/actions/workflows/merge-check.yml/badge.svg)](https://github.com/cern-vre/cern-vre/actions/workflows/merge-check.yml)
-
-# CERN VRE
+[![Merge Check](https://github.com/cern-vre/cern-vre/actions/workflows/merge-check.yml/badge.svg)](https://github.com/vre-hub/vre/actions/workflows/merge-check-paths.yml)
+ 
+# VRE @ CERN
 
 ![](vre@CERN-logo.png)  
 *Designed with [freelogodesign](https://www.freelogodesign.org/)*
 
-The CERN Virtual Research Environment.
+The Virtual Research Environment developed at CERN.
 
 Please find the technical documentation for this repository here [CERN VRE Wiki](https://github.com/cern-vre/cern-vre/wiki).
 
 ## IT Architecture of the VRE
 
 ![](architecture.png)
-
-## Code Base
-
-![Visualization of the codebase](./diagram.svg)
