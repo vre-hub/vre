@@ -72,13 +72,7 @@ spec:
       path: /
       hosts: 
         - vre-rucio-ui.cern.ch
-
-    additionalSecrets:
-      idpsecrets:
-        secretName: idpsecrets
-        mountPath: /opt/rucio/etc/idpsecrets.json
-        subPath: idpsecrets.json
-
+        
     ## values used to configure apache
     httpd_config:
       legacy_dn: "False"
