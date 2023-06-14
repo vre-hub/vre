@@ -43,7 +43,7 @@ jobs:
         uses: ./.github/actions/tools
 
       - name: Validate Flux Manifests
-        working-directory: ./infrastructure/cluster/flux
+        working-directory: infrastructure/cluster/flux-v2
         run: |
           #!/usr/bin/env bash
           
