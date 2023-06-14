@@ -23,9 +23,32 @@ spec:
     - kind: Secret
       name: servers-vre-rucio-db
       valuesKey: values.yaml
+    - kind: Secret
+      name: servers-vre-idpsecrets
+      valuesKey: idpsecrets.json
+    - kind: Secret
+      name: rse-accounts
+      valuesKey: rse-accounts.json
 
   values:
 
+    additionalSecrets:
+      idpsecrets:
+      - volumeName: servers-vre-idpsecrets
+        secretName: servers-vre-idpsecrets 
+        mountPath: /opt/rucio/etc/idpsecrets.json
+        subPath: idpsecrets.json
+      - volumeName: servers-vre-rucio-db
+        secretName: servers-vre-rucio-db
+        mountPath: /opt/rucio/etc/rucio-db
+        subPath: rucio-db
+      - volumeName: rse-accounts
+        secretName: rse-accounts
+        mountPath: /opt/rucio/etc/rse-accounts.json
+        subPath: rse-accounts.json
+
+
+        
     replicaCount: 1
     authReplicaCount: 1
 
@@ -101,20 +124,6 @@ spec:
         requests:
           cpu: 100m
           memory: 128Mi
-
-    additionalSecrets:
-      - volumeName: rucio-db
-        secretName: rucio-db
-        mountPath: /opt/rucio/etc/rucio-db
-        subPath: rucio-db
-      - volumeName: idpsecrets
-        secretName: idpsecrets
-        mountPath: /opt/rucio/etc/idpsecrets.json
-        subPath: idpsecrets.json
-      - volumeName: rse-accounts
-        secretName: rse-accounts
-        mountPath: /opt/rucio/etc/rse-accounts.json
-        subPath: rse-accounts.json
   
     wsgi:
       daemonProcesses: "4"
