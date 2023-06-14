@@ -84,17 +84,17 @@ spec:
         #   tag: "latest"
         defaultUrl: "/lab" 
 
-  dask-gateway:
-    gateway:
-      auth:
-        jupyterhub:
-          apiTokenFromSecretName: hub
-          apiTokenFromSecretKey: hub.services.dask-gateway.apiToken
-          # apiToken: ###
-  dask-kubernetes:
-  #   # Use dask-kubernetes, rather than Dask Gateway, for creating Dask Clusters.
-  #   # Enabling this also requires
-  #   # 1. Setting `jupyterhub.singleuser.serviceAccountName: daskkubernetes`.
-  #   # 2. Ensuring that `dask-kubernetes` is in your singleuser environment.
-    enabled: true
+    dask-gateway:
+      gateway:
+        auth:
+          jupyterhub:
+            apiTokenFromSecretName: hub
+            apiTokenFromSecretKey: hub.services.dask-gateway.apiToken
+            # apiToken: ###
+    dask-kubernetes:
+    #   # Use dask-kubernetes, rather than Dask Gateway, for creating Dask Clusters.
+    #   # Enabling this also requires
+    #   # 1. Setting `jupyterhub.singleuser.serviceAccountName: daskkubernetes`.
+    #   # 2. Ensuring that `dask-kubernetes` is in your singleuser environment.
+      enabled: true
 
