@@ -8,7 +8,8 @@ metadata:
 spec:
   interval: 1m0s
   ref:
-    branch: main
+    # branch: main
+    branch: flux-elena
   secretRef:
     name: flux-system
   url: ssh://git@github.com/vre-hub/vre
