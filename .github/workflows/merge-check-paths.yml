@@ -5,13 +5,13 @@ on:
   pull_request:
     paths:
       - '**.tf'
-      - 'infrastructure/cluster/flux/**'
+      - 'infrastructure/cluster/flux-v2/**'
   push:
     branches:
       - main
     paths:
       - '**.tf'
-      - 'infrastructure/cluster/flux/**'
+      - 'infrastructure/cluster/flux-v2/**'
 
 jobs:
   terraform-validate:
