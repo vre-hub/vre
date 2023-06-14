@@ -23,12 +23,7 @@ spec:
     - kind: Secret
       name: servers-vre-rucio-db
       valuesKey: values.yaml
-    - kind: Secret
-      name: servers-vre-idpsecrets
-      valuesKey: idpsecrets.json
-    - kind: Secret
-      name: rse-accounts
-      valuesKey: rse-accounts.json
+
 
   values:
 

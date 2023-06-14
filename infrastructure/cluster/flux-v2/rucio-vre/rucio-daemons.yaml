@@ -28,6 +28,7 @@ spec:
       valuesKey: values.yaml
 
   values:
+  
     additionalSecrets:
       idpsecrets:
         secretName: daemons-vre-idpsecrets 
