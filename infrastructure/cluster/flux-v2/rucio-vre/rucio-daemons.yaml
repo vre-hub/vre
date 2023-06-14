@@ -28,6 +28,12 @@ spec:
       valuesKey: values.yaml
 
   values:
+    additionalSecrets:
+      idpsecrets:
+        secretName: daemons-vre-idpsecrets 
+        mountPath: /opt/rucio/etc/idpsecrets.json
+        subPath: idpsecrets.json
+
 
     additionalSecrets:
     - volumeName: daemons-vre-rucio-db
