@@ -51,10 +51,10 @@ upload_and_transfer_and_delete () {
     done
 }
 
-echo '* RUCIO Produce Noise START * '
+echo '* RUCIO Produce Noise script START * '
 
 for (( j=0; j<$len; j++ )); do
     upload_and_transfer_and_delete $j
 done
 
-echo '* RUCIO Produce Noise DONE * '
+echo '* RUCIO Produce Noise script DONE * '
