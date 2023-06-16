@@ -43,9 +43,9 @@ spec:
     replicaCount: 1
     authReplicaCount: 1
 
-    useSSL:
-#       server: true
-      authServer: true 
+    useSSL: true
+      # server: true
+      # authServer: true 
 
     image:
       repository: rucio/rucio-server
@@ -55,13 +55,12 @@ spec:
   # The API server listens on port 6443 (by default). 
   # Therefore, expose the API server on port 443 and listen to 6443. 
 
-#     service:
-#       type: ClusterIP
-#       port: 80
-#       targetPort: 80
-#       protocol: TCP
-#       name: http
-#       annotations: {}
+    service:
+      type: ClusterIP
+      port: 443
+      targetPort: 443
+      protocol: TCP
+      name: https
 
     authService:
       type: ClusterIP
@@ -69,7 +68,6 @@ spec:
       targetPort: 443
       protocol: TCP
       name: https
-      annotations: {}
 
     serverType:
       server: flask
@@ -85,17 +83,17 @@ spec:
       hosts:
         - "vre-rucio.cern.ch"
       tls:
-        - secretName: vre-rucio-server.tls-secret
+        - secretName: rucio-server.tls-secret
 
-#     authIngress:
-#       enabled: true
-#       annotations:
-#         kubernetes.io/ingress.class: nginx
-#         nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-#         nginx.ingress.kubernetes.io/ssl-redirect: "true"
-#       hosts:
-#         - "vre-rucio-auth.cern.ch"
-#       path: /
+    authIngress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: nginx
+        nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+        nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      hosts:
+        - "vre-rucio-auth.cern.ch"
+      path: /
 
     monitoring:
       enabled: true
@@ -119,6 +117,10 @@ spec:
     wsgi:
       daemonProcesses: "4"
       daemonThreads: "4"
+      
+    additionalEnvs:
+      - name: RUCIO_SSL_PROTOCOL
+        value: "all -SSLv2 -SSLv3" 
 
     httpd_config:
       mpm_mode: "event"
