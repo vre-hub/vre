@@ -43,9 +43,9 @@ spec:
     replicaCount: 1
     authReplicaCount: 1
 
-    useSSL: true
-      # server: true
-      # authServer: true 
+    useSSL:
+      server: true
+      authServer: true 
 
     image:
       repository: rucio/rucio-server
