@@ -137,26 +137,10 @@ kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_SERVER}-rse-accounts
 
 echo "Create rucio DB secret"
 
-yaml_file_secret="/root/clusters/vre-cluster/rucio-secrets/rucio-database/servers-vre-rucio-db.yaml"
+yaml_file_secret="/root/clusters/vre-cluster/rucio-secrets/rucio-database/rucio-db.yaml"
 
 # name of output secret to apply
-OUTPUT_SECRET="servers-vre-rucio-db.yaml"
-cat ${yaml_file_secret} | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${OUTPUT_SECRET}
-kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${OUTPUT_SECRET}
-
-
-yaml_file_secret="/root/clusters/vre-cluster/rucio-secrets/rucio-database/daemons-vre-rucio-db.yaml"
-
-# name of output secret to apply
-OUTPUT_SECRET="daemons-vre-rucio-db.yaml"
-cat ${yaml_file_secret} | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${OUTPUT_SECRET}
-kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${OUTPUT_SECRET}
-# rm -rf ${OUTPUT_SECRET}
-
-yaml_file_secret="/root/clusters/vre-cluster/rucio-secrets/rucio-database/webui-vre-rucio-db.yaml"
-
-# name of output secret to apply
-OUTPUT_SECRET="webui-vre-rucio-db.yaml"
+OUTPUT_SECRET="rucio-db.yaml"
 cat ${yaml_file_secret} | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${OUTPUT_SECRET}
 kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${OUTPUT_SECRET}
 
