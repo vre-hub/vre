@@ -29,15 +29,12 @@ spec:
 
   values:
     additionalSecrets:
-      daemons-vre-idpsecrets: 
-        secretName: daemons-vre-idpsecrets 
-        mountPath: /opt/rucio/etc/idpsecrets.json
-        subPath: idpsecrets.json
-      # rse-accounts:
-      #   secretName: rse-accounts
-      #   mountPath: /opt/rucio/etc/rse-accounts.cfg
-      #   subPath: rse-accounts.cfg
-
+      idpsecrets:
+        secretName: servers-vre-idpsecrets
+        mountPath: /opt/rucio/etc/
+        subPaths:
+          - idpsecrets.json
+   
       # TO START WITH
     abacusAccountCount: 1
     abacusCollectionReplicaCount: 1
