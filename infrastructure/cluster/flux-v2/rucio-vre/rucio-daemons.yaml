@@ -30,7 +30,7 @@ spec:
   values:
     additionalSecrets:
       idpsecrets:
-        secretName: servers-vre-idpsecrets
+        secretName: daemons-vre-idpsecrets
         mountPath: /opt/rucio/etc/
         subPaths:
           - idpsecrets.json
