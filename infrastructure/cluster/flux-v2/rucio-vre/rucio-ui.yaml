@@ -23,11 +23,10 @@ spec:
   values:
 
     additionalSecrets:
-      idpsecrets:
-        secretName: webui-vre-idpsecrets 
+      - volumeName: idpsecrets
+        secretName: idpsecrets
         mountPath: /opt/rucio/etc/idpsecrets.json
         subPath: idpsecrets.json
-
 
     replicaCount: 1
     exposeErrorLogs: True
