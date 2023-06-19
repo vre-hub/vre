@@ -29,7 +29,7 @@ spec:
       idpsecrets:
         secretName: idpsecrets
         mountPath: /opt/rucio/etc/idpsecrets.json
-        subPaths: idpsecrets.json
+        subPath: idpsecrets.json
       rse-accounts:
         secretName: rse-accounts
         mountPath: /opt/rucio/etc/rse-accounts.cfg
