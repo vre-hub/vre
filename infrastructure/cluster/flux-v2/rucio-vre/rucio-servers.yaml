@@ -6,7 +6,7 @@ metadata:
   annotations:
     flux.weave.works/automated: "false" 
    
-spec:
+spec: 
   releaseName: servers-vre
   interval: 5m
   chart:
