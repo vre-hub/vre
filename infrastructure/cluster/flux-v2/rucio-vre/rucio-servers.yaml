@@ -25,17 +25,16 @@ spec:
       valuesKey: values.yaml
 
   values:
-    # additionalSecrets:
-    #   - volumeName: idpsecrets
-    #     secretName: idpsecrets
-    #     mountPath: /opt/rucio/etc/idpsecrets.json
-    #     subPath: idpsecrets.json
-    #   - volumeName: rse-accounts
-    #     secretName: rse-accounts
-    #     mountPath: /opt/rucio/etc/rse-accounts.json
-    #     subPath: rse-accounts.json
-
-       
+    additionalSecrets:
+      idpsecrets:
+        secretName: idpsecrets
+        mountPath: /opt/rucio/etc/idpsecrets.json
+        subPaths: idpsecrets.json
+      rse-accounts:
+        secretName: rse-accounts
+        mountPath: /opt/rucio/etc/rse-accounts.cfg
+        subPath: rse-accounts.cfg
+             
     replicaCount: 1
     authReplicaCount: 1
 
