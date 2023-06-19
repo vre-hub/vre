@@ -38,7 +38,7 @@ spec:
     replicaCount: 1
     authReplicaCount: 1
 
-    useSSL:
+    # useSSL:
       # server: true
       # authServer: true 
 
