@@ -26,8 +26,8 @@ spec:
 
   values:
     additionalSecrets:
-      idpsecrets:
-        secretName: idpsecrets
+      servers-vre-idpsecrets:
+        secretName: servers-vre-idpsecrets
         mountPath: /opt/rucio/etc/idpsecrets.json
         subPath: idpsecrets.json
       rse-accounts:
