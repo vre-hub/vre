@@ -35,12 +35,12 @@ spec:
         mountPath: /opt/rucio/etc/rse-accounts.cfg
         subPath: rse-accounts.cfg
              
-    replicaCount: 1
-    authReplicaCount: 1
+    # replicaCount: 1
+    # authReplicaCount: 1
 
-    useSSL:
-      server: false 
-      authServer: true  
+    # useSSL:
+    #   server: false 
+      # authServer: true  
 
     image:
       repository: rucio/rucio-server
@@ -81,12 +81,12 @@ spec:
     #   protocol: TCP
     #   name: https
 
-    authService:
-      type: ClusterIP
-      port: 443
-      targetPort: 443
-      protocol: TCP
-      name: https
+    # authService:
+    #   type: ClusterIP
+    #   port: 443
+    #   targetPort: 443
+    #   protocol: TCP
+    #   name: https
 
     ingress:
       enabled: true
@@ -107,12 +107,15 @@ spec:
       path: /
       annotations:
         kubernetes.io/ingress.class: nginx
-        nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-        nginx.ingress.kubernetes.io/ssl-redirect: "true"
+        nginx.ingress.kubernetes.io/frontend-entry-points: http, https
+        nginx.ingress.kubernetes.io/ssl-redirect: "false"
+        
+        # nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+        # nginx.ingress.kubernetes.io/ssl-redirect: "true"
       hosts:
         - "vre-rucio-auth.cern.ch"
-      # tls:
-      #   - secretName:  rucio-server-auth.tls-secret 
+      tls:
+        - secretName:  rucio-server-auth.tls-secret 
       
     serverType:
       server: flask
