@@ -36,11 +36,11 @@ spec:
         subPath: rse-accounts.cfg
              
     replicaCount: 1
-    # authReplicaCount: 1
+    authReplicaCount: 1
 
     useSSL:
       server: false 
-      # authServer: true  
+      authServer: true  
 
     image:
       repository: rucio/rucio-server
@@ -112,6 +112,8 @@ spec:
         nginx.ingress.kubernetes.io/ssl-redirect: "true"
       hosts:
         - "vre-rucio-auth.cern.ch"
+      tls:
+        - secretName:  rucio-server-auth.tls-secret 
       
     serverType:
       server: flask
