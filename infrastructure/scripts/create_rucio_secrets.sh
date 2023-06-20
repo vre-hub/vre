@@ -156,10 +156,17 @@ kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${OUTPUT_SECRET}
 # rm -rf ${OUTPUT_SECRET}
 
 echo "Create idp (IAM client for rucio accounts sync) secret"
+# WATCH OUT that the secret needs to be called ${HELM_RELEASE_SERVER}-idpsecrets, but the reference in the .yaml file is only:
 
-kubectl create secret generic idpsecrets --dry-run=client --from-file=${RAW_SECRETS_IDP}idpsecrets.json -o yaml | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}idpsecrets.yaml
+# additionalSecrets:
+ #     idpsecrets:
+ #       secretName: idpsecrets
+ #       mountPath: /opt/rucio/etc/idpsecrets.json
+ #       subPath: idpsecrets.json
 
-kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}idpsecrets.yaml
+kubectl create secret generic ${HELM_RELEASE_SERVER}-idpsecrets --dry-run=client --from-file=${RAW_SECRETS_IDP}idpsecrets.json -o yaml | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_SERVER}-idpsecrets.yaml
+
+kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_SERVER}-idpsecrets.yaml
 
 echo "Create escape-service-account secret"
 
