@@ -44,6 +44,7 @@ spec:
       targetPort: 443
       protocol: TCP
       name: https
+      
     image:
       repository: rucio/rucio-ui
       tag: release-1.30.0
@@ -57,11 +58,11 @@ spec:
 
     minReadySeconds: 5
 
-    proxy:
-      rucioProxy: "vre-rucio.cern.ch"
-      rucioProxyScheme: "https"
-      rucioAuthProxy: "vre-rucio-auth.cern.ch"
-      rucioAuthProxyScheme: "https"
+    # proxy:
+    #   rucioProxy: "vre-rucio.cern.ch"
+    #   rucioProxyScheme: "https"
+    #   rucioAuthProxy: "vre-rucio-auth.cern.ch"
+    #   rucioAuthProxyScheme: "https"
 
     # ingress:
     #   enabled: true
