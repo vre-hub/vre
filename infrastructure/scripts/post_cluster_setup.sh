@@ -31,6 +31,7 @@ openstack server set --property landb-alias=vre-rucio--load-3-,vre-rucio-auth--l
 
 openstack loadbalancer set --description "vre-rucio.cern.ch" $LB_ID_MAIN
 openstack loadbalancer set --description "vre-rucio-auth.cern.ch" $LB_ID_AUTH
+openstack loadbalancer set --description "vre-rucio-ui.cern.ch" $LB_ID_UI
 
 ## set reana HA node labels
 kubectl label "${NODE_PREFIX}-3" reana.io/system=infrastructure
