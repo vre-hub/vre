@@ -40,7 +40,7 @@ spec:
 
     useSSL:
       server: false 
-      authServer: true  
+      # authServer: true  
 
     image:
       repository: rucio/rucio-server
