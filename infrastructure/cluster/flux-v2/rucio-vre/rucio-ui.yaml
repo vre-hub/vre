@@ -28,7 +28,7 @@ spec:
         mountPath: /opt/rucio/etc/idpsecrets.json
         subPath: idpsecrets.json
 
-    replicaCount: 1
+    # replicaCount: 1
     exposeErrorLogs: True
 
     service:
