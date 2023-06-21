@@ -28,11 +28,11 @@ spec:
       valuesKey: values.yaml
 
   values:
-    # additionalSecrets:
-    #   - volumeName: idpsecrets
-    #     secretName: idpsecrets
-    #     mountPath: /opt/rucio/etc/idpsecrets.json
-    #     subPath: idpsecrets.json
+    additionalSecrets:
+      - volumeName: idpsecrets
+        secretName: idpsecrets
+        mountPath: /opt/rucio/etc/idpsecrets.json
+        subPath: idpsecrets.json
    
       # TO START WITH
     abacusAccountCount: 1
@@ -476,10 +476,10 @@ spec:
         # scheme: "srm,gsiftp,root,http,https"
         # transfertool: "fts3"
         ftshosts: "https://fts3-pilot.cern.ch:8446"
-        cacert: "/opt/certs/CERN-bundle.pem"
+        cacert: "/etc/pki/tls/certs/CERN-bundle.pem"
         usercert: "/x509up"
         allow_user_oidc_tokens: "True"
-        request_oidc_scope: "openid profile offline_access wlcg.groups email"
+        request_oidc_scope: "openid profile offline_access wlcg.groups email fts:submit-transfer"
         request_oidc_audience: "fts"
 
       messaging-hermes:
