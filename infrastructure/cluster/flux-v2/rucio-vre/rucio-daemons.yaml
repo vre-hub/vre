@@ -477,7 +477,7 @@ spec:
         # transfertool: "fts3"
         ftshosts: "https://fts3-pilot.cern.ch:8446"
         cacert: "/opt/certs/CERN-bundle.pem"
-        usercert: "/opt/proxy/x509up"
+        usercert: "/x509up"
         allow_user_oidc_tokens: "True"
         request_oidc_scope: "openid profile offline_access wlcg.groups email"
         request_oidc_audience: "fts"
