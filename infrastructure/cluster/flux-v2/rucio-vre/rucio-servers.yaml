@@ -32,8 +32,8 @@ spec:
         subPath: idpsecrets.json
       rse-accounts:
         secretName: rse-accounts
-        mountPath: /opt/rucio/etc/rse-accounts.cfg
-        subPath: rse-accounts.cfg
+        mountPath: /opt/rucio/etc/rse-accounts.json
+        subPath: rse-accounts.json
              
     replicaCount: 1
     authReplicaCount: 1
