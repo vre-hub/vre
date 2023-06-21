@@ -33,7 +33,7 @@ spec:
                     name: iam-client
                     key: admin-client_id
               tty: true
-              imagePullPolicy: Always
+              imagePullPolicy: IfNotPresent
               command:
               - /bin/sh
               - -c
@@ -75,17 +75,19 @@ spec:
                     name: prod-rucio-x509up
                     key: x509up
               tty: true
-              imagePullPolicy: Always
+              imagePullPolicy: IfNotPresent
               command:
               - /bin/sh
               - -c
-              - date; cd /opt/rucio/etc/; pwd; ls; echo Hello from rucio-noise container; export RUCIO_CONFIG=/opt/rucio/etc/rucio.cfg; echo Exported config; rucio -vvv whoami
-              - cd /home; export FSIZE=10M; FILE_SIZE=${FSIZE} /bin/bash produce_noise.sh; echo 'Rucio noise ${FSIZE} Done!'
+              - date; cd /opt/rucio/etc/; pwd; ls; echo Hello from rucio-noise container; 
+                export RUCIO_CONFIG=/opt/rucio/etc/rucio.cfg; echo Exported config; cat /opt/rucio/etc/rucio.cfg; rucio -vvv whoami; 
+                cd /home; export FSIZE=10M; FILE_SIZE=${FSIZE} /bin/bash produce_noise.sh; echo "Rucio noise cronjob ${FSIZE} Done!"
               #- date; pwd; cd /root/.globus/; ls; chmod 400 userkey.pem; cd /opt/rucio/etc/; ls; echo Hello from rucio-noise container; export RUCIO_CONFIG=/opt/rucio/etc/rucio.cfg; echo Exported config; rucio -vvv whoami; FILE_SIZE=10M /bin/bash /home/user/vre/containers/rucio-noise/produce_noise.sh; echo 'DB cleanup Done!'
           volumes:
             - name: rucio-cfg
               secret:
                 secretName: escape-service-account
+                defaultMode: 0400
             - name: prod-rucio-x509up
               secret:
                 secretName: prod-rucio-x509up
