@@ -168,6 +168,14 @@ kubectl create secret generic ${HELM_RELEASE_SERVER}-idpsecrets --dry-run=client
 
 kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_SERVER}-idpsecrets.yaml
 
+kubectl create secret generic ${HELM_RELEASE_UI}-idpsecrets --dry-run=client --from-file=${RAW_SECRETS_IDP}idpsecrets.json -o yaml | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_UI}-idpsecrets.yaml
+
+kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_UI}-idpsecrets.yaml
+
+kubectl create secret generic ${HELM_RELEASE_DAEMONS}-idpsecrets --dry-run=client --from-file=${RAW_SECRETS_IDP}idpsecrets.json -o yaml | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_DAEMONS}-idpsecrets.yaml
+
+kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_DAEMONS}-idpsecrets.yaml
+
 echo "Create escape-service-account secret"
 
 yaml_file_secret="/root/clusters/vre-cluster/rucio-secrets/escape-service-account.yaml"
