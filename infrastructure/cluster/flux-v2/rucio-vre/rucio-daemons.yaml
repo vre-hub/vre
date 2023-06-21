@@ -17,18 +17,23 @@ spec:
         namespace: rucio-vre
       interval: 1m
       chart: rucio-daemons
-      version: 1.30.4
+      version: 1.30.0
 
   valuesFrom:
     - kind: Secret
-      name: daemons-vre-rucio-db
+      name: rucio-db
       valuesKey: values.yaml
     - kind: Secret
       name: hermes-secret 
       valuesKey: values.yaml
 
   values:
-
+    # additionalSecrets:
+    #   - volumeName: idpsecrets
+    #     secretName: idpsecrets
+    #     mountPath: /opt/rucio/etc/idpsecrets.json
+    #     subPath: idpsecrets.json
+   
       # TO START WITH
     abacusAccountCount: 1
     abacusCollectionReplicaCount: 1
@@ -450,17 +455,6 @@ spec:
         requests:
           cpu: 100m
           memory: 128Mi
-
-    additionalSecrets:
-      - volumeName: rucio-db
-        secretName: rucio-db
-        mountPath: /opt/rucio/etc/rucio-db
-        subPath: rucio-db
-
-      - volumeName: idpsecrets
-        secretName: idpsecrets
-        mountPath: /opt/rucio/etc/idpsecrets.json
-        subPath: idpsecrets.json
 
     config:
 

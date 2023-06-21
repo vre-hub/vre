@@ -19,18 +19,19 @@ do
     kubectl label "$NODE" role=ingress
 done
 
-# ## distribute internet traffic across three master nodes and set DN host names for rucio services: 
-# ##  vre-rucio.cern.ch (main rucio server), vre-rucio-auth.cern.ch (rucio authentication server), vre-rucio-ui.cern.ch (rucio webui interface)
-openstack server set --property landb-alias=vre-rucio--load-1-,vre-rucio-auth--load-1-,vre-rucio-ui--load-1- cern-vre-bl53fcf4f77h-master-0 
-openstack server set --property landb-alias=vre-rucio--load-2-,vre-rucio-auth--load-2-,vre-rucio-ui--load-2- cern-vre-bl53fcf4f77h-master-1
-openstack server set --property landb-alias=vre-rucio--load-3-,vre-rucio-auth--load-3-,vre-rucio-ui--load-3- cern-vre-bl53fcf4f77h-master-2
+# ## distribute internet traffic across three worker nodes and set DN host names for rucio services: 
+# ##  vre-rucio.cern.ch (main rucio server), vre-rucio-auth.cern.ch (rucio authentication server), vre-rucio-ui.cern.ch (rucio webui interface), jhub-vre.cern.ch (Jupyterhub with Rucio extension)
+openstack server set --property landb-alias=vre-rucio--load-1-,vre-rucio-auth--load-1-,vre-rucio-ui--load-1-,jhub-vre--load-1- cern-vre-bl53fcf4f77h-node-0 
+openstack server set --property landb-alias=vre-rucio--load-2-,vre-rucio-auth--load-2-,vre-rucio-ui--load-2-,jhub-vre--load-2- cern-vre-bl53fcf4f77h-node-1
+openstack server set --property landb-alias=vre-rucio--load-3-,vre-rucio-auth--load-3-,vre-rucio-ui--load-3-,jhub-vre--load-3- cern-vre-bl53fcf4f77h-node-2
 
 
 # TO USE CERN CLOUD LOADBALANCING: apply secrets, then terraform, when externalIP of LoadBalancer gets created run 'openstack loadbalancer list' on aiadm and use the newly created LB IDs to assign the DN name of your service to them:
-# backlog: this option uses the CERN's loadbalancer as a service and, although we used it in the beginning, it is extremely slow
+# backlog: this option uses the CERN's loadbalancer as a service 
 
-# openstack loadbalancer set --description "vre-rucio.cern.ch" $LB_ID_MAIN
-# openstack loadbalancer set --description "vre-rucio-auth.cern.ch" $LB_ID_AUTH
+openstack loadbalancer set --description "vre-rucio.cern.ch" $LB_ID_MAIN
+openstack loadbalancer set --description "vre-rucio-auth.cern.ch" $LB_ID_AUTH
+openstack loadbalancer set --description "vre-rucio-ui.cern.ch" $LB_ID_UI
 
 ## set reana HA node labels
 kubectl label "${NODE_PREFIX}-3" reana.io/system=infrastructure

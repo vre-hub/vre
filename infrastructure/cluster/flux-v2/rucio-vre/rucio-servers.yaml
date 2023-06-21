@@ -6,7 +6,7 @@ metadata:
   annotations:
     flux.weave.works/automated: "false" 
    
-spec:
+spec: 
   releaseName: servers-vre
   interval: 5m
   chart:
@@ -21,17 +21,26 @@ spec:
 
   valuesFrom:
     - kind: Secret
-      name: servers-vre-rucio-db
+      name: rucio-db
       valuesKey: values.yaml
 
   values:
-
+    additionalSecrets:
+      idpsecrets:
+        secretName: idpsecrets
+        mountPath: /opt/rucio/etc/idpsecrets.json
+        subPath: idpsecrets.json
+      rse-accounts:
+        secretName: rse-accounts
+        mountPath: /opt/rucio/etc/rse-accounts.cfg
+        subPath: rse-accounts.cfg
+             
     replicaCount: 1
     authReplicaCount: 1
 
     useSSL:
-#       server: true
-      authServer: true 
+      server: true 
+      authServer: true  
 
     image:
       repository: rucio/rucio-server
@@ -41,47 +50,76 @@ spec:
   # The API server listens on port 6443 (by default). 
   # Therefore, expose the API server on port 443 and listen to 6443. 
 
-#     service:
-#       type: ClusterIP
-#       port: 80
-#       targetPort: 80
-#       protocol: TCP
-#       name: http
-#       annotations: {}
-
-    authService:
-      type: ClusterIP
+    service:
+      type: LoadBalancer
       port: 443
       targetPort: 443
       protocol: TCP
       name: https
-      annotations: {}
+    #   # annotations:
+    #   #   # These annotations are only required for cluster templates <=1.18
+    #   #   loadbalancer.openstack.org/network-id: "798d00f3-2af9-48a0-a7c3-a26d909a2d64"
+    #   #   service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
+    #   #   loadbalancer.openstack.org/cascade-delete: "false"
 
+    authService:
+      type: LoadBalancer
+      port: 443
+      targetPort: 443
+      protocol: TCP
+      name: https
+    #   # annotations:
+    #   #   # These annotations are only required for cluster templates <=1.18
+    #   #   loadbalancer.openstack.org/network-id: "798d00f3-2af9-48a0-a7c3-a26d909a2d64"
+    #   #   service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
+    #   #   loadbalancer.openstack.org/cascade-delete: "false"
+    
+    # service:
+    #   type: ClusterIP
+    #   port: 443
+    #   targetPort: 443
+    #   protocol: TCP
+    #   name: https
+
+    # authService:
+    #   type: ClusterIP
+    #   port: 443
+    #   targetPort: 443
+    #   protocol: TCP
+    #   name: https
+
+    # ingress:
+    #   enabled: true
+    #   path: /
+    #   annotations:
+    #     kubernetes.io/ingress.class: nginx
+    #     nginx.ingress.kubernetes.io/frontend-entry-points: http, https
+    #     nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    #     # nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    #     # nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    #   hosts:
+    #     - "vre-rucio.cern.ch"
+    #   tls:
+    #     - secretName: rucio-server.tls-secret
+
+    # authIngress:
+    #   enabled: true
+    #   path: /
+    #   annotations:
+    #     kubernetes.io/ingress.class: nginx
+    #     nginx.ingress.kubernetes.io/frontend-entry-points: http, https
+    #     nginx.ingress.kubernetes.io/ssl-redirect: "false"
+        
+    #     # nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    #     # nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    #   hosts:
+    #     - "vre-rucio-auth.cern.ch"
+    #   tls:
+    #     - secretName:  rucio-server-auth.tls-secret 
+      
     serverType:
       server: flask
       authServer: flask
-
-    ingress:
-      enabled: true
-      path: /
-      annotations:
-        kubernetes.io/ingress.class: nginx
-        nginx.ingress.kubernetes.io/frontend-entry-points: http, https
-        nginx.ingress.kubernetes.io/ssl-redirect: "false"
-      hosts:
-        - "vre-rucio.cern.ch"
-      tls:
-        - secretName: vre-rucio-server.tls-secret
-
-#     authIngress:
-#       enabled: true
-#       annotations:
-#         kubernetes.io/ingress.class: nginx
-#         nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-#         nginx.ingress.kubernetes.io/ssl-redirect: "true"
-#       hosts:
-#         - "vre-rucio-auth.cern.ch"
-#       path: /
 
     monitoring:
       enabled: true
@@ -101,24 +139,14 @@ spec:
         requests:
           cpu: 100m
           memory: 128Mi
-
-    additionalSecrets:
-      - volumeName: rucio-db
-        secretName: rucio-db
-        mountPath: /opt/rucio/etc/rucio-db
-        subPath: rucio-db
-      - volumeName: idpsecrets
-        secretName: idpsecrets
-        mountPath: /opt/rucio/etc/idpsecrets.json
-        subPath: idpsecrets.json
-      - volumeName: rse-accounts
-        secretName: rse-accounts
-        mountPath: /opt/rucio/etc/rse-accounts.json
-        subPath: rse-accounts.json
   
     wsgi:
       daemonProcesses: "4"
       daemonThreads: "4"
+      
+    additionalEnvs:
+      - name: RUCIO_SSL_PROTOCOL
+        value: "all -SSLv2 -SSLv3" 
 
     httpd_config:
       mpm_mode: "event"

@@ -15,22 +15,36 @@ spec:
         name: rucio-charts
         namespace: rucio-vre
       interval: 1m
+
   valuesFrom:
     - kind: Secret
-      name: webui-vre-rucio-db
+      name: rucio-db
       valuesKey: values.yaml
   values:
+
+    additionalSecrets:
+      - volumeName: idpsecrets
+        secretName: idpsecrets
+        mountPath: /opt/rucio/etc/idpsecrets.json
+        subPath: idpsecrets.json
 
     replicaCount: 1
     exposeErrorLogs: True
 
+    # service:
+    #   type: NodePort
+    #   useSSL: true
+    #   port: 443
+    #   targetPort: https
+    #   portName: https
     service:
-      type: NodePort
+      type: LoadBalancer
       useSSL: true
       port: 443
-      targetPort: https
-      portName: https
-
+      targetPort: 443
+      protocol: TCP
+      name: https
+      
     image:
       repository: rucio/rucio-ui
       tag: release-1.30.0
@@ -50,27 +64,16 @@ spec:
     #   rucioAuthProxy: "vre-rucio-auth.cern.ch"
     #   rucioAuthProxyScheme: "https"
 
-    proxy:
-      rucioProxy: "vre-rucio.cern.ch"
-      rucioProxyScheme: "http"
-      rucioAuthProxy: "vre-rucio-auth.cern.ch"
-
-    ingress:
-      enabled: true
-      annotations:
-        kubernetes.io/ingress.class: nginx
-        nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-        nginx.ingress.kubernetes.io/ssl-redirect: "true"
-      path: /
-      hosts: 
-        - vre-rucio-ui.cern.ch
-
-    additionalSecrets:
-      idpsecrets:
-        secretName: idpsecrets
-        mountPath: /opt/rucio/etc/idpsecrets.json
-        subPath: idpsecrets.json
-
+    # ingress:
+    #   enabled: true
+    #   annotations:
+    #     kubernetes.io/ingress.class: nginx
+    #     nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    #     nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    #   path: /
+    #   hosts: 
+    #     - vre-rucio-ui.cern.ch
+        
     ## values used to configure apache
     httpd_config:
       legacy_dn: "False"

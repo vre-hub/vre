@@ -31,7 +31,7 @@ AUTHPROXIES="/root/clusters/vre-cluster/rucio-secrets/auth/"
 RAW_SECRETS_UI="/root/clusters/vre-cluster/rucio-secrets/webui/"
 RAW_SECRETS_BUNDLE="/root/clusters/vre-cluster/rucio-secrets/ca-bundle/"
 RAW_SECRETS_FTS="/root/clusters/vre-cluster/rucio-secrets/fts/"
-
+RAW_SECRETS_IDP="/root/clusters/vre-cluster/rucio-secrets/"
 # RAW_SECRETS="secrets/tmp_local_secrets/"
 # RAW_SECRETS_MAIN="secrets/tmp_local_secrets/main/"
 # RAW_SECRETS_AUTH="secrets/tmp_local_secrets/auth/"
@@ -56,7 +56,7 @@ RUCIO_NS="rucio-vre"
 YAML_PRFX="ss_"
 
 # Output dir
-SECRETS_STORE="../secrets/rucio-vre/"
+SECRETS_STORE="/root/clusters/vre-cluster/vre-hub/vre/infrastructure/secrets/rucio-vre/"
 
 echo "Create and apply main server secrets"
 
@@ -137,26 +137,10 @@ kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_SERVER}-rse-accounts
 
 echo "Create rucio DB secret"
 
-yaml_file_secret="/root/clusters/vre-cluster/rucio-secrets/rucio-database/servers-vre-rucio-db.yaml"
+yaml_file_secret="/root/clusters/vre-cluster/rucio-secrets/rucio-database/rucio-db.yaml"
 
 # name of output secret to apply
-OUTPUT_SECRET="servers-vre-rucio-db.yaml"
-cat ${yaml_file_secret} | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${OUTPUT_SECRET}
-kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${OUTPUT_SECRET}
-
-
-yaml_file_secret="/root/clusters/vre-cluster/rucio-secrets/rucio-database/daemons-vre-rucio-db.yaml"
-
-# name of output secret to apply
-OUTPUT_SECRET="daemons-vre-rucio-db.yaml"
-cat ${yaml_file_secret} | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${OUTPUT_SECRET}
-kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${OUTPUT_SECRET}
-# rm -rf ${OUTPUT_SECRET}
-
-yaml_file_secret="/root/clusters/vre-cluster/rucio-secrets/rucio-database/webui-vre-rucio-db.yaml"
-
-# name of output secret to apply
-OUTPUT_SECRET="webui-vre-rucio-db.yaml"
+OUTPUT_SECRET="rucio-db.yaml"
 cat ${yaml_file_secret} | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${OUTPUT_SECRET}
 kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${OUTPUT_SECRET}
 
@@ -172,27 +156,17 @@ kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${OUTPUT_SECRET}
 # rm -rf ${OUTPUT_SECRET}
 
 echo "Create idp (IAM client for rucio accounts sync) secret"
+# WATCH OUT that the secret needs to be called ${HELM_RELEASE_SERVER}-idpsecrets, but the reference in the .yaml file is only:
 
-yaml_file_secret="/root/clusters/vre-cluster/rucio-secrets/idpsecrets.yaml"
+# additionalSecrets:
+ #     idpsecrets:
+ #       secretName: idpsecrets
+ #       mountPath: /opt/rucio/etc/idpsecrets.json
+ #       subPath: idpsecrets.json
 
-# name of output secret to apply
-OUTPUT_SECRET="idpsecrets.yaml"
-cat ${yaml_file_secret} | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${OUTPUT_SECRET}
-kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${OUTPUT_SECRET}
-
-# rm -rf ${OUTPUT_SECRET}
-
-kubectl create secret generic ${HELM_RELEASE_SERVER}-idpsecrets --dry-run=client --from-file=/root/clusters/vre-cluster/rucio-secrets/idpsecrets.json -o yaml | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_SERVER}-idpsecrets.yaml
+kubectl create secret generic ${HELM_RELEASE_SERVER}-idpsecrets --dry-run=client --from-file=${RAW_SECRETS_IDP}idpsecrets.json -o yaml | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_SERVER}-idpsecrets.yaml
 
 kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_SERVER}-idpsecrets.yaml
-
-kubectl create secret generic ${HELM_RELEASE_UI}-idpsecrets --dry-run=client --from-file=/root/clusters/vre-cluster/rucio-secrets/idpsecrets.json -o yaml | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_UI}-idpsecrets.yaml
-
-kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_UI}-idpsecrets.yaml
-
-kubectl create secret generic ${HELM_RELEASE_DAEMONS}-idpsecrets --dry-run=client --from-file=/root/clusters/vre-cluster/rucio-secrets/idpsecrets.json -o yaml | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_DAEMONS}-idpsecrets.yaml
-
-kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_DAEMONS}-idpsecrets.yaml
 
 echo "Create escape-service-account secret"
 
