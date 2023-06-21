@@ -417,7 +417,7 @@ spec:
           cpu: "100m"
 
     ftsRenewal:
-      enabled: 1
+      enabled: 0
       schedule: "12 */6 * * *"
       # image:
       #   repository: ghcr.io/goseind/fts-cron # rucio/fts-cron (until next release)
