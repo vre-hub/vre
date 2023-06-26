@@ -470,7 +470,7 @@ spec:
         idpsecrets: "/opt/rucio/etc/idpsecrets.json"
         admin_issuer: "escape"
         expected_audience: "rucio"
-        expected_scope: "openid profile"
+        # expected_scope: "openid profile"
 
       monitor:
         enable_metrics: "True"
@@ -490,7 +490,7 @@ spec:
         request_oidc_scope: "openid profile offline_access wlcg.groups email fts:submit-transfer"
         request_oidc_audience: "fts"
 
-      messaging-hermes:
+      messaging_hermes:
         port: "61113"
         nonssl_port: "61113"
         use_ssl: "False"
