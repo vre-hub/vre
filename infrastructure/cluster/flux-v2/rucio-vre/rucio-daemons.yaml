@@ -415,30 +415,41 @@ spec:
         requests:
           memory: "100Mi"
           cpu: "100m"
-
+          
     ftsRenewal:
-      enabled: 0
       schedule: "12 */6 * * *"
-      # image:
-      #   repository: ghcr.io/goseind/fts-cron # rucio/fts-cron (until next release)
-      #   tag: latest
-      #   pullPolicy: Always
+      enabled: 1
+      image:
+        repository: rucio/fts-cron
+        tag: 1.30.8
+        pullPolicy: Always
       vo: "escape"
       voms: "escape"
-      # gridPassphrase:
-      #   required: true
-      #   existingSecret:
-      #     name: 'rucio-daemons-cvre-grid-passphrase'
-      #     key: 'passphrase'
-      # servers: "https://fts3-devel.cern.ch:8446,https://cmsfts3.fnal.gov:8446,https://fts3.cern.ch:8446,https://lcgfts3.gridpp.rl.ac.uk:8446,https://fts3-pilot.cern.ch:8446"
-      # ftsCert:
-      #   existingSecret:
-      #     name: 'rucio-daemons-cvre-fts-cert '
-      #     key: 'usercert.pem'
-      # ftsKey:
-      #   existingSecret:
-      #     name: 'rucio-daemons-cvre-fts-key'
-      #     key: 'userkey.pem'
+      servers: "https://fts3-devel.cern.ch:8446,https://fts3-pilot.cern.ch:8446"
+      
+    # ftsRenewal:
+    #   enabled: 0
+    #   schedule: "12 */6 * * *"
+    #   # image:
+    #   #   repository: ghcr.io/goseind/fts-cron # rucio/fts-cron (until next release)
+    #   #   tag: latest
+    #   #   pullPolicy: Always
+    #   vo: "escape"
+    #   voms: "escape"
+    #   # gridPassphrase:
+    #   #   required: true
+    #   #   existingSecret:
+    #   #     name: 'rucio-daemons-cvre-grid-passphrase'
+    #   #     key: 'passphrase'
+    #   # servers: "https://fts3-devel.cern.ch:8446,https://cmsfts3.fnal.gov:8446,https://fts3.cern.ch:8446,https://lcgfts3.gridpp.rl.ac.uk:8446,https://fts3-pilot.cern.ch:8446"
+    #   # ftsCert:
+    #   #   existingSecret:
+    #   #     name: 'rucio-daemons-cvre-fts-cert '
+    #   #     key: 'usercert.pem'
+    #   # ftsKey:
+    #   #   existingSecret:
+    #   #     name: 'rucio-daemons-cvre-fts-key'
+    #   #     key: 'userkey.pem'
  
       resources:
         limits:
@@ -490,6 +501,8 @@ spec:
         request_oidc_scope: "openid profile offline_access wlcg.groups email fts:submit-transfer"
         request_oidc_audience: "fts"
 
+      # this needs to be messaging_hermes and not messaging-hermes for some reason
+      
       messaging_hermes:
         port: "61113"
         nonssl_port: "61113"
@@ -497,4 +510,3 @@ spec:
         destination: "/topic/eosc.rucio.events" #"/topic/escape.rucio.events" changed from escape
         brokers: "dashb-mb.cern.ch"
         voname: "escape"
-        
