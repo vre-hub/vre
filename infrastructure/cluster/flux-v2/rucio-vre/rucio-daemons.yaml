@@ -41,14 +41,6 @@ spec:
         secretName: rucio-x509up 
         mountPath: /x509up
         subPath: x509up
-      - volumeName: fts-cert
-        secretName: fts-cert
-        mountPath: /etc/grid-security/hostcert.pem
-        subPath: hostcert.pem
-      - volumeName: fts-key
-        secretName: fts-key
-        mountPath: /etc/grid-security/hostkey.pem
-        subPath: hostkey.pem
    
       # TO START WITH
     abacusAccountCount: 1
@@ -426,39 +418,22 @@ spec:
           
     ftsRenewal:
       schedule: "12 */6 * * *"
-      enabled: 0
+      enabled: 1
       image:
         repository: rucio/fts-cron
         tag: 1.30.8
         pullPolicy: Always
-      vo: "escape"
-      voms: "escape"
+      vos:
+        - vo: "escape"
+          voms: "escape"
       servers: "https://fts3-devel.cern.ch:8446,https://fts3-pilot.cern.ch:8446"
-      
-    # ftsRenewal:
-    #   enabled: 0
-    #   schedule: "12 */6 * * *"
-    #   # image:
-    #   #   repository: ghcr.io/goseind/fts-cron # rucio/fts-cron (until next release)
-    #   #   tag: latest
-    #   #   pullPolicy: Always
-    #   vo: "escape"
-    #   voms: "escape"
-    #   # gridPassphrase:
-    #   #   required: true
-    #   #   existingSecret:
-    #   #     name: 'rucio-daemons-cvre-grid-passphrase'
-    #   #     key: 'passphrase'
-    #   # servers: "https://fts3-devel.cern.ch:8446,https://cmsfts3.fnal.gov:8446,https://fts3.cern.ch:8446,https://lcgfts3.gridpp.rl.ac.uk:8446,https://fts3-pilot.cern.ch:8446"
-    #   # ftsCert:
-    #   #   existingSecret:
-    #   #     name: 'rucio-daemons-cvre-fts-cert '
-    #   #     key: 'usercert.pem'
-    #   # ftsKey:
-    #   #   existingSecret:
-    #   #     name: 'rucio-daemons-cvre-fts-key'
-    #   #     key: 'userkey.pem'
- 
+      secretMounts:
+        - secretName: fts-cert
+          mountPath: /opt/rucio/certs/usercert.pem
+          subPath: usercert.pem
+        - secretName: fts-key
+          mountPath: /opt/rucio/certs/new_userkey.pem
+          subPath: new_userkey.pem
       resources:
         limits:
           cpu: 500m
@@ -521,5 +496,6 @@ spec:
 
       messaging_fts3:
         port: "61123"
+        use_ssl: "False"
         brokers: "dashb-mb.cern.ch"
         voname: "escape"
