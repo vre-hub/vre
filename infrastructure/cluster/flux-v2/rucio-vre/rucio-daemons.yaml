@@ -51,7 +51,7 @@ spec:
     conveyorTransferSubmitterCount: 3
     conveyorPollerCount: 3
     conveyorFinisherCount: 1
-    conveyorReceiverCount: 1
+    conveyorReceiverCount: 0
     conveyorStagerCount: 0
     conveyorThrottlerCount: 0
     conveyorPreparerCount: 2
