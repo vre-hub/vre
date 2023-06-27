@@ -46,25 +46,25 @@ spec:
     abacusAccountCount: 1
     abacusCollectionReplicaCount: 1
     abacusRseCount: 1
-    automatixCount: 0
+    automatixCount: 1
     cacheConsumerCount: 0
-    conveyorTransferSubmitterCount: 1
-    conveyorPollerCount: 1
+    conveyorTransferSubmitterCount: 3
+    conveyorPollerCount: 3
     conveyorFinisherCount: 1
-    conveyorReceiverCount: 0
+    conveyorReceiverCount: 1
     conveyorStagerCount: 0
     conveyorThrottlerCount: 0
-    conveyorPreparerCount: 0
+    conveyorPreparerCount: 2
     darkReaperCount: 0
-    hermesCount: 1
+    hermesCount: 2
     hermes2Count: 0
     judgeCleanerCount: 1
-    judgeEvaluatorCount: 1
-    judgeInjectorCount: 1
-    judgeRepairerCount: 1
+    judgeEvaluatorCount: 3
+    judgeInjectorCount: 2
+    judgeRepairerCount: 2
     oauthManagerCount: 1
     undertakerCount: 1
-    reaperCount: 1 #4 ELENA changed to debug
+    reaperCount: 4 
     replicaRecovererCount: 0
     transmogrifierCount: 1
     tracerKronosCount: 0
@@ -196,7 +196,7 @@ spec:
           cpu: "700m"
 
     conveyorReceiver:
-      threads: 1
+      threads: 3
       podAnnotations: {}
       resources:
         limits:
@@ -218,7 +218,7 @@ spec:
           cpu: "700m"
 
     conveyorPreparer:
-      threads: 1
+      threads: 2
       podAnnotations: {}
       resources:
         limits:
@@ -245,7 +245,7 @@ spec:
           cpu: "700m"
 
     hermes:
-      threads: 1
+      threads: 2
       podAnnotations: {}
       bulk: 1000
       sleepTime: 10
