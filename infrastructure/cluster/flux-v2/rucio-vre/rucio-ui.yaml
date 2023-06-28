@@ -58,11 +58,10 @@ spec:
 
     minReadySeconds: 5
 
-    # proxy:
-    #   rucioProxy: "vre-rucio.cern.ch"
-    #   rucioProxyScheme: "https"
-    #   rucioAuthProxy: "vre-rucio-auth.cern.ch"
-    #   rucioAuthProxyScheme: "https"
+    proxy:
+      rucioProxy: "vre-rucio.cern.ch"
+      rucioProxyScheme: "http"
+      rucioAuthProxy: "vre-rucio-auth.cern.ch"
 
     # ingress:
     #   enabled: true
