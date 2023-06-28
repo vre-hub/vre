@@ -60,8 +60,9 @@ spec:
 
     proxy:
       rucioProxy: "vre-rucio.cern.ch"
-      rucioProxyScheme: "http"
+      rucioProxyScheme: "https"
       rucioAuthProxy: "vre-rucio-auth.cern.ch"
+      rucioAuthProxyScheme: "https"
 
     # ingress:
     #   enabled: true
