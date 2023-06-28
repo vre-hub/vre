@@ -43,8 +43,8 @@ upload_and_transfer_and_delete () {
 
             echo 'sleeping' sleep 3600 
 
-         #    echo '*** removing all replicas and dids associated to from rse '"${rses[$1]}"' and adding rule to rse '"${rses[$i]}"'' 
-         #    rucio -v erase $RUCIO_SCOPE:$filename
+            echo '*** removing all replicas and dids associated to from rse '"${rses[$1]}"' and adding rule to rse '"${rses[$i]}"'' 
+            rucio -v erase $RUCIO_SCOPE:$filename
 
             rm -f $filename
 	    fi
