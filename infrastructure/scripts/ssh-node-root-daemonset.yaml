@@ -1,3 +1,6 @@
+# to apply to cluster when in need of SSHing into a specific node 
+# change the nodeName as you like, according to the Openstack characteristics 
+
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:

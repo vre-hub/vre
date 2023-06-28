@@ -122,6 +122,11 @@ cp /etc/grid-security/certificates/*.signing_policy ${RAW_SECRETS_BUNDLE}
 kubectl create secret generic ${HELM_RELEASE_DAEMONS}-rucio-ca-bundle-reaper --from-file=${RAW_SECRETS_BUNDLE} --namespace=${RUCIO_NS} # kubeseal has problems with secretsthis large, so it needs to be created manually
 kubectl create secret generic ${HELM_RELEASE_DAEMONS}-rucio-ca-bundle --from-file=${RAW_SECRETS_BUNDLE} --namespace=${RUCIO_NS}
 
+kubectl create secret generic ${HELM_RELEASE_DAEMONS}-cafile --dry-run=client --from-file=/etc/pki/tls/certs/ca.pem -o yaml | \
+kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_DAEMONS}-cafile.yaml
+
+kubectl apply -f ${SECRETS_STORE}${YAML_PRFX}${HELM_RELEASE_DAEMONS}-cafile.yaml
+
 echo "Create TLS secret"
 
 kubectl create secret tls rucio-server.tls-secret --dry-run=client --key=${RAW_SECRETS_MAIN}hostkey.pem --cert=${RAW_SECRETS_MAIN}hostcert.pem -o yaml | \
