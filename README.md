@@ -9,7 +9,9 @@
 
 The Virtual Research Environment developed at CERN.
 
-Please find the technical documentation for this repository here [CERN VRE Wiki](https://github.com/cern-vre/cern-vre/wiki).
+Please find the user documentation for the VRE here: [CERN VRE docs](https://vre-hub.github.io/).
+
+Please find the technical documentation for this repository here: [CERN VRE Wiki](https://github.com/cern-vre/cern-vre/wiki).
 
 ## IT Architecture of the VRE
 
