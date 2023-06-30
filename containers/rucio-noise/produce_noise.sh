@@ -39,12 +39,12 @@ upload_and_transfer_and_delete () {
             echo '*** filename: '"$filename"''
 
             echo '*** uploading to rse '"${rses[$1]}"' and adding rule to rse '"${rses[$i]}"'' 
-            rucio -v upload --rse ${rses[$1]} --lifetime $FILE_LIFETIME --scope $RUCIO_SCOPE $filename && rucio add-rule --lifetime $FILE_LIFETIME --activity "Functional Test" $RUCIO_SCOPE:$did 1 ${rses[$i]}
+            rucio -v upload --rse ${rses[$1]} --lifetime $FILE_LIFETIME --scope $RUCIO_SCOPE $filename-${rses[$1]} && rucio add-rule --lifetime $FILE_LIFETIME --activity "Functional Test" $RUCIO_SCOPE:$did-${rses[$1]} 1 ${rses[$i]}
 
             echo 'sleeping' sleep 3600 
 
             echo '*** removing all replicas and dids associated to from rse '"${rses[$1]}"' and adding rule to rse '"${rses[$i]}"'' 
-            rucio -v erase $RUCIO_SCOPE:$filename
+            rucio -v erase $RUCIO_SCOPE:$filename-${rses[$1]}
 
             rm -f $filename
 	    fi
