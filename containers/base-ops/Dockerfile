@@ -3,6 +3,9 @@ ARG BASETAG=release-1.30.0
  
 FROM $BASEIMAGE:$BASETAG
 LABEL maintainer="VRE Team @ CERN 22/23 - E. Garcia, E. Gazzarrini, D. Gosein"
+LABEL org.opencontainers.image.source https://github.com/vre-hub/vre
+ARG BUILD_DATE
+LABEL org.label-schema.build-date=$BUILD_DATE
 
 # cleanup yum cache
 RUN yum upgrade -y \
