@@ -31,20 +31,20 @@ upload_and_transfer_and_delete () {
             RANDOM_STRING=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
             echo '*** generated random file identifier: '"$RANDOM_STRING"' ***'
 
-            filename=/home/auto_uploaded_$RANDOM_STRING
-            did=auto_uploaded_$RANDOM_STRING
+            filename=/home/auto_uploaded_${RANDOM_STRING}_source${rses[$1]}
+            did=auto_uploaded_${RANDOM_STRING}_source${rses[$1]}
             
             echo '*** generating '"$FILE_SIZE"' file on local storage ***'
             head -c $FILE_SIZE < /dev/urandom  > $filename
             echo '*** filename: '"$filename"''
 
             echo '*** uploading to rse '"${rses[$1]}"' and adding rule to rse '"${rses[$i]}"'' 
-            rucio -v upload --rse ${rses[$1]} --lifetime $FILE_LIFETIME --scope $RUCIO_SCOPE $filename-${rses[$1]} && rucio add-rule --lifetime $FILE_LIFETIME --activity "Functional Test" $RUCIO_SCOPE:$did-${rses[$1]} 1 ${rses[$i]}
+            rucio -v upload --rse ${rses[$1]} --lifetime $FILE_LIFETIME --scope $RUCIO_SCOPE $filename && rucio add-rule --lifetime $FILE_LIFETIME --activity "Functional Test" $RUCIO_SCOPE:$did 1 ${rses[$i]}
 
-            echo 'sleeping' sleep 3600 
+            #echo 'sleeping' sleep 3600 
 
-            echo '*** removing all replicas and dids associated to from rse '"${rses[$1]}"' and adding rule to rse '"${rses[$i]}"'' 
-            rucio -v erase $RUCIO_SCOPE:$filename-${rses[$1]}
+            #echo '*** removing all replicas and dids associated to from rse '"${rses[$1]}"' and adding rule to rse '"${rses[$i]}"'' 
+            #rucio -v erase $RUCIO_SCOPE:$did
 
             rm -f $filename
 	    fi
