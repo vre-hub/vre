@@ -15,7 +15,7 @@ spec:
           restartPolicy: OnFailure 
           containers:
             - name: iam-sync
-              image: ghcr.io/vre-hub/vre-iam-rucio-sync:v0.1.0-224-9fdb30e
+              image: ghcr.io/vre-hub/vre-iam-rucio-sync:latest
               volumeMounts:
               - name: rucio-cfg
                 mountPath: /opt/rucio/etc/
@@ -61,7 +61,7 @@ spec:
           restartPolicy: OnFailure 
           containers:
             - name: rucio-noise
-              image: ghcr.io/vre-hub/vre-rucio-noise:v0.1.0-215-8481de7
+              image: ghcr.io/vre-hub/vre-rucio-noise:latest
               volumeMounts:
               - name: rucio-cfg
                 mountPath: /opt/rucio/etc/
