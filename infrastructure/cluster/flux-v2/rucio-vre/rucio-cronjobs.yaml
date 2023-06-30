@@ -67,6 +67,8 @@ spec:
                 mountPath: /opt/rucio/etc/
               - name: prod-rucio-x509up
                 mountPath: /tmp/
+              - name: daemons-vre-cafile
+                mountPath: /etc/pki/tls/certs/
 
               env:
               - name: RUCIO_CFG_CLIENT_X509_PROXY 
@@ -91,6 +93,9 @@ spec:
             - name: prod-rucio-x509up
               secret:
                 secretName: prod-rucio-x509up
+            - name: daemons-vre-cafile
+              secret:
+                secretName: daemons-vre-cafile
 ---
 apiVersion: v1
 kind: Pod
