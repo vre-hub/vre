@@ -1,4 +1,10 @@
+proxy:
+  service:
+    type: ClusterIP
+
 hub:
+  service:
+    type: ClusterIP
   # network policy needs to be modified to allow access to the Rucio server
   # (disabling it for now as a workaround, see also the ones for singeluser and proxy below)
   networkPolicy:
