@@ -26,7 +26,7 @@ $ docker run --user root -e RUCIO_CFG_ACCOUNT=<myrucioaccount> -v ~/.globus/user
 
 ```bash
 $ voms-proxy-init
-$ docker run -e RUCIO_CFG_ACCOUNT=<myrucioaccount> -e RUCIO_CFG_AUTH_TYPE=x509_proxy -e RUCIO_CFG_CLIENT_X509_PROXY=/opt/proxy/x509up_uNNNN -v /tmp:/opt/proxy -it --name=rucio-client rucio-client
+$ docker run -e RUCIO_CFG_ACCOUNT=<myrucioaccount> -e RUCIO_CFG_AUTH_TYPE=x509_proxy -e RUCIO_CFG_CLIENT_X509_PROXY=/opt/proxy/x509up_uNNNN -v /tmp:/opt/proxy -it --name=rucio-client ghcr.io/vre-hub/vre-rucio-client
 ```
 
 ### Using a bespoke rucio.cfg
