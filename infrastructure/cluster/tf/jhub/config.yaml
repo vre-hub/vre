@@ -68,6 +68,7 @@ hub:
           c.CryptKeeper.keys = [os.urandom(32)]
 
 singleuser:
+  defaultUrl: "/lab"
   # The liefcycle hooks are used to create the Rucio configuration file,
   # and the token file by copying the REFRESH_TOKEN from the environment variable to the token file.
   lifecycleHooks:
@@ -215,6 +216,7 @@ singleuser:
 
   cmd: null
   extraEnv:
+    JUPYTERHUB_SINGLEUSER_APP: "notebook.notebookapp.NotebookApp"
     RUCIO_MODE: "replica"
     RUCIO_WILDCARD_ENABLED: "1"
     RUCIO_BASE_URL: "https://vre-rucio.cern.ch"
