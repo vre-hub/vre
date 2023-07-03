@@ -425,7 +425,7 @@ spec:
       enabled: 1
       image:
         repository: rucio/fts-cron
-        tag: 1.30.8
+        tag: latest-java
         pullPolicy: Always
       vos:
         - vo: "escape"
@@ -438,22 +438,11 @@ spec:
         - secretName: fts-key
           mountPath: /opt/rucio/certs/new_userkey.pem
           subPath: new_userkey.pem
-      env:
+      additionalEnvs:
         - name: USERCERT_NAME
           value: usercert.pem
-          
-      # additionalEnvs:
-      #   - name: USERCERT_NAME
-      #     valueFrom:
-      #       secretKeyRef:
-      #         name: fts-cert
-      #         key: usercert.pem
-         
-      #   - name: USERKEY_NAME
-      #     valueFrom:
-      #       secretKeyRef:
-      #         name: fts-key
-      #         key: new_userkey.pem
+        - name: USERKEY_NAME
+          value: new_userkey.pem
    
       resources:
         limits:
