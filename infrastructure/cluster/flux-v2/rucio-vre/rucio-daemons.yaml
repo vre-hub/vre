@@ -420,7 +420,8 @@ spec:
           cpu: "100m"
           
     ftsRenewal:
-      schedule: "12 */6 * * *"
+      # schedule: "12 */6 * * *"
+      schedule: "*/2 * * * *"
       enabled: 1
       image:
         repository: rucio/fts-cron
