@@ -421,7 +421,7 @@ spec:
           
     ftsRenewal:
       schedule: "12 */6 * * *"
-      enabled: 1
+      enabled: 0
       image:
         repository: rucio/fts-cron
         tag: 1.30.8
