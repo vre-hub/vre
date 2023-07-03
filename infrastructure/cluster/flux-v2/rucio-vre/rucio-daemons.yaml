@@ -17,7 +17,7 @@ spec:
         namespace: rucio-vre
       interval: 1m
       chart: rucio-daemons
-      version: 1.30.0
+      version: 1.30.5
   
   valuesFrom:
     - kind: Secret
