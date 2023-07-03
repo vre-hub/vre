@@ -441,9 +441,16 @@ spec:
 
       additionalEnvs:
         - name: USERCERT_NAME
-          value: "usercert.pem"
+          valueFrom:
+            secretKeyRef:
+              name: fts-cert
+              key: usercert.pem
+         
         - name: USERKEY_NAME
-          value: "new_userkey.pem"
+          valueFrom:
+            secretKeyRef:
+              name: fts-key
+              key: new_userkey.pem
    
       resources:
         limits:
