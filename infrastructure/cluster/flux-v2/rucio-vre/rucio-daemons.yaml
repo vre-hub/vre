@@ -39,7 +39,7 @@ spec:
         subPath: ca.pem
       - volumeName: rucio-x509up 
         secretName: rucio-x509up 
-        mountPath: /x509up
+        mountPath: /opt/rucio/etc/x509up
         subPath: x509up
    
       # TO START WITH
@@ -496,7 +496,7 @@ spec:
         # transfertool: "fts3"
         ftshosts: "https://fts3-pilot.cern.ch:8446"
         cacert: "/etc/grid-security/ca.pem"
-        usercert: "/x509up"
+        usercert: "/opt/rucio/etc/x509up"
         allow_user_oidc_tokens: "True"
         request_oidc_scope: "openid profile offline_access wlcg.groups email fts:submit-transfer"
         request_oidc_audience: "fts"
