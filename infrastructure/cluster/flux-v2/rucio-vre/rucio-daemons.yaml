@@ -437,6 +437,13 @@ spec:
         - secretName: fts-key
           mountPath: /opt/rucio/certs/new_userkey.pem
           subPath: new_userkey.pem
+
+      additionalEnvs:
+        - name: USERCERT_NAME
+          value: "usercert.pem"
+        - name: USERKEY_NAME
+          value: "new_userkey.pem"
+   
       resources:
         limits:
           cpu: 500m
