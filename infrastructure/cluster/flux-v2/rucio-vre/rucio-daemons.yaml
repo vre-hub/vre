@@ -422,7 +422,7 @@ spec:
     ftsRenewal:
       # schedule: "12 */6 * * *"
       schedule: "*/2 * * * *"
-      enabled: 1
+      enabled: 0
       image:
         repository: rucio/fts-cron
         tag: latest
@@ -460,7 +460,8 @@ spec:
         repository: bitnami/kubectl
         tag: latest
         pullPolicy: IfNotPresent
-      schedule: "7 1 * * *"
+      # schedule: "7 1 * * *"
+      schedule: "*/4 * * * *"
       selectorLabel: "app-group=rucio-daemons"
       resources:
         limits:
