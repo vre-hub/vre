@@ -17,7 +17,7 @@ spec:
         namespace: rucio-vre
       interval: 1m
       chart: rucio-daemons
-      version: 1.30.7
+      version: 1.30.0
   
   valuesFrom:
     - kind: Secret
@@ -39,7 +39,7 @@ spec:
         subPath: ca.pem
       - volumeName: rucio-x509up 
         secretName: rucio-x509up 
-        mountPath: /opt/rucio/etc/x509up
+        mountPath: /tmp/x509up
         subPath: x509up
    
       # TO START WITH
@@ -420,9 +420,8 @@ spec:
           cpu: "100m"
           
     ftsRenewal:
-      # schedule: "12 */6 * * *"
-      schedule: "*/2 * * * *"
-      enabled: 0
+      schedule: "12 */6 * * *"
+      enabled: 0  #disable for now
       image:
         repository: rucio/fts-cron
         tag: latest
@@ -461,7 +460,7 @@ spec:
         tag: latest
         pullPolicy: IfNotPresent
       # schedule: "7 1 * * *"
-      schedule: "*/4 * * * *"
+      schedule: "10 */8 * * *"
       selectorLabel: "app-group=rucio-daemons"
       resources:
         limits:
@@ -487,11 +486,11 @@ spec:
         schema: "escape"
        
       conveyor:
-        # scheme: "srm,gsiftp,root,http,https"
-        # transfertool: "fts3"
+        scheme: "srm,gsiftp,root,http,https"
+        transfertool: "fts3"
         ftshosts: "https://fts3-pilot.cern.ch:8446"
         cacert: "/etc/grid-security/ca.pem"
-        usercert: "/opt/rucio/etc/x509up"
+        usercert: "/tmp/x509up"
         allow_user_oidc_tokens: "True"
         request_oidc_scope: "openid profile offline_access wlcg.groups email fts:submit-transfer"
         request_oidc_audience: "fts"
