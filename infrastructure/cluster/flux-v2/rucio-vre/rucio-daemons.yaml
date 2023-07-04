@@ -17,7 +17,7 @@ spec:
         namespace: rucio-vre
       interval: 1m
       chart: rucio-daemons
-      version: 1.30.5
+      version: 1.30.7
   
   valuesFrom:
     - kind: Secret
@@ -439,6 +439,8 @@ spec:
           mountPath: /opt/rucio/certs/new_userkey.pem
           subPath: new_userkey.pem
       additionalEnvs:
+        - name: RUCIO_FTS_SECRETS
+          value: daemons-vre-rucio-x509up 
         - name: USERCERT_NAME
           value: usercert.pem
         - name: USERKEY_NAME
