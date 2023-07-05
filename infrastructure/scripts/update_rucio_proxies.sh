@@ -39,6 +39,12 @@ kubectl create secret generic ${RELEASENAMEDAEMONS}-rucio-x509up --from-file=x50
 kubectl delete secret prod-rucio-x509up -n ${RUCIO_NS}
 kubectl create secret generic prod-rucio-x509up --from-file=x509up -n ${RUCIO_NS}
 
+# secret used for server CA authentication. important for the upload of file by the cronjobs. 
+# better to fetch it from aiadm as it satys updated
+
+kubectl delete secret cern-bundle -n ${RUCIO_NS}
+kubectl create secret generic cern-bundle --from-file=/etc/pki/tls/certs/CERN-bundle.pem -n ${RUCIO_NS}
+
 # FTS delegation (IMPORTANT)
 ssh lxplus fts-rest-delegate -s https://fts3-pilot.cern.ch:8446 --verbose --cert ${X509_USER_PROXY}
 
