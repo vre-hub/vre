@@ -6,6 +6,26 @@ LABEL org.opencontainers.image.source https://github.com/vre-hub/vre
 ARG BUILD_DATE
 LABEL org.label-schema.build-date=$BUILD_DATE
 
+#added to test gfal uploads nor working
+RUN yum install -y epel-release.noarch && \
+    yum clean all && \
+    rm -rf /var/cache/yum
+    
+RUN yum upgrade -y && \
+    yum clean all && \
+    rm -rf /var/cache/yum
+    
+RUN yum -y install wget gfal2*
+
+RUN yum -y install https://repo.ius.io/ius-release-el7.rpm && \
+    yum install -y voms-clients-java gfal2-all gfal2-util python3-gfal2 xrootd-client\
+                   nordugrid-arc-client nordugrid-arc-plugins-gfal \
+                   nordugrid-arc-plugins-globus nordugrid-arc-plugins-s3 \
+                   nordugrid-arc-plugins-xrootd && \
+    yum clean all && \
+    rm -rf /var/cache/yum
+
+    
 # Workdir is /home
 COPY produce_noise.sh requirements.txt rses.txt /home/
 RUN chmod +x ./produce_noise.sh
