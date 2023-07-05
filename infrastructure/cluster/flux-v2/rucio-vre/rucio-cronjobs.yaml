@@ -67,7 +67,7 @@ spec:
                 mountPath: /opt/rucio/etc/
               - name: prod-rucio-x509up
                 mountPath: /tmp/
-              - name: daemons-vre-cafile
+              - name: cern-bundle
                 mountPath: /etc/pki/tls/certs/
 
               env:
@@ -81,7 +81,7 @@ spec:
               command:
               - /bin/sh
               - -c
-              - date; ls -l /etc/pki/tls/certs/; ls -l /tmp/; openssl x509 -in /tmp/x509up -text -noout; openssl x509 -in /etc/pki/tls/certs/ca.pem -text -noout; cd /opt/rucio/etc/; pwd; echo Hello from rucio-noise container; 
+              - date; ls -l /etc/pki/tls/certs/; ls -l /tmp/; openssl x509 -in /etc/pki/tls/certs/CERN-bundle.pem -text -noout; cd /opt/rucio/etc/; pwd; echo Hello from rucio-noise container; 
                 export RUCIO_CONFIG=/opt/rucio/etc/rucio.cfg; echo Exported config; cat /opt/rucio/etc/rucio.cfg; rucio -vvv whoami; 
                 cd /tmp/; ls -l; cd /home; export FSIZE=10M; FILE_SIZE=${FSIZE} /bin/bash produce_noise.sh; echo "Rucio noise cronjob ${FSIZE} Done!"
               # - date; pwd; cd /root/.globus/; ls; chmod 400 userkey.pem; cd /opt/rucio/etc/; ls; echo Hello from rucio-noise container; export RUCIO_CONFIG=/opt/rucio/etc/rucio.cfg; echo Exported config; rucio -vvv whoami; FILE_SIZE=10M /bin/bash /home/user/vre/containers/rucio-noise/produce_noise.sh; echo 'DB cleanup Done!'
@@ -93,9 +93,9 @@ spec:
             - name: prod-rucio-x509up
               secret:
                 secretName: prod-rucio-x509up
-            - name: daemons-vre-cafile
+            - name: cern-bundle
               secret:
-                secretName: daemons-vre-cafile
+                secretName: cern-bundle
 ---
 apiVersion: v1
 kind: Pod
