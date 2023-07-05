@@ -2,16 +2,20 @@
 rucio_host = {{ RUCIO_CFG_RUCIO_HOST | default('https://vre-rucio.cern.ch') }} 
 auth_host = {{ RUCIO_CFG_AUTH_HOST | default('https://vre-rucio-auth.cern.ch') }} 
 ca_cert = {{ RUCIO_CFG_CA_CERT | default('/etc/pki/tls/certs/CERN-bundle.pem') }}
-auth_type = {{ RUCIO_CFG_AUTH_TYPE | default('x509') }}
+auth_type = {{ RUCIO_CFG_AUTH_TYPE | default('oidc') }}
 username = {{ RUCIO_CFG_USERNAME | default('') }}
 password = {{ RUCIO_CFG_PASSWORD | default('') }}
 account = {{ RUCIO_CFG_ACCOUNT | default('') }}
 client_cert = {{ RUCIO_CFG_CLIENT_CERT | default('/opt/rucio/etc/client.crt') }}
 client_key = {{ RUCIO_CFG_CLIENT_KEY | default('/opt/rucio/etc/client.key') }}
-client_x509_proxy = {{ RUCIO_CFG_CLIENT_X509_PROXY | default('') }}
+client_x509_proxy = {{ RUCIO_CFG_CLIENT_X509_PROXY | default('/tmp/x509up') }}
 request_retries = {{ RUCIO_CFG_REQUEST_RETRIES | default('3') }}
 oidc_issuer = {{ RUCIO_CFG_OIDC_ISSUER | default('escape') }}  # TODO update 
 oidc_polling = {{ RUCIO_CFG_OIDC_POLLING | default('true') }}  # TODO update 
+
+oidc_audience = {{ RUCIO_CFG_OIDC_AUDIENCE | default('rucio') }} 
+oidc_scope = {{ RUCIO_CFG_OIDC_SCOPE | default('openid profile offline_access wlcg wlcg.groups fts:submit-transfer') }} 
+auth_oidc_refresh_activate = {{ RUCIO_CFG_AUTH_OIDC_REFRESH_ACTIVATE | default('true') }} 
 
 [policy]
 permission = {{ RUCIO_CFG_POLICY_PERMISSION | default('escape')}}
