@@ -1,64 +1,104 @@
-name: Docker rucio client build
+# name: Docker rucio client build
 
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
+# # This workflow uses actions that are not certified by GitHub.
+# # They are provided by a third-party and are governed by
+# # separate terms of service, privacy policy, and support
+# # documentation.
 
-on:
-  push:
-    branches: 
-      - main
-    paths:
-      - containers/rucio-client/**
+# on:
+#   push:
+#     branches: 
+#       - main
+#     paths:
+#       - containers/rucio-client/**
 
-env:
-  CONTAINER: rucio-client
-  # Use docker.io for Docker Hub if empty
-  REGISTRY: ghcr.io
-  # github.repository as <account>/<repo>
-  IMAGE_NAME: ${{ github.repository }}-$CONTAINER
+# env:
+#   CONTAINER: rucio-client
+#   # Use docker.io for Docker Hub if empty
+#   REGISTRY: ghcr.io
+#   # github.repository as <account>/<repo>
+#   IMAGE_NAME: ${{ github.repository }}-$CONTAINER
 
 
-jobs:
-  build:
+# jobs:
+#   build:
 
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-      # This is used to complete the identity challenge
-      # with sigstore/fulcio when running outside of PRs.
-      id-token: write
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: read
+#       packages: write
+#       # This is used to complete the identity challenge
+#       # with sigstore/fulcio when running outside of PRs.
+#       id-token: write
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v3
 
-      # Login against a Docker registry except on PR
-      # https://github.com/docker/login-action
-      - name: Log into registry ${{ env.REGISTRY }}
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+#       # Login against a Docker registry except on PR
+#       # https://github.com/docker/login-action
+#       - name: Log into registry ${{ env.REGISTRY }}
+#         if: github.event_name != 'pull_request'
+#         uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
+#         with:
+#           registry: ${{ env.REGISTRY }}
+#           username: ${{ github.actor }}
+#           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push Docker image
-        id: build-and-push
-        working-directory: containers/${{ env.CONTAINER }}
-        run: |
-          git clone https://github.com/vre-hub/vre.git
-          cd vre
-          # Echo the output, substitute the `-g` with a `-` and export the result.
-          # The `-g` is by default on git describe because of historical reasons.
-          echo "tag_describe is $(git describe --tags | sed 's/-g/-/g')"
-          export tag_describe=$(git describe --tags | sed 's/-g/-/g')
-          cd ..
-          docker build . --tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${tag_describe}
-          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${tag_describe}          
-          docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${tag_describe} ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          rm -rf vre
+#       - name: Build and push Docker image
+#         id: build-and-push
+#         working-directory: containers/${{ env.CONTAINER }}
+#         run: |
+#           git clone https://github.com/vre-hub/vre.git
+#           cd vre
+#           # Echo the output, substitute the `-g` with a `-` and export the result.
+#           # The `-g` is by default on git describe because of historical reasons.
+#           echo "tag_describe is $(git describe --tags | sed 's/-g/-/g')"
+#           export tag_describe=$(git describe --tags | sed 's/-g/-/g')
+#           cd ..
+#           docker build . --tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${tag_describe}
+#           docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${tag_describe}          
+#           docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${tag_describe} ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+#           docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+#           rm -rf vre
        
+
+
+ARG BASEIMAGE=rucio/rucio-clients
+
+ARG BASETAG=release-1.30.0
+FROM $BASEIMAGE:$BASETAG
+LABEL maintainer="VRE Team @ CERN 22/23 - E. Garcia, E. Gazzarrini, D. Gosein"
+
+USER root
+
+# EGI trust anchors
+RUN curl -Lo /etc/yum.repos.d/EGI-trustanchors.repo https://repository.egi.eu/sw/production/cas/1/current/repo-files/EGI-trustanchors.repo \
+    && yum -y update
+
+RUN yum clean metadata
+RUN yum -y install wget ca-certificates ca-policy-egi-core
+
+# CERN cert 
+COPY ./linuxsupport7s-stable.repo /etc/yum.repos.d/
+RUN yum install -y CERN-CA-certs
+
+# ESCAPE VOMS setup
+RUN mkdir -p /etc/vomses \
+    && wget https://indigo-iam.github.io/escape-docs/voms-config/voms-escape.cloud.cnaf.infn.it.vomses -O /etc/vomses/voms-escape.cloud.cnaf.infn.it.vomses
+RUN mkdir -p /etc/grid-security/vomsdir/escape \
+    && wget https://indigo-iam.github.io/escape-docs/voms-config/voms-escape.cloud.cnaf.infn.it.lsc -O /etc/grid-security/vomsdir/escape/voms-escape.cloud.cnaf.infn.it.lsc
+
+# ESCAPE Rucio setup
+ADD --chown=user:user rucio.cfg.escape.j2 /opt/user/rucio.cfg.j2
+
+# install reana-client 
+ENV LC_ALL=en_US.UTF-8
+RUN pip install --upgrade pip
+RUN pip install reana-client
+
+USER user
+WORKDIR /home/user
+
+ENTRYPOINT ["/bin/bash"]
+
