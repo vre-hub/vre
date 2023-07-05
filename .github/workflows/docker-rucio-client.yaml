@@ -1,73 +1,10 @@
-# name: Docker rucio client build
-
-# # This workflow uses actions that are not certified by GitHub.
-# # They are provided by a third-party and are governed by
-# # separate terms of service, privacy policy, and support
-# # documentation.
-
-# on:
-#   push:
-#     branches: 
-#       - main
-#     paths:
-#       - containers/rucio-client/**
-
-# env:
-#   CONTAINER: rucio-client
-#   # Use docker.io for Docker Hub if empty
-#   REGISTRY: ghcr.io
-#   # github.repository as <account>/<repo>
-#   IMAGE_NAME: ${{ github.repository }}-$CONTAINER
-
-
-# jobs:
-#   build:
-
-#     runs-on: ubuntu-latest
-#     permissions:
-#       contents: read
-#       packages: write
-#       # This is used to complete the identity challenge
-#       # with sigstore/fulcio when running outside of PRs.
-#       id-token: write
-
-#     steps:
-#       - name: Checkout repository
-#         uses: actions/checkout@v3
-
-#       # Login against a Docker registry except on PR
-#       # https://github.com/docker/login-action
-#       - name: Log into registry ${{ env.REGISTRY }}
-#         if: github.event_name != 'pull_request'
-#         uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
-#         with:
-#           registry: ${{ env.REGISTRY }}
-#           username: ${{ github.actor }}
-#           password: ${{ secrets.GITHUB_TOKEN }}
-
-#       - name: Build and push Docker image
-#         id: build-and-push
-#         working-directory: containers/${{ env.CONTAINER }}
-#         run: |
-#           git clone https://github.com/vre-hub/vre.git
-#           cd vre
-#           # Echo the output, substitute the `-g` with a `-` and export the result.
-#           # The `-g` is by default on git describe because of historical reasons.
-#           echo "tag_describe is $(git describe --tags | sed 's/-g/-/g')"
-#           export tag_describe=$(git describe --tags | sed 's/-g/-/g')
-#           cd ..
-#           docker build . --tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${tag_describe}
-#           docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${tag_describe}          
-#           docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${tag_describe} ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-#           docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-#           rm -rf vre
-
-
 name: Docker rucio client build
+
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
 # separate terms of service, privacy policy, and support
 # documentation.
+
 on:
   push:
     branches: 
@@ -76,14 +13,16 @@ on:
       - containers/rucio-client/**
 
 env:
+  CONTAINER: rucio-client
   # Use docker.io for Docker Hub if empty
   REGISTRY: ghcr.io
   # github.repository as <account>/<repo>
-  IMAGE_NAME: ${{ github.repository }}-rucio-client
+  IMAGE_NAME: ${{ github.repository }}-$CONTAINER
 
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -91,22 +30,10 @@ jobs:
       # This is used to complete the identity challenge
       # with sigstore/fulcio when running outside of PRs.
       id-token: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      # Install the cosign tool except on PR
-      # https://github.com/sigstore/cosign-installer
-      - name: Install cosign
-        if: github.event_name != 'pull_request'
-        uses: sigstore/cosign-installer@f3c664df7af409cb4873aa5068053ba9d61a57b6 #v2.6.0
-        with:
-          cosign-release: 'v1.13.1'
-
-
-      # Workaround: https://github.com/docker/build-push-action/issues/461
-      - name: Setup Docker buildx
-        uses: docker/setup-buildx-action@79abd3f86f79a9d68a23c75a09a9a85889262adf
 
       # Login against a Docker registry except on PR
       # https://github.com/docker/login-action
@@ -120,8 +47,17 @@ jobs:
 
       - name: Build and push Docker image
         id: build-and-push
-        working-directory: containers/rucio-client
+        working-directory: containers/${{ env.CONTAINER }}
         run: |
-          docker build . --tag  ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          docker run ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-          docker push  ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          git clone https://github.com/vre-hub/vre.git
+          cd vre
+          # Echo the output, substitute the `-g` with a `-` and export the result.
+          # The `-g` is by default on git describe because of historical reasons.
+          echo "tag_describe is $(git describe --tags | sed 's/-g/-/g')"
+          export tag_describe=$(git describe --tags | sed 's/-g/-/g')
+          cd ..
+          docker build . --tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${tag_describe}
+          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${tag_describe}          
+          docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${tag_describe} ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          rm -rf vre
