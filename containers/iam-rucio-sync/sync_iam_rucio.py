@@ -76,7 +76,8 @@ class IAM_RUCIO_SYNC():
         }
         r = requests.post(self.token_server + self.TOKEN_URL, data=request_data)
         response = json.loads(r.text)
-
+        print (response)
+        
         if 'access_token' not in response:
             raise RuntimeError("Authentication Failed")
 
