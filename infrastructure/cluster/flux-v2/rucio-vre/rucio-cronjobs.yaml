@@ -16,10 +16,14 @@ spec:
           containers:
             - name: iam-sync
               # image: ghcr.io/vre-hub/vre-iam-rucio-sync:v0.1.0-109-c9355f9
-              image: ghcr.io/vre-hub/vre-iam-rucio-sync:v0.1.0-107-f4a6519
+              image: ghcr.io/vre-hub/vre-iam-rucio-sync:v0.1.1-55-80b4ffc
               volumeMounts:
               - name: rucio-cfg
                 mountPath: /opt/rucio/etc/
+              - name: prod-rucio-x509up
+                mountPath: /tmp/
+              - name: cern-bundle
+                mountPath: /etc/pki/tls/certs/
               env:
               - name: IAM_SERVER
                 value: "https://iam-escape.cloud.cnaf.infn.it"
@@ -39,12 +43,19 @@ spec:
               - /bin/sh
               - -c
               - date; echo Hello from iam-rucio-sync container; 
-                pwd; ls;
-                echo $IAM_SERVER; python3 /home/sync_iam_rucio.py; echo '* Sync to IAM * Done!'
+                pwd; ls;rucio whoami; 
+                echo $IAM_SERVER; echo $IAM_CLIENT_ID; echo $IAM_CLIENT_SECRET; python3 /home/sync_iam_rucio.py; 
+                echo '* Sync to IAM * Done!'
           volumes:
             - name: rucio-cfg
               secret:
                 secretName: escape-service-account
+            - name: prod-rucio-x509up
+              secret:
+                secretName: prod-rucio-x509up
+            - name: cern-bundle
+              secret:
+                secretName: cern-bundle
 ---
 apiVersion: batch/v1
 kind: CronJob
