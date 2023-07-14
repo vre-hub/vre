@@ -10,9 +10,8 @@ client_cert = {{ RUCIO_CFG_CLIENT_CERT | default('/opt/rucio/etc/client.crt') }}
 client_key = {{ RUCIO_CFG_CLIENT_KEY | default('/opt/rucio/etc/client.key') }}
 client_x509_proxy = {{ RUCIO_CFG_CLIENT_X509_PROXY | default('/tmp/x509up') }}
 request_retries = {{ RUCIO_CFG_REQUEST_RETRIES | default('3') }}
-oidc_issuer = {{ RUCIO_CFG_OIDC_ISSUER | default('escape') }}  # TODO update 
-oidc_polling = {{ RUCIO_CFG_OIDC_POLLING | default('true') }}  # TODO update 
-
+oidc_issuer = {{ RUCIO_CFG_OIDC_ISSUER | default('escape') }}  
+oidc_polling = {{ RUCIO_CFG_OIDC_POLLING | default('true') }}  
 oidc_audience = {{ RUCIO_CFG_OIDC_AUDIENCE | default('rucio') }} 
 oidc_scope = {{ RUCIO_CFG_OIDC_SCOPE | default('openid profile offline_access wlcg wlcg.groups fts:submit-transfer') }} 
 auth_oidc_refresh_activate = {{ RUCIO_CFG_AUTH_OIDC_REFRESH_ACTIVATE | default('true') }} 
