@@ -8,6 +8,8 @@ on:
       - containers/base-ops/**
     tags:
       - '**'
+    branches:
+      - refactor_cronjobs
 
 env:
   CONTAINER: base-ops
