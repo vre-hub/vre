@@ -17,12 +17,16 @@ RUN yum -y install git htop wget voms-clients-cpp
 RUN pip install --upgrade pip
 
 USER root
+
 # EGI trust anchors
-RUN yum install -y gfal2* python3-gfal2 ca-certificates ca-policy-egi-core
 RUN curl -o /etc/yum.repos.d/EGI-trustanchors.repo https://repository.egi.eu/sw/production/cas/1/current/repo-files/EGI-trustanchors.repo \
     && yum -y update
 
+RUN yum -y install gfal2* python3-gfal2 xrootd-client voms-clients-java 
+RUN yum -y install ca-certificates ca-policy-egi-core
+
 # Install CERN CA certs from CERN maintained mirrors
+# This will add a `CERN-bundle.pem` file (among others) into `/etc/pki/tls/certs/`
 COPY ./linuxsupport7s-stable.repo /etc/yum.repos.d/
 RUN yum install -y CERN-CA-certs
 
