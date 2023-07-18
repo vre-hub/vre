@@ -288,12 +288,15 @@ if __name__ == '__main__':
                 json.dump(iam_users, outfile, indent=4)
 
         # sync accounts
+        logging.info("Synchronising accounts")
         syncer.sync_accounts(iam_users)
 
         # sync OIDC identities
+        logging.info("Synchronising OIDC identities")
         syncer.sync_oidc(iam_users)
 
         # sync X509 identities
+        logging.info("Synchronising X509 identities")
         syncer.sync_x509(iam_users)
 
         logging.info("IAM -> RUCIO synchronization successfully completed.")
