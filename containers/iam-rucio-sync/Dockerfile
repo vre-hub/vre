@@ -13,3 +13,4 @@ COPY requirements.txt sync_iam_rucio.py iam-sync.conf /home/
 RUN pip install -r /home/requirements.txt
 
 ENTRYPOINT ["/bin/bash"]
+
