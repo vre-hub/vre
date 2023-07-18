@@ -4,7 +4,6 @@ on:
   push:
     branches: 
       - main
-      - refactor_cronjobs
     paths:
       - containers/iam-rucio-sync/**
 
