@@ -1,7 +1,3 @@
-:construction: *This repository is still under construction*
-
-[![Merge Check](https://github.com/cern-vre/cern-vre/actions/workflows/merge-check.yml/badge.svg)](https://github.com/vre-hub/vre/actions/workflows/merge-check-paths.yml)
- 
 # VRE @ CERN
 
 ![](vre@CERN-logo.png)  
@@ -9,10 +5,30 @@
 
 The Virtual Research Environment developed at CERN.
 
-Please find the user documentation for the VRE here: [CERN VRE docs](https://vre-hub.github.io/).
+VRE links: 
+ - VRE platform: https://jhub-vre.cern.ch/ 
+ - Code: https://github.com/vre-hub/vre/ 
+ - User documentation: https://vre-hub.github.io/ 
+ - Technical documentation: https://github.com/vre-hub/vre/wiki
+ - VRE file transfer monitoring: https://monit-grafana-open.cern.ch/
+ - Live status of the VRE services: https://vre-hub.github.io/status/ 
+ - VRE Slack channel: [invitation link](https://join.slack.com/t/eosc-escape/shared_invite/zt-1zd76ivit-Z2A2nszN0qfn4VF6Uk6UrQ).
 
-Please find the technical documentation for this repository here: [CERN VRE Wiki](https://github.com/cern-vre/cern-vre/wiki).
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+
 
 ## IT Architecture of the VRE
 
-![](architecture.png)
+![](vre-architecture.png)
+
+## How to cite us
+
+To cite us, please use the latest publication:
+
+ - The Virtual Research Environment: towards a comprehensive analysis platform - [arXiv link](https://arxiv.org/abs/2305.10166).
+
+
+## Contact 
+
+Email the CERN VRE team: `escape-cern-ops'at'cern.ch`
