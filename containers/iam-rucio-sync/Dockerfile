@@ -1,4 +1,4 @@
-ARG BASETAG=v0.1.1
+ARG BASETAG=v0.1.1-61-32dcb57
  
 # To be changed to specific version+hsa
 FROM ghcr.io/vre-hub/vre-base-ops:${BASETAG}
