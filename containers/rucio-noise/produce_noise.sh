@@ -10,7 +10,7 @@ do
 
 # done < /home/rses.txt
 
-done < /home/user/vre/containers/rucio-noise/rses.txt
+done < /home/rses.txt
 len=${#rses[@]}
 
 echo $rses
