@@ -15,15 +15,12 @@ spec:
           restartPolicy: OnFailure 
           containers:
             - name: iam-sync
-              # image: ghcr.io/vre-hub/vre-iam-rucio-sync:v0.1.0-109-c9355f9
-              image: ghcr.io/vre-hub/vre-iam-rucio-sync:v0.1.1-55-80b4ffc
+              image: ghcr.io/vre-hub/vre-iam-rucio-sync:v0.1.2-1-0487cc0
               volumeMounts:
               - name: rucio-cfg
                 mountPath: /opt/rucio/etc/
               - name: prod-rucio-x509up
                 mountPath: /tmp/
-              - name: cern-bundle
-                mountPath: /etc/pki/tls/certs/
               env:
               - name: IAM_SERVER
                 value: "https://iam-escape.cloud.cnaf.infn.it"
@@ -38,7 +35,7 @@ spec:
                     name: iam-client
                     key: admin-client_id
               tty: true
-              imagePullPolicy: IfNotPresent
+              imagePullPolicy: Always
               command:
               - /bin/sh
               - -c
@@ -53,9 +50,6 @@ spec:
             - name: prod-rucio-x509up
               secret:
                 secretName: prod-rucio-x509up
-            - name: cern-bundle
-              secret:
-                secretName: cern-bundle
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -73,25 +67,20 @@ spec:
           restartPolicy: OnFailure 
           containers:
             - name: rucio-noise
-              image: ghcr.io/vre-hub/vre-rucio-noise:v0.1.1-51-56c3d22
+              image: ghcr.io/vre-hub/vre-rucio-noise:v0.1.2-1-0487cc0
               volumeMounts:
               - name: rucio-cfg
                 mountPath: /opt/rucio/etc/
               - name: prod-rucio-x509up
                 mountPath: /tmp/
-              - name: cern-bundle
-                mountPath: /etc/pki/tls/certs/
-
               tty: true
-              imagePullPolicy: IfNotPresent
+              imagePullPolicy: Always
               command:
               - /bin/sh
               - -c
               - date; ls -l /etc/pki/tls/certs/; ls -l /tmp/; cd /opt/rucio/etc/; pwd; echo Hello from rucio-noise container; 
                 export RUCIO_CONFIG=/opt/rucio/etc/rucio.cfg; echo Exported config; cat /opt/rucio/etc/rucio.cfg; rucio -vvv whoami; 
-                cd /home; export FSIZE=10M; FILE_SIZE=${FSIZE} /bin/bash /home/user/vre/containers/rucio-noise/produce_noise.sh; echo "Rucio noise cronjob ${FSIZE} Done!"
-              # cd /home; export FSIZE=10M; FILE_SIZE=${FSIZE} /bin/bash produce_noise.sh; echo "Rucio noise cronjob ${FSIZE} Done!"
-              # date; pwd; cd /root/.globus/; ls; chmod 400 userkey.pem; cd /opt/rucio/etc/; ls; echo Hello from rucio-noise container; export RUCIO_CONFIG=/opt/rucio/etc/rucio.cfg; echo Exported config; rucio -vvv whoami; FILE_SIZE=10M /bin/bash /home/user/vre/containers/rucio-noise/produce_noise.sh; echo 'DB cleanup Done!'
+                cd /home; export FSIZE=10M; FILE_SIZE=${FSIZE} /bin/bash produce_noise.sh; echo "Rucio noise cronjob ${FSIZE} Done!"
           volumes:
             - name: rucio-cfg
               secret:
@@ -100,9 +89,6 @@ spec:
             - name: prod-rucio-x509up
               secret:
                 secretName: prod-rucio-x509up
-            - name: cern-bundle
-              secret:
-                secretName: cern-bundle
 ---
 apiVersion: v1
 kind: Pod
@@ -112,7 +98,7 @@ metadata:
 spec:
   containers:
   - name: rucio-client
-    image: ghcr.io/vre-hub/vre-rucio-client:v0.1.0-108-3797d0d
+    image: ghcr.io/vre-hub/vre-rucio-client:v0.1.2-1-0487cc0
     imagePullPolicy: Always
     env:
     - name: RUCIO_CFG_RUCIO_HOST
