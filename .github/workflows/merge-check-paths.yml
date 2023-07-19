@@ -1,4 +1,4 @@
-name: mc # Merge Check Workflow for Terraform and Flux Files if changed
+name: flux check pipeline # Merge Check Workflow for Terraform and Flux Files if changed
 
 on:
   workflow_dispatch:
