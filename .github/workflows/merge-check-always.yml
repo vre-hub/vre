@@ -1,4 +1,4 @@
-name: mc # Merge Check Workflow for Terraform and Flux Files if not changed ref. to : https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/defining-the-mergeability-of-pull-requests/troubleshooting-required-status-checks#handling-skipped-but-required-checks
+name: flux check pipeline # Merge Check Workflow for Terraform and Flux Files if not changed ref. to : https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/defining-the-mergeability-of-pull-requests/troubleshooting-required-status-checks#handling-skipped-but-required-checks
 
 on: 
   pull_request:
