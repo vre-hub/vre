@@ -52,12 +52,6 @@ variable "ns-shared-services" {
   default     = "shared-services"
 }
 
-variable "ns-rucio" {
-  description = "The name of the namespace for rucio"
-  type        = string
-  default     = "rucio"
-}
-
 variable "ns-monitoring" {
   description = "The name of the namespace for monitoring"
   type        = string

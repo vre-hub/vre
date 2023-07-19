@@ -1,18 +1,5 @@
 # Kubernetes Data Sources
 
-data "kubernetes_secret_v1" "rucio_db_secret" {
-  metadata {
-    name      = "rucio-server-cvre-rucio-db"
-    namespace = "rucio"
-  }
-}
-
-data "kubernetes_secret_v1" "rucio_hermes_secret" {
-  metadata {
-    name      = "hermes-secret"
-    namespace = "rucio"
-  }
-}
 
 data "kubernetes_secret_v1" "jhub_db_secret" {
   metadata {
@@ -46,11 +33,6 @@ resource "kubernetes_namespace_v1" "ns_shared_services" {
   }
 }
 
-resource "kubernetes_namespace_v1" "ns_rucio" {
-  metadata {
-    name = var.ns-rucio
-  }
-}
 
 resource "kubernetes_namespace_v1" "ns_monitoring" {
   metadata {
