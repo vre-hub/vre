@@ -58,10 +58,16 @@ variable "ns-monitoring" {
   default     = "monitoring"
 }
 
-variable "ns-reana" {
-  description = "The name of the namespace for reana"
+# variable "ns-reana" {
+#   description = "The name of the namespace for reana"
+#   type        = string
+#   default     = "reana"
+# }
+
+variable "ns-jupyterhub" {
+  description = "The name of the namespace for jupyterhub"
   type        = string
-  default     = "reana"
+  default     = "jhub"
 }
 
 # variable "ns-dask-gateway" {
