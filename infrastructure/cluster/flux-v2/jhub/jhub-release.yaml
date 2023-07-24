@@ -29,7 +29,7 @@ spec:
       valuesKey: dbconnectstring
       targetPath: hub.db.url
     - kind: ConfigMap
-      name: jupyter-profiles
+      name: jhub-profiles
       valuesKey: values.yaml
   values:
     proxy:
