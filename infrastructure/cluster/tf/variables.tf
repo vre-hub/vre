@@ -64,12 +64,6 @@ variable "ns-reana" {
   default     = "reana"
 }
 
-variable "ns-jupyterhub" {
-  description = "The name of the namespace for jupyterhub"
-  type        = string
-  default     = "jhub"
-}
-
 # variable "ns-dask-gateway" {
  # description = "The name of the namespace for dask-gateway"
  # type        = string
