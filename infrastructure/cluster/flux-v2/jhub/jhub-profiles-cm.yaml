@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jhub-profiles
+  namespace: jhub
+data:
+  values.yaml: |
+    singleuser:
+      profileList:
+        - display_name: "Default profile"
+          description: "This is the default profile for all users."
+          default: True
+          
