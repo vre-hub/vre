@@ -8,6 +8,6 @@ data:
     singleuser:
       profileList:
         - display_name: "Default profile"
-          description: "This is the default profile for all users."
+          description: "A jupyter/scipy-notebook env with python-3.9, the rucio-jupyterlab extension and the reana-client installed."
           default: True
           

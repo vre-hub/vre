@@ -5,7 +5,7 @@ metadata:
   namespace: jhub
 spec:
   releaseName: jhub-cvre
-  interval: 1m0s
+  interval: 5m
   chart:
     spec:
       sourceRef:
@@ -13,7 +13,7 @@ spec:
         name: jhub
         namespace: jhub
       chart: jupyterhub
-      interval: 1m0s
+      interval: 5m
       version: 2.0.0
   valuesFrom:
     - kind: Secret
@@ -149,7 +149,7 @@ spec:
             mountPropagation: HostToContainer
             readOnly: true    
       image:
-        name: ghcr.io/goseind/singleuser-base  # replace with updated image in vre-hub
+        name: ghcr.io/vre-hub/vre-singleuser:sha-7210810
         tag: latest
         pullPolicy: Always
       extraFiles:

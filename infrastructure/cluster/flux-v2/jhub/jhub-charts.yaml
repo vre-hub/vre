@@ -4,6 +4,6 @@ metadata:
   name: jhub
   namespace: jhub
 spec:
-  interval: 1m0s
+  interval: 10m
   url: https://hub.jupyter.org/helm-chart/
   
