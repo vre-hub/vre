@@ -1,20 +1,5 @@
 # Kubernetes Data Sources
 
-
-data "kubernetes_secret_v1" "jhub_db_secret" {
-  metadata {
-    name      = "jhub-cvre-dbconnectstring"
-    namespace = "jhub"
-  }
-}
-
-data "kubernetes_secret_v1" "jhub_iam_secret" {
-  metadata {
-    name      = "jhub-cvre-iam-secrets"
-    namespace = "jhub"
-  }
-}
-
 #data "kubernetes_secret_v1" "daskhub-tokens" {
 #  metadata {
 #    name      = "daskhub-tokens"
@@ -37,12 +22,6 @@ resource "kubernetes_namespace_v1" "ns_shared_services" {
 resource "kubernetes_namespace_v1" "ns_monitoring" {
   metadata {
     name = var.ns-monitoring
-  }
-}
-
-resource "kubernetes_namespace_v1" "ns_jupyterhub" {
-  metadata {
-    name = var.ns-jupyterhub
   }
 }
 
