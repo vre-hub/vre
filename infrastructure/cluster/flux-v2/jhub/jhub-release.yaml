@@ -57,7 +57,7 @@ spec:
             - profile
             - email
       extraConfig:
-        token-exchange: |
+        00-ruci0-authenticator: |
           import pprint
           import os
           import warnings
@@ -80,8 +80,8 @@ spec:
                       'audience': 'rucio'
                   }
                   response = requests.post(self.token_url, data=params)
-                  refresh_token = response.json()['access_token']
-                  return refresh_token
+                  access_token = response.json()['access_token']
+                  return access_token
               
               async def pre_spawn_start(self, user, spawner):
                   auth_state = await user.get_auth_state()
@@ -91,8 +91,8 @@ spec:
                       return
                   
                   # define token environment variable from auth_state
-                  spawner.environment['REFRESH_TOKEN'] = self.exchange_token(auth_state['access_token'])
-          
+                  spawner.environment['ACCESS_TOKEN'] = self.exchange_token(auth_state['access_token'])
+                  
           # set the above authenticator as the default
           c.JupyterHub.authenticator_class = RucioAuthenticator
 
@@ -105,6 +105,18 @@ spec:
                   "    export JUPYTERHUB_CRYPT_KEY=$(openssl rand -hex 32)"
               )
               c.CryptKeeper.keys = [os.urandom(32)]
+        01-refresher: |
+          import time
+          import os
+
+          while True:
+              exp_tk = os.environ.get('ACCESS_TOKEN')
+              c.KubeSpawner.environment.update(
+                  {
+                      "ACCESS_TOKEN": RucioAuthenticator.exchange_token(exp_tk)
+                  }
+              )
+              time.sleep(3500)
     singleuser:
       defaultUrl: "/lab"
       # The liefcycle hooks are used to create the Rucio configuration file,
@@ -116,7 +128,7 @@ spec:
               - "sh"
               - "-c"
               - >
-                echo -n $REFRESH_TOKEN > /home/jovyan/token;
+                echo -n $ACCESS_TOKEN > /home/jovyan/token;
                 mkdir -p /opt/rucio/etc;
                 echo "[client]" >> /opt/rucio/etc/rucio.cfg;
                 echo "rucio_host = https://vre-rucio.cern.ch" >> /opt/rucio/etc/rucio.cfg;
