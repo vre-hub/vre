@@ -149,8 +149,8 @@ spec:
             mountPropagation: HostToContainer
             readOnly: true    
       image:
-        name: ghcr.io/vre-hub/vre-singleuser:sha-7210810
-        tag: latest
+        name: ghcr.io/vre-hub/vre-singleuser
+        tag: sha-7210810
         pullPolicy: Always
       extraFiles:
         ca:
