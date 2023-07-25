@@ -1,40 +1,40 @@
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
-kind: HelmRelease
-metadata:
-  name: reana-cvre
-  namespace: reana
+# apiVersion: helm.toolkit.fluxcd.io/v2beta1
+# kind: HelmRelease
+# metadata:
+#   name: reana-cvre
+#   namespace: reana
 
-spec:
-  releaseName: reana-cvre
-  interval: 5m
-  chart:
-    spec:
-      sourceRef:
-        kind: HelmRepository
-        name: reana
-        namespace: reana
-      chart: reana
-      interval: 1m
-      version: 0.9.1-alpha.3
+# spec:
+#   releaseName: reana-cvre
+#   interval: 5m
+#   chart:
+#     spec:
+#       sourceRef:
+#         kind: HelmRepository
+#         name: reana
+#         namespace: reana
+#       chart: reana
+#       interval: 1m
+#       version: 0.9.1-alpha.3
 
 
-  values:
-  #   debug:
-  #     enabled: false
-  #   eos:
-  #     enabled: false
-  #   maintenance:
-  #     enabled: false
+#   values:
+#   #   debug:
+#   #     enabled: false
+#   #   eos:
+#   #     enabled: false
+#   #   maintenance:
+#   #     enabled: false
 
-    shared_storage: 
-      backend: cephfs
-      volume_size: 20
-      access_modes: ReadWriteMany
-      cephfs:
-        provisioner: manila-provisioner
-        type: "Meyrin CephFS"
-        availability_zone: nova
-        os_secret_name: os-trustee
-        os_secret_namespace: kube-system
-        cephfs_os_share_id: 84395be9-74a1-4000-9a9d-53287a0eb1f4 
-        cephfs_os_share_access_id: 4e165cb2-4960-4129-a0a3-d77f5a606b22
+#     shared_storage: 
+#       backend: cephfs
+#       volume_size: 20
+#       access_modes: ReadWriteMany
+#       cephfs:
+#         provisioner: manila-provisioner
+#         type: "Meyrin CephFS"
+#         availability_zone: nova
+#         os_secret_name: os-trustee
+#         os_secret_namespace: kube-system
+#         cephfs_os_share_id: 84395be9-74a1-4000-9a9d-53287a0eb1f4 
+#         cephfs_os_share_access_id: 4e165cb2-4960-4129-a0a3-d77f5a606b22
