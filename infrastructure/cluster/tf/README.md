@@ -1,5 +1,7 @@
-# Terraform
+# Terraform Infrastructure
 
-`terraform graph -type=plan | dot -Tpng > graph.png` from 04.04.2023 10:15:
+The OpenStack infrastructure is managed by Terraform. The Terraform configuration is split into multiple files and explained in the below graph.
 
 ![](graph.png)
+
+`terraform graph -type=plan | dot -Tpng > graph.png` was used to generate the graph.

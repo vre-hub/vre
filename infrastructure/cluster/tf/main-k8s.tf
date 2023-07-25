@@ -1,13 +1,5 @@
 # Kubernetes Data Sources
 
-#data "kubernetes_secret_v1" "daskhub-tokens" {
-#  metadata {
-#    name      = "daskhub-tokens"
-#    namespace = "daskhub"
-#  }
-#}
-
-
 # Kubernetes Resources
 
 # Namespaces
@@ -18,49 +10,17 @@ resource "kubernetes_namespace_v1" "ns_shared_services" {
   }
 }
 
-
-resource "kubernetes_namespace_v1" "ns_monitoring" {
-  metadata {
-    name = var.ns-monitoring
-  }
-}
-
-# resource "kubernetes_namespace_v1" "ns_reana" {
-#   metadata {
-#     name = var.ns-reana
-#   }
-# }
-
 resource "kubernetes_namespace_v1" "ns_jupyterhub" {
   metadata {
     name = var.ns-jupyterhub
   }
 }
 
-# resource "kubernetes_namespace_v1" "ns_dask-gateway" {
-# metadata {
-#    name = var.ns-dask-gateway
-#  }
-#}
-
-# resource "kubernetes_namespace_v1" "ns_daskhub" {
-#  metadata {
-#    name = var.ns-daskhub
-#  }
-#}
-
-
-# Secrets (locally created and enrypted with kubeseal and then applied as a ready manifest)
-
-/* resource "kubernetes_manifest" "<tbd>" {
-  manifest = "${yamldecode(file("<tbd>.yaml"))}"
-} */
-
 # Storage
 
-# StorageClass
+## StorageClass
 
-## Reclaim Policy Delete
+### Reclaim Policy Delete
 
 resource "kubernetes_storage_class_v1" "sc_manila-meyrin-cephfs" {
   metadata {
@@ -82,7 +42,7 @@ resource "kubernetes_storage_class_v1" "sc_manila-meyrin-cephfs" {
   }
 }
 
-# Reclaim Policy Retain
+### Reclaim Policy Retain
 
 resource "kubernetes_storage_class_v1" "sc_manila-meyrin-cephfs-retain" {
   metadata {
@@ -104,7 +64,9 @@ resource "kubernetes_storage_class_v1" "sc_manila-meyrin-cephfs-retain" {
   }
 }
 
-# PersistentVolumeClaim for JupyterHub Single User Storage
+## PersistentVolumeClaim
+
+### PersistentVolumeClaim for JupyterHub Single User Storage
 
 resource "kubernetes_persistent_volume_claim_v1" "pvc_jhub_singleuser" {
   metadata {
@@ -122,7 +84,9 @@ resource "kubernetes_persistent_volume_claim_v1" "pvc_jhub_singleuser" {
   }
 }
 
-# DeamonSet Manifest for EOS FUSE mount
+# DeamonSets
+
+## DeamonSet Manifest for EOS FUSE mount
 
 resource "kubernetes_manifest" "eosfuse" {
   manifest = yamldecode(file("eos/eosfuse.yaml"))
