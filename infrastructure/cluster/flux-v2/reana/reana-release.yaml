@@ -1,11 +1,11 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: reana-cvre
+  name: reana
   namespace: reana
 
 spec:
-  releaseName: reana-cvre
+  releaseName: reana
   interval: 5m
   chart:
     spec:
@@ -38,3 +38,41 @@ spec:
         os_secret_namespace: kube-system
         cephfs_os_share_id: 84395be9-74a1-4000-9a9d-53287a0eb1f4 
         cephfs_os_share_access_id: 4e165cb2-4960-4129-a0a3-d77f5a606b22
+    components:
+      reana_ui:
+        cern_sso: true
+        enabled: true
+        image: reanahub/reana-ui:0.9.1-alpha.3
+      reana_db:
+        enabled: false
+    db_env_config:
+      REANA_DB_NAME: "vre"
+      REANA_DB_PORT: "6600"
+      REANA_DB_HOST: "dbod-vre.cern.ch"
+      # There are two more environment variables that should be set in order
+      # to connect to a database:
+      # REANA_DB_USERNAME: containing the database user name.
+      # REANA_DB_PASSWORD: containing the password for the user previously set.
+      # Both environment variables should be set inside a Kubernetes secret:
+      # `[release-name]-db-secrets`
+    
+    ingress:
+      enabled: true
+      # name: reana-ingress
+      # namespace: reana
+      ingressClassName: nginx
+      annotations:
+        ingress.kubernetes.io/ssl-redirect: "true"
+        kubernetes.io/ingress.class: nginx
+        meta.helm.sh/release-name: reana
+        meta.helm.sh/release-namespace: reana
+        traefik.frontend.entryPoints: http,https
+        traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
+        cert-manager.io/cluster-issue: "letsencrypt"
+      hosts: 
+        - reana-vre.cern.ch
+        
+      tls:
+        hosts: reana-vre.cern.ch
+        self_signed_cert: true
+        secretName: cert-manager-tls-ingress-secret-reana
