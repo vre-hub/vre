@@ -127,8 +127,8 @@ spec:
                 echo "oidc_audience = rucio" >> /opt/rucio/etc/rucio.cfg;
                 echo "oidc_scope = openid profile offline_access" >> /opt/rucio/etc/rucio.cfg;
                 echo "oidc_issuer = escape" >> /opt/rucio/etc/rucio.cfg;
-                echo "auth_oidc_refresh_active true" >> /opt/rucio/etc/rucio.cfg;
-                echo "auth_oidc_refresh_before_exp 20" >> /opt/rucio/etc/rucio.cfg;
+                echo "auth_oidc_refresh_active = true" >> /opt/rucio/etc/rucio.cfg;
+                echo "auth_oidc_refresh_before_exp = 20" >> /opt/rucio/etc/rucio.cfg;
                 echo "oidc_polling = true" >> /opt/rucio/etc/rucio.cfg;
                 echo "auth_token_file_path = /home/jovyan/token" >> /opt/rucio/etc/rucio.cfg;
       networkPolicy:
