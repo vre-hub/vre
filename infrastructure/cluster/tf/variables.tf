@@ -52,26 +52,8 @@ variable "ns-shared-services" {
   default     = "shared-services"
 }
 
-variable "ns-monitoring" {
-  description = "The name of the namespace for monitoring"
+variable "ns-jupyterhub" {
+  description = "The name of the namespace for jupyterhub"
   type        = string
-  default     = "monitoring"
+  default     = "jhub"
 }
-
-variable "ns-reana" {
-  description = "The name of the namespace for reana"
-  type        = string
-  default     = "reana"
-}
-
-# variable "ns-dask-gateway" {
- # description = "The name of the namespace for dask-gateway"
- # type        = string
- # default     = "dask-gateway"
-#}
-
-#variable "ns-daskhub" {
-#  description = "The name of the namespace for daskhub"
-#  type        = string
-#  default     = "daskhub"
-#}
