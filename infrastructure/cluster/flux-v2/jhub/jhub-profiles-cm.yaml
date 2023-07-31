@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jhub-profiles
+  namespace: jhub
+data:
+  values.yaml: |
+    singleuser:
+      profileList:
+        - display_name: "Default profile"
+          description: "A jupyter/scipy-notebook env with python-3.9, the rucio-jupyterlab extension and the reana-client installed."
+          default: True
+        - display_name: "DEBUG (DO NOT USE)"
+          description: "ADMIN DEBUG IMAGE"
+          kubespawner_override:
+            image: ghcr.io/goseind/singleuser-base:latest
+            
