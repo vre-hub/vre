@@ -170,7 +170,7 @@ spec:
         RUCIO_NAME: "vre-rucio.cern.ch"
         RUCIO_SITE_NAME: "CERN"
         RUCIO_OIDC_AUTH: "file"
-        RUCIO_OIDC_FILE_NAME: "/tmp/rucio_oauth.token"
+        RUCIO_OIDC_FILE_NAME: "/certs/rucio_oauth.token"
         RUCIO_DEFAULT_AUTH_TYPE: "oidc"
         RUCIO_OAUTH_ID: "rucio"
         RUCIO_DEFAULT_INSTANCE: "vre-rucio.cern.ch"
@@ -178,9 +178,9 @@ spec:
         RUCIO_RSE_MOUNT_PATH: "/eos/escape"
         RUCIO_PATH_BEGINS_AT: "5"
         RUCIO_CA_CERT: "/certs/rucio_ca.pem"
-        RUCIO_VOMS_VOMSES_PATH: "/etc/vomses"
-        RUCIO_VOMS_CERTDIR_PATH: "/etc/grid-security/certificates"
-        RUCIO_VOMS_VOMSDIR_PATH: "/etc/grid-security/vomsdir"
+        # RUCIO_VOMS_VOMSES_PATH: "/etc/vomses"
+        # RUCIO_VOMS_CERTDIR_PATH: "/etc/grid-security/certificates"
+        # RUCIO_VOMS_VOMSDIR_PATH: "/etc/grid-security/vomsdir"
     ingress:
       enabled: true
       ingressClassName: nginx
