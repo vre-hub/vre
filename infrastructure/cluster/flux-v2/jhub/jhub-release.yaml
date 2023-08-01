@@ -175,7 +175,7 @@ spec:
         RUCIO_DESTINATION_RSE: "CERN-EOS"
         RUCIO_RSE_MOUNT_PATH: "/eos/escape"
         RUCIO_PATH_BEGINS_AT: "5"
-        RUCIO_CA_CERT: "/opt/cert.pem" # this could be set in the image as well
+        RUCIO_CA_CERT: "/certs/rucio_ca.pem"
     ingress:
       enabled: true
       ingressClassName: nginx
