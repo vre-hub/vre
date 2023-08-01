@@ -116,12 +116,13 @@ spec:
               - "sh"
               - "-c"
               - >
-                echo -n $REFRESH_TOKEN > /home/jovyan/token;
+                mkdir -p /certs;
+                echo -n $REFRESH_TOKEN > /certs/rucio_oauth.token;
                 mkdir -p /opt/rucio/etc;
                 echo "[client]" >> /opt/rucio/etc/rucio.cfg;
                 echo "rucio_host = https://vre-rucio.cern.ch" >> /opt/rucio/etc/rucio.cfg;
                 echo "auth_host = https://vre-rucio-auth.cern.ch" >> /opt/rucio/etc/rucio.cfg;
-                echo "ca_cert = /opt/cert.pem" >> /opt/rucio/etc/rucio.cfg;
+                echo "ca_cert = /certs/rucio_ca.pem" >> /opt/rucio/etc/rucio.cfg;
                 echo "account = $JUPYTERHUB_USER" >> /opt/rucio/etc/rucio.cfg;
                 echo "auth_type = oidc" >> /opt/rucio/etc/rucio.cfg;
                 echo "oidc_audience = rucio" >> /opt/rucio/etc/rucio.cfg;
@@ -130,7 +131,7 @@ spec:
                 echo "auth_oidc_refresh_active = true" >> /opt/rucio/etc/rucio.cfg;
                 echo "auth_oidc_refresh_before_exp = 20" >> /opt/rucio/etc/rucio.cfg;
                 echo "oidc_polling = true" >> /opt/rucio/etc/rucio.cfg;
-                echo "auth_token_file_path = /home/jovyan/token" >> /opt/rucio/etc/rucio.cfg;
+                echo "auth_token_file_path = /certs/rucio_oauth.token" >> /opt/rucio/etc/rucio.cfg;
       networkPolicy:
         enabled: false
       storage:
@@ -164,11 +165,12 @@ spec:
         RUCIO_WILDCARD_ENABLED: "1"
         RUCIO_BASE_URL: "https://vre-rucio.cern.ch"
         RUCIO_AUTH_URL: "https://vre-rucio-auth.cern.ch"
-        RUCIO_DISPLAY_NAME: "VRE-RUCIO"
+        RUCIO_WEBUI_URL: "https://vre-rucio-ui.cern.ch"
+        RUCIO_DISPLAY_NAME: "RUCIO - CERN VRE"
         RUCIO_NAME: "vre-rucio.cern.ch"
-        RUCIO_SITE_NAME: "ROAMING"
-        RUCIO_OIDC_AUTH: "env"
-        RUCIO_OIDC_ENV_NAME: "REFRESH_TOKEN"
+        RUCIO_SITE_NAME: "CERN"
+        RUCIO_OIDC_AUTH: "file"
+        RUCIO_OIDC_FILE_NAME: "/tmp/rucio_oauth.token"
         RUCIO_DEFAULT_AUTH_TYPE: "oidc"
         RUCIO_OAUTH_ID: "rucio"
         RUCIO_DEFAULT_INSTANCE: "vre-rucio.cern.ch"
@@ -176,6 +178,9 @@ spec:
         RUCIO_RSE_MOUNT_PATH: "/eos/escape"
         RUCIO_PATH_BEGINS_AT: "5"
         RUCIO_CA_CERT: "/certs/rucio_ca.pem"
+        RUCIO_VOMS_VOMSES_PATH: "/etc/vomses"
+        RUCIO_VOMS_CERTDIR_PATH: "/etc/grid-security/certificates"
+        RUCIO_VOMS_VOMSDIR_PATH: "/etc/grid-security/vomsdir"
     ingress:
       enabled: true
       ingressClassName: nginx
