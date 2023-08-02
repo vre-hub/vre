@@ -156,7 +156,7 @@ spec:
             readOnly: true    
       image:
         name: ghcr.io/vre-hub/vre-singleuser
-        tag: sha-7210810
+        tag: sha-40199b2
         pullPolicy: Always
       cmd: null
       extraEnv:
