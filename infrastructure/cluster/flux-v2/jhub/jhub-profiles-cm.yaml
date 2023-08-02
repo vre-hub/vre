@@ -7,11 +7,15 @@ data:
   values.yaml: |
     singleuser:
       profileList:
-        - display_name: "Default profile"
-          description: "A jupyter/scipy-notebook env with python-3.9, the rucio-jupyterlab extension and the reana-client installed."
+        - display_name: "Default environment"
+          description: "Based on a scipy-notebook environment with a python-3.9 kernel, the rucio-jupyterlab extension and the reana-client installed."
           default: True
-        - display_name: "DEBUG (DO NOT USE)"
-          description: "ADMIN DEBUG IMAGE"
+        - display_name: "Default environment - python 3.8"
+          description: "Same environment as the default one except for a python-3.8 kernel installed."
           kubespawner_override:
-            image: ghcr.io/goseind/singleuser-base:latest
+            image: ghcr.io/vre-hub/vre-singleuser-py38:sha-7ed7d80
+        - display_name: "KM3NeT and CTA combined analysis environment"
+          description: "Contains gammapy=0.17 and astropy - python-3.8 kernel."
+          kubespawner_override:
+            image: ghcr.io/vre-hub/vre-singleuser-combined_ana_km3net_cta:sha-520edf8
             
