@@ -139,17 +139,17 @@ spec:
         static:
           pvcName: jhub-singleuser # manually created StorageClass with Retain policy and PVC with 800Gi (refer to main-k8s.tf)
         extraVolumes:
-          # - name: cvfms-from-vre # commented out not working
-          #   persistentVolumeClaim:
-          #     claimName: cvfms
+          - name: cvfms-cern-instance 
+            persistentVolumeClaim:
+              claimName: cvfms
           - name: eulake-escape-data # mounts the EOS RSE needed for the Rucio JupiterLab extension
             hostPath:
               path: /var/eos-eulake-home/eulake/escape/data
         extraVolumeMounts:
-          # - name: cvfms-from-vre # commented out not working
-          #   mountPath: /cvfms
-          #   # CVMFS automount volumes must be mounted with HostToContainer mount propagation.
-          #   mountPropagation: HostToContainer
+          - name: cvfms-cern-instance 
+            mountPath: /cvfms
+            # CVMFS automount volumes must be mounted with HostToContainer mount propagation.
+            mountPropagation: HostToContainer
           - name: eulake-escape-data # mounts the EOS RSE needed for the Rucio JupiterLab extension
             mountPath: /eos/escape/
             mountPropagation: HostToContainer
