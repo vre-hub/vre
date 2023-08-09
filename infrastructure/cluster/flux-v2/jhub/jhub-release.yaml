@@ -118,6 +118,7 @@ spec:
               - >
                 mkdir -p /certs /tmp;
                 echo -n $REFRESH_TOKEN > /tmp/rucio_oauth.token;
+                echo -n "oauth2:${REFRESH_TOKEN}:iam-escape.cloud.cnaf.infn.it/userinfo" > /tmp/eos_oauth.token;
                 mkdir -p /opt/rucio/etc;
                 echo "[client]" >> /opt/rucio/etc/rucio.cfg;
                 echo "rucio_host = https://vre-rucio.cern.ch" >> /opt/rucio/etc/rucio.cfg;
@@ -178,6 +179,7 @@ spec:
         RUCIO_RSE_MOUNT_PATH: "/eos/escape"
         RUCIO_PATH_BEGINS_AT: "5"
         RUCIO_CA_CERT: "/certs/rucio_ca.pem"
+        OAUTH2_TOKEN: "FILE:/tmp/eos_oauth.token"
         # RUCIO_VOMS_VOMSES_PATH: "/etc/vomses"
         # RUCIO_VOMS_CERTDIR_PATH: "/etc/grid-security/certificates"
         # RUCIO_VOMS_VOMSDIR_PATH: "/etc/grid-security/vomsdir"
