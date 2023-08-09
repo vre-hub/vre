@@ -119,6 +119,7 @@ spec:
                 mkdir -p /certs /tmp;
                 echo -n $REFRESH_TOKEN > /tmp/rucio_oauth.token;
                 echo -n "oauth2:${REFRESH_TOKEN}:iam-escape.cloud.cnaf.infn.it/userinfo" > /tmp/eos_oauth.token;
+                chmod 0600 /tmp/eos_oauth.token;
                 mkdir -p /opt/rucio/etc;
                 echo "[client]" >> /opt/rucio/etc/rucio.cfg;
                 echo "rucio_host = https://vre-rucio.cern.ch" >> /opt/rucio/etc/rucio.cfg;
@@ -146,6 +147,9 @@ spec:
           - name: eulake-escape-data # mounts the EOS RSE needed for the Rucio JupiterLab extension
             hostPath:
               path: /var/eos-eulake-home/eulake/escape/data
+          - name: eulake-escape-data # mounts the EOS scratch space which is not an RSE
+            hostPath:
+              path: /var/eos-eulake-home/eulake/escape/tmp_data
         extraVolumeMounts:
           - name: cvmfs-cern-instance 
             mountPath: /cvmfs
