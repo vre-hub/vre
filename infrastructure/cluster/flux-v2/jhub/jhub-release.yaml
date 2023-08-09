@@ -160,7 +160,7 @@ spec:
             mountPropagation: HostToContainer
             readOnly: true 
           - name: eulake-escape-tmpdata # mounts the EOS RSE needed for the Rucio JupiterLab extension
-            mountPath: /eos/scatch-space
+            mountPath: /eos/scratch-space
             mountPropagation: HostToContainer
       image:
         name: ghcr.io/vre-hub/vre-singleuser
