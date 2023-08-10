@@ -2,16 +2,22 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
     ingress.kubernetes.io/ssl-redirect: "true"
-    kubernetes.io/ingress.class: nginx
     meta.helm.sh/release-name: reana
     meta.helm.sh/release-namespace: reana
     traefik.frontend.entryPoints: http,https
   name: reana-ingress
   namespace: reana
 spec:
+  ingressClassName: nginx
+  tls:
+  - secretName: cert-manager-tls-ingress-secret-reana
+    hosts:
+    - reana-vre.cern.ch
   rules:
-  - http:
+  - host: reana-vre.cern.ch
+    http:
       paths:
       - backend:
           service:
@@ -34,9 +40,3 @@ spec:
               number: 80
         path: /
         pathType: Prefix
-  tls:
-  - secretName: reana-tls-secret
-# status:
-#   loadBalancer:
-#     ingress:
-#     - ip: <lb-ip>

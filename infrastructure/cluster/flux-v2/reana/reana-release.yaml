@@ -37,8 +37,9 @@ spec:
     components:
       reana_ui:
         enabled: true
-      reana_db:
-        enabled: true
+        cern_sso: true 
+    #   reana_db:
+    #     enabled: false
     # db_env_config:
     #   REANA_DB_NAME: "vre"
     #   REANA_DB_PORT: "6600"
@@ -47,38 +48,11 @@ spec:
       # to connect to a database:
       # REANA_DB_USERNAME: containing the database user name.
       # REANA_DB_PASSWORD: containing the password for the user previously set.
-      # Both environment variables should be set inside a Kubernetes secret:
+     
       # `[release-name]-db-secrets`
   
     ingress:
       enabled: false
-        # tls:
-        #   self_signed_cert: true
-        #   secret_name: reana-tls-secret
-        #   hosts:
-        #     - vre-reana.cern.ch
-        # annotations:
-        #   cert-manager.io/cluster-issuer: letsencrypt
-        #   kubernetes.io/ingress.class: traefik
-        #   traefik.ingress.kubernetes.io/router.entrypoints: https
-        #   traefik.ingress.kubernetes.io/router.tls: "true"
-        # extra:
-        #   - name: http
-        #     annotations:
-        #       kubernetes.io/ingress.class: traefik
-        #       traefik.ingress.kubernetes.io/router.entrypoints: http
-        #       traefik.ingress.kubernetes.io/router.middlewares: kube-system-redirect-scheme@kubernetescrd
+
     traefik:
-      ports:
-        web:
-          nodePort: 30080
-        websecure:
-          nodePort: 30444 # changed from 30443
-          tls:
-            # without additional configs will use default insecure one
-            enabled: true
-      enabled: true
-      rbac:
-        enabled: true
-      service:
-        type: NodePort
+      enabled: false
