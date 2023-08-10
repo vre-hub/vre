@@ -38,12 +38,12 @@ spec:
       reana_ui:
         enabled: true
         cern_sso: true 
-    #   reana_db:
-    #     enabled: false
-    # db_env_config:
-    #   REANA_DB_NAME: "vre"
-    #   REANA_DB_PORT: "6600"
-    #   REANA_DB_HOST: "dbod-vre.cern.ch"
+      reana_db:
+        enabled: false
+    db_env_config:
+      REANA_DB_NAME: "reana"
+      REANA_DB_PORT: "6600"
+      REANA_DB_HOST: "dbod-vre.cern.ch"
       # There are two more environment variables that should be set in order
       # to connect to a database:
       # REANA_DB_USERNAME: containing the database user name.
