@@ -6,13 +6,13 @@ metadata:
   name: eosfuse
   namespace: jhub
 spec:
-  # selector:
-  #   matchLabels:
-  #     app: eosfuse
+  selector:
+    matchLabels:
+      name: eosfuse
   template:
     metadata:
       labels:
-        app: eosfuse
+        name: eosfuse
     spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
