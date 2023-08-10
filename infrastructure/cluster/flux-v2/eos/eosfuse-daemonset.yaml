@@ -3,16 +3,16 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: eosfuse
+  name: eosfuse-test
   namespace: jhub
 spec:
   selector:
     matchLabels:
-      name: eosfuse
+      name: eosfuse-test
   template:
     metadata:
       labels:
-        name: eosfuse
+        name: eosfuse-test
     spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
