@@ -166,6 +166,9 @@ spec:
         name: ghcr.io/vre-hub/vre-singleuser
         tag: sha-40199b2
         pullPolicy: Always
+      nodeSelector:
+        # makes sure EOS eulake fuse mount is done on nodes designated to have the fuse mount
+        jupyter-role: singleuser
       cmd: null
       extraEnv:
         JUPYTERHUB_SINGLEUSER_APP: "notebook.notebookapp.NotebookApp"
