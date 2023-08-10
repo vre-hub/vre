@@ -118,6 +118,8 @@ spec:
               - >
                 mkdir -p /certs /tmp;
                 echo -n $REFRESH_TOKEN > /tmp/rucio_oauth.token;
+                echo -n "oauth2:${REFRESH_TOKEN}:iam-escape.cloud.cnaf.infn.it/userinfo" > /tmp/eos_oauth.token;
+                chmod 0600 /tmp/eos_oauth.token;
                 mkdir -p /opt/rucio/etc;
                 echo "[client]" >> /opt/rucio/etc/rucio.cfg;
                 echo "rucio_host = https://vre-rucio.cern.ch" >> /opt/rucio/etc/rucio.cfg;
@@ -145,15 +147,21 @@ spec:
           - name: eulake-escape-data # mounts the EOS RSE needed for the Rucio JupiterLab extension
             hostPath:
               path: /var/eos-eulake-home/eulake/escape/data
+          - name: eulake-escape-tmpdata # mounts the EOS scratch space which is not an RSE
+            hostPath:
+              path: /var/eos-eulake-home/eulake/escape/tmp_data
         extraVolumeMounts:
           - name: cvmfs-cern-instance 
             mountPath: /cvmfs
             # CVMFS automount volumes must be mounted with HostToContainer mount propagation.
             mountPropagation: HostToContainer
           - name: eulake-escape-data # mounts the EOS RSE needed for the Rucio JupiterLab extension
-            mountPath: /eos/escape/
+            mountPath: /eos/cern-eos-rse
             mountPropagation: HostToContainer
-            readOnly: true    
+            readOnly: true 
+          - name: eulake-escape-tmpdata # mounts the EOS RSE needed for the Rucio JupiterLab extension
+            mountPath: /eos/scratch-space
+            mountPropagation: HostToContainer
       image:
         name: ghcr.io/vre-hub/vre-singleuser
         tag: sha-40199b2
@@ -175,9 +183,10 @@ spec:
         RUCIO_OAUTH_ID: "rucio"
         RUCIO_DEFAULT_INSTANCE: "vre-rucio.cern.ch"
         RUCIO_DESTINATION_RSE: "CERN-EOS"
-        RUCIO_RSE_MOUNT_PATH: "/eos/escape"
-        RUCIO_PATH_BEGINS_AT: "5"
+        RUCIO_RSE_MOUNT_PATH: "/eos/cern-eos-rse"
+        RUCIO_PATH_BEGINS_AT: "4"
         RUCIO_CA_CERT: "/certs/rucio_ca.pem"
+        OAUTH2_TOKEN: "FILE:/tmp/eos_oauth.token"
         # RUCIO_VOMS_VOMSES_PATH: "/etc/vomses"
         # RUCIO_VOMS_CERTDIR_PATH: "/etc/grid-security/certificates"
         # RUCIO_VOMS_VOMSDIR_PATH: "/etc/grid-security/vomsdir"
