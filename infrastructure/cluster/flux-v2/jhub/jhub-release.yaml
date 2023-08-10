@@ -150,6 +150,12 @@ spec:
           - name: eulake-escape-tmpdata # mounts the EOS scratch space which is not an RSE
             hostPath:
               path: /var/eos-eulake-home/eulake/escape/tmp_data
+          - name: test-eulake-escape-data
+            hostPath:
+              path: /var/eos-eulake-home-test/eulake/escape/data
+          - name: test-eulake-escape-tmpdata
+            hostPath:
+              path: /var/eos-eulake-home-test/eulake/escape/tmp_data
         extraVolumeMounts:
           - name: cvmfs-cern-instance 
             mountPath: /cvmfs
@@ -162,10 +168,20 @@ spec:
           - name: eulake-escape-tmpdata # mounts the EOS RSE needed for the Rucio JupiterLab extension
             mountPath: /eos/scratch-space
             mountPropagation: HostToContainer
+          - name: test-eulake-escape-data
+            mountPath: /eos/test-fusemount-data
+            mountPropagation: HostToContainer
+            readOnly: true
+          - name: test-eulake-escape-tmpdata
+            mountPath: /eos/test-fusemount-tmp_data
+            mountPropagation: HostToContainer
       image:
         name: ghcr.io/vre-hub/vre-singleuser
         tag: sha-40199b2
         pullPolicy: Always
+      # nodeSelector:  # Keeping it as a comment to mark it as TODO
+      #   # makes sure EOS eulake fuse mount is done on nodes designated to have the fuse mount
+      #   jupyter-role: singleuser
       cmd: null
       extraEnv:
         JUPYTERHUB_SINGLEUSER_APP: "notebook.notebookapp.NotebookApp"
