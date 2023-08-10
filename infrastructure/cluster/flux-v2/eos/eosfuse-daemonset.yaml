@@ -6,9 +6,9 @@ metadata:
   name: eosfuse
   namespace: jhub
 spec:
-  selector:
-    matchLabels:
-      app: eosfuse
+  # selector:
+  #   matchLabels:
+  #     app: eosfuse
   template:
     metadata:
       labels:
