@@ -1,6 +1,5 @@
 # DaemonSet with the latests CERN EOS client.
 
-
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -30,14 +29,15 @@ spec:
       containers:
         - name: eos-client
           image: gitlab-registry.cern.ch/linuxsupport/cc7-base:latest
-          securityContext:
-            seLinuxOptions:
-              type: "spc_t"
-            privileged: true
-            capabilities:
-              add:
-                - SYS_ADMIN
-                - NET_ADMIN
+          command: ["sleep", "100000"]
+          # securityContext:  # To be cleaned if eos mounted correctly 
+          #   seLinuxOptions:
+          #     type: "spc_t"
+          #   privileged: true
+          #   capabilities:
+          #     add:
+          #       - SYS_ADMIN
+          #       - NET_ADMIN
           volumeMounts:
             - name: eos-eulake
               mountPath: /eos
