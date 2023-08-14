@@ -19,6 +19,17 @@ spec:
       interval: 1m
       version: 0.9.1-alpha.3
 
+  valuesFrom:
+    - kind: Secret
+      name: reana-vre-iam-client
+      valuesKey: client_id
+      targetPath: secrets.login.escape-iam.consumer_key
+    - kind: Secret
+      name: reana-vre-iam-client
+      valuesKey: client_secret
+      targetPath: secrets.login.escape-iam.consumer_secret
+
+
   values:
 
     shared_storage: 
@@ -34,23 +45,44 @@ spec:
         # get shares with `openstack share list`, `openstack share show share_id`
         cephfs_os_share_id: 1c8a0cef-988b-4614-b072-33f75f9a084c
         cephfs_os_share_access_id: b0a39b58-9b44-4961-b041-53978552970d
+
     components:
+
       reana_ui:
         enabled: true
-        cern_sso: true 
+        local_users: false 
       reana_db:
         enabled: false
+      reana_server:
+        environment:
+          REANA_USER_EMAIL_CONFIRMATION: false
+        
     db_env_config:
-      REANA_DB_NAME: "reana"
-      REANA_DB_PORT: "6600"
-      REANA_DB_HOST: "dbod-vre.cern.ch"
-      # There are two more environment variables that should be set in order
-      # to connect to a database:
-      # REANA_DB_USERNAME: containing the database user name.
-      # REANA_DB_PASSWORD: containing the password for the user previously set.
-     
-      # `[release-name]-db-secrets`
-  
+      # REANA_DB_NAME: "reana"
+      # REANA_DB_PORT: "6600"
+      # REANA_DB_HOST: "dbod-vre.cern.ch"
+      
+      REANA_DB_NAME: "admin"
+      REANA_DB_PORT: "6627"
+      REANA_DB_HOST: "dbod-reana-vre.cern.ch"
+      
+    # secrets:
+    #   login:
+    #     your-provider:
+    #       consumer_key: 
+    #       consumer_secret: 
+
+    login:
+      - name: "escape-iam"
+        type: "keycloak"
+        config:
+          title: "ESCAPE IAM"
+          base_url: "https://iam-escape.cloud.cnaf.infn.it"
+          realm_url: "https://iam-escape.cloud.cnaf.infn.it" 
+          auth_url: "https://iam-escape.cloud.cnaf.infn.it/authorize" 
+          token_url: "https://iam-escape.cloud.cnaf.infn.it/token" 
+          userinfo_url: "https://iam-escape.cloud.cnaf.infn.it/userinfo"
+
     ingress:
       enabled: false
 
