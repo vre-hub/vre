@@ -28,7 +28,14 @@ spec:
       name: reana-vre-iam-client
       valuesKey: client_secret
       targetPath: secrets.login.escape-iam.consumer_secret
-
+    - kind: Secret
+      name: reana-share
+      valuesKey: share_id
+      targetPath: shared_storage.cephfs.cephfs_os_share_id
+    - kind: Secret
+      name: reana-share
+      valuesKey: share_access_id
+      targetPath: shared_storage.cephfs.cephfs_os_share_access_id
 
   values:
 
@@ -43,11 +50,9 @@ spec:
         os_secret_name: os-trustee
         os_secret_namespace: kube-system
         # get shares with `openstack share list`, `openstack share show share_id`
-        cephfs_os_share_id: 1c8a0cef-988b-4614-b072-33f75f9a084c
-        cephfs_os_share_access_id: b0a39b58-9b44-4961-b041-53978552970d
-
+        # YOU NEED TO CREATE AN ACCESS RULE TO GET THE ACCESS RULE ID with `openstack share access list share_name`
+        
     components:
-
       reana_ui:
         enabled: true
         local_users: false 
@@ -56,22 +61,25 @@ spec:
       reana_server:
         environment:
           REANA_USER_EMAIL_CONFIRMATION: false
-        
-    db_env_config:
-      # REANA_DB_NAME: "reana"
-      # REANA_DB_PORT: "6600"
-      # REANA_DB_HOST: "dbod-vre.cern.ch"
-      
-      REANA_DB_NAME: "admin"
-      REANA_DB_PORT: "6627"
-      REANA_DB_HOST: "dbod-reana-vre.cern.ch"
-      
-    # secrets:
-    #   login:
-    #     your-provider:
-    #       consumer_key: 
-    #       consumer_secret: 
 
+    notifications:
+      email_config:
+        receiver: escape-cern-ops@cern.ch
+        sender: escape-cern-ops@cern.ch
+        login: ""
+        smtp_server: cernmx.cern.ch
+        smtp_port: 25
+
+    db_env_config:
+      
+      # REANA_DB_NAME: "reana"
+      # REANA_DB_PORT: "6627"
+      # REANA_DB_HOST: "dbod-reana-vre.cern.ch"
+
+      REANA_DB_NAME: "reana"
+      REANA_DB_PORT: "6600"
+      REANA_DB_HOST: "dbod-vre.cern.ch"
+  
     login:
       - name: "escape-iam"
         type: "keycloak"
