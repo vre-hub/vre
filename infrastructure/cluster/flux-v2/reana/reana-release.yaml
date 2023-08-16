@@ -72,10 +72,6 @@ spec:
 
     db_env_config:
       
-      # REANA_DB_NAME: "reana"
-      # REANA_DB_PORT: "6627"
-      # REANA_DB_HOST: "dbod-reana-vre.cern.ch"
-
       REANA_DB_NAME: "reana"
       REANA_DB_PORT: "6600"
       REANA_DB_HOST: "dbod-vre.cern.ch"
