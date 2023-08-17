@@ -1,103 +1,103 @@
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
-kind: HelmRelease
-metadata:
-  name: reana
-  namespace: reana
-  annotations:
-    flux.weave.works/automated: "false" 
+# apiVersion: helm.toolkit.fluxcd.io/v2beta1
+# kind: HelmRelease
+# metadata:
+#   name: reana
+#   namespace: reana
+#   annotations:
+#     flux.weave.works/automated: "false" 
    
-spec:
-  releaseName: reana
-  interval: 5m
-  chart:
-    spec:
-      sourceRef:
-        kind: HelmRepository
-        name: reana
-        namespace: reana
-      chart: reana
-      interval: 1m
-      version: 0.9.1-alpha.3
+# spec:
+#   releaseName: reana
+#   interval: 5m
+#   chart:
+#     spec:
+#       sourceRef:
+#         kind: HelmRepository
+#         name: reana
+#         namespace: reana
+#       chart: reana
+#       interval: 1m
+#       version: 0.9.1-alpha.3
 
-  valuesFrom:
-    - kind: Secret
-      name: reana-vre-iam-client
-      valuesKey: client_id
-      targetPath: secrets.login.escape-iam.consumer_key
-    - kind: Secret
-      name: reana-vre-iam-client
-      valuesKey: client_secret
-      targetPath: secrets.login.escape-iam.consumer_secret
-    - kind: Secret
-      name: reana-share
-      valuesKey: share_id
-      targetPath: shared_storage.cephfs.cephfs_os_share_id
-    - kind: Secret
-      name: reana-share
-      valuesKey: share_access_id
-      targetPath: shared_storage.cephfs.cephfs_os_share_access_id
-    - kind: Secret
-      name: reana-db-secrets
-      valuesKey: user
-      targetPath: secrets.database.user
-    - kind: Secret
-      name: reana-db-secrets
-      valuesKey: password
-      targetPath: secrets.database.password	
+#   valuesFrom:
+#     - kind: Secret
+#       name: reana-vre-iam-client
+#       valuesKey: client_id
+#       targetPath: secrets.login.escape-iam.consumer_key
+#     - kind: Secret
+#       name: reana-vre-iam-client
+#       valuesKey: client_secret
+#       targetPath: secrets.login.escape-iam.consumer_secret
+#     - kind: Secret
+#       name: reana-share
+#       valuesKey: share_id
+#       targetPath: shared_storage.cephfs.cephfs_os_share_id
+#     - kind: Secret
+#       name: reana-share
+#       valuesKey: share_access_id
+#       targetPath: shared_storage.cephfs.cephfs_os_share_access_id
+#     - kind: Secret
+#       name: reana-db-secrets
+#       valuesKey: user
+#       targetPath: secrets.database.user
+#     - kind: Secret
+#       name: reana-db-secrets
+#       valuesKey: password
+#       targetPath: secrets.database.password	
 
-  values:
+#   values:
 
-    shared_storage: 
-      backend: cephfs
-      volume_size: 1000
-      access_modes: ReadWriteMany
-      cephfs:
-        provisioner: manila-provisioner
-        type: "Meyrin CephFS"
-        availability_zone: nova
-        os_secret_name: os-trustee
-        os_secret_namespace: kube-system
-        # get shares with `openstack share list`, `openstack share show share_id`
-        # YOU NEED TO CREATE AN ACCESS RULE TO GET THE ACCESS RULE ID with `openstack share access list share_name`
+#     shared_storage: 
+#       backend: cephfs
+#       volume_size: 1000
+#       access_modes: ReadWriteMany
+#       cephfs:
+#         provisioner: manila-provisioner
+#         type: "Meyrin CephFS"
+#         availability_zone: nova
+#         os_secret_name: os-trustee
+#         os_secret_namespace: kube-system
+#         # get shares with `openstack share list`, `openstack share show share_id`
+#         # YOU NEED TO CREATE AN ACCESS RULE TO GET THE ACCESS RULE ID with `openstack share access list share_name`
         
-    components:
-      reana_ui:
-        enabled: true
-        local_users: false 
-      reana_db:
-        enabled: false
-      reana_server:
-        environment:
-          REANA_USER_EMAIL_CONFIRMATION: false
+#     components:
+#       reana_ui:
+#         enabled: true
+#         local_users: false 
+#       reana_db:
+#         enabled: false
+#       reana_server:
+#         environment:
+#           REANA_USER_EMAIL_CONFIRMATION: false
 
-    notifications:
-      enabled: true 
-      email_config:
-        receiver: escape-cern-ops@cern.ch
-        sender: escape-cern-ops@cern.ch
-        login: ""
-        smtp_server: cernmx.cern.ch
-        smtp_port: 25
+#     notifications:
+#       enabled: true 
+#       email_config:
+#         receiver: escape-cern-ops@cern.ch
+#         sender: escape-cern-ops@cern.ch
+#         login: ""
+#         smtp_server: cernmx.cern.ch
+#         smtp_port: 25
 
-    db_env_config:
+#     db_env_config:
       
-      REANA_DB_NAME: "reana"
-      REANA_DB_PORT: "6600"
-      REANA_DB_HOST: "dbod-vre.cern.ch"
+#       REANA_DB_NAME: "reana"
+#       REANA_DB_PORT: "6600"
+#       REANA_DB_HOST: "dbod-vre.cern.ch"
   
-    login:
-      - name: "escape-iam"
-        type: "keycloak"
-        config:
-          title: "ESCAPE IAM"
-          base_url: "https://iam-escape.cloud.cnaf.infn.it"
-          realm_url: "https://iam-escape.cloud.cnaf.infn.it" 
-          auth_url: "https://iam-escape.cloud.cnaf.infn.it/authorize" 
-          token_url: "https://iam-escape.cloud.cnaf.infn.it/token" 
-          userinfo_url: "https://iam-escape.cloud.cnaf.infn.it/userinfo"
+#     login:
+#       - name: "escape-iam"
+#         type: "keycloak"
+#         config:
+#           title: "ESCAPE IAM"
+#           base_url: "https://iam-escape.cloud.cnaf.infn.it"
+#           realm_url: "https://iam-escape.cloud.cnaf.infn.it" 
+#           auth_url: "https://iam-escape.cloud.cnaf.infn.it/authorize" 
+#           token_url: "https://iam-escape.cloud.cnaf.infn.it/token" 
+#           userinfo_url: "https://iam-escape.cloud.cnaf.infn.it/userinfo"
 
-    ingress:
-      enabled: false
+#     ingress:
+#       enabled: false
 
-    traefik:
-      enabled: false
+#     traefik:
+#       enabled: false
