@@ -64,25 +64,12 @@ spec:
           import requests
           from oauthenticator.generic import GenericOAuthenticator
 
-          # custom authenticator to exchange the access token for a refresh token for rucio OIDC to work
+          # custom authenticator to enable auth_state and get access token to set as env var for rucio extension
           class RucioAuthenticator(GenericOAuthenticator):
               def __init__(self, **kwargs):
                   super().__init__(**kwargs)
                   self.enable_auth_state = True
-
-              def exchange_token(self, token):
-                  params = {
-                      'client_id': self.client_id,
-                      'client_secret': self.client_secret,
-                      'grant_type': 'urn:ietf:params:oauth:grant-type:token-exchange',
-                      'subject_token': token,
-                      'scope': 'openid email profile',
-                      'audience': 'rucio'
-                  }
-                  response = requests.post(self.token_url, data=params)
-                  refresh_token = response.json()['access_token']
-                  return refresh_token
-              
+                  
               async def pre_spawn_start(self, user, spawner):
                   auth_state = await user.get_auth_state()
                   pprint.pprint(auth_state)
@@ -91,7 +78,7 @@ spec:
                       return
                   
                   # define token environment variable from auth_state
-                  spawner.environment['REFRESH_TOKEN'] = self.exchange_token(auth_state['access_token'])
+                  spawner.environment['ACCESS_TOKEN'] = auth_state['access_token']
           
           # set the above authenticator as the default
           c.JupyterHub.authenticator_class = RucioAuthenticator
@@ -117,8 +104,8 @@ spec:
               - "-c"
               - >
                 mkdir -p /certs /tmp;
-                echo -n $REFRESH_TOKEN > /tmp/rucio_oauth.token;
-                echo -n "oauth2:${REFRESH_TOKEN}:iam-escape.cloud.cnaf.infn.it/userinfo" > /tmp/eos_oauth.token;
+                echo -n $ACCESS_TOKEN > /tmp/rucio_oauth.token;
+                echo -n "oauth2:${ACCESS_TOKEN}:iam-escape.cloud.cnaf.infn.it/userinfo" > /tmp/eos_oauth.token;
                 chmod 0600 /tmp/eos_oauth.token;
                 mkdir -p /opt/rucio/etc;
                 echo "[client]" >> /opt/rucio/etc/rucio.cfg;
