@@ -69,6 +69,19 @@ spec:
               def __init__(self, **kwargs):
                   super().__init__(**kwargs)
                   self.enable_auth_state = True
+
+              def exchange_token(self, token):
+                  params = {
+                      'client_id': self.client_id,
+                      'client_secret': self.client_secret,
+                      'grant_type': 'urn:ietf:params:oauth:grant-type:token-exchange',
+                      'subject_token': token,
+                      'scope': 'openid profile',
+                      'audience': 'rucio'
+                  }
+                  response = requests.post(self.token_url, data=params)
+                  rucio_token = response.json()['access_token']
+                  return rucio_token
                   
               async def pre_spawn_start(self, user, spawner):
                   auth_state = await user.get_auth_state()
@@ -78,7 +91,8 @@ spec:
                       return
                   
                   # define token environment variable from auth_state
-                  spawner.environment['ACCESS_TOKEN'] = auth_state['access_token']
+                  spawner.environment['RUCIO_ACCESS_TOKEN'] = self.exchange_token(auth_state['access_token'])
+                  spawner.environment['EOS_ACCESS_TOKEN'] = auth_state['access_token']
           
           # set the above authenticator as the default
           c.JupyterHub.authenticator_class = RucioAuthenticator
@@ -104,8 +118,8 @@ spec:
               - "-c"
               - >
                 mkdir -p /certs /tmp;
-                echo -n $ACCESS_TOKEN > /tmp/rucio_oauth.token;
-                echo -n "oauth2:${ACCESS_TOKEN}:iam-escape.cloud.cnaf.infn.it/userinfo" > /tmp/eos_oauth.token;
+                echo -n $RUCIO_ACCESS_TOKEN > /tmp/rucio_oauth.token;
+                echo -n "oauth2:${EOS_ACCESS_TOKEN}:iam-escape.cloud.cnaf.infn.it/userinfo" > /tmp/eos_oauth.token;
                 chmod 0600 /tmp/eos_oauth.token;
                 mkdir -p /opt/rucio/etc;
                 echo "[client]" >> /opt/rucio/etc/rucio.cfg;
@@ -176,7 +190,7 @@ spec:
         RUCIO_NAME: "vre-rucio.cern.ch"
         RUCIO_SITE_NAME: "CERN"
         RUCIO_OIDC_AUTH: "env"
-        RUCIO_OIDC_ENV_NAME: "ACCESS_TOKEN"
+        RUCIO_OIDC_ENV_NAME: "RUCIO_ACCESS_TOKEN"
         RUCIO_DEFAULT_AUTH_TYPE: "oidc"
         RUCIO_OAUTH_ID: "rucio"
         RUCIO_DEFAULT_INSTANCE: "vre-rucio.cern.ch"
