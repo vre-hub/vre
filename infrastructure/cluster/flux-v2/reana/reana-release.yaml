@@ -79,6 +79,8 @@ spec:
         smtp_server: cernmx.cern.ch
         smtp_port: 25
 
+    reana_hostname: "reana-vre.cern.ch"
+    
     db_env_config:
       
       REANA_DB_NAME: "reana"
