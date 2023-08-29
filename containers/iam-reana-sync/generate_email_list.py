@@ -2,8 +2,7 @@ import requests, json, os
 
 client_id = os.environ['CLIENT_ID']
 client_secret  = os.environ['CLIENT_SECRET']  
-      
-print(client_id)
+
 token_resp = requests.post(
     "https://iam-escape.cloud.cnaf.infn.it/token",
     data={
@@ -15,24 +14,23 @@ token_resp = requests.post(
     headers={"Content-Type": "application/x-www-form-urlencoded"},
 )
 
-token_json = token_resp.json()
-token = token_json['access_token']
+token = token_resp.json()['access_token']
 headers = {"Authorization": "Bearer %s" % token}
 list_url = "https://iam-escape.cloud.cnaf.infn.it/scim/Users"
 
 startIndex = 1
 results = []
 resp = requests.get(list_url, headers=headers, params={"startIndex": startIndex})
-data = resp.json()
+resp_json = resp.json()
 response = json.loads(resp.text)
 
 # need to do this as IAM returns only first 100 results 
 
 while startIndex < response['totalResults']:
     resp = requests.get(list_url, headers=headers, params={"startIndex": startIndex})
-    data = resp.json()
+    resp_json = resp.json()
     response = json.loads(resp.text)
-    for user in data['Resources']:
+    for user in resp_json['Resources']:
         for email in user['emails']:
             results.append(email['value'])
             print(email['value'])

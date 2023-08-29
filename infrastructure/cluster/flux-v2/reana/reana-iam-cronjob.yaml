@@ -73,6 +73,4 @@ spec:
               - date; echo Hello from iam-reana-sync container; 
                 flask reana-admin user-list --admin-access-token $REANA_ADMIN_TOKEN; 
                 python3 /home/generate_email_list.py; 
-                python3 /home/add_reana_users.py; 
-               
-          
+                python3 /home/add_reana_users.py
