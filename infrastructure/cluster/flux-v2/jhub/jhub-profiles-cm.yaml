@@ -22,4 +22,10 @@ data:
           description: "Contains gammapy=0.17 and astropy - python-3.8 kernel."
           kubespawner_override:
             image: ghcr.io/vre-hub/vre-singleuser-combined_ana_km3net_cta:sha-520edf8
+        - display_name: "Dask2023.8.1 + Python3.10 + ROOT6.28.06"
+          description: "Analysis Grand Challenge - CMS Open Data"
+          kubespawner_override:
+            image: ghcr.io/egazzarr/docker-tests-dask-root:latest
+            
+            
             
