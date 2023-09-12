@@ -17,7 +17,7 @@ spec:
         namespace: reana
       chart: reana
       interval: 1m
-      version: 0.9.1-alpha.3
+      version: 0.9.1-alpha.4
 
   valuesFrom:
     - kind: Secret
