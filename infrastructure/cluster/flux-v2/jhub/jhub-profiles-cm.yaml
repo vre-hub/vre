@@ -21,7 +21,7 @@ data:
         - display_name: "KM3Net Science Project environment"
           description: "Contains gammapy=1.1, km3irf and km3net-testdata libraries."
           kubespawner_override:
-            image: docker pull ghcr.io/vre-hub/vre-singleuser-km3irf:sha-c1e2a18
+            image: ghcr.io/vre-hub/vre-singleuser-km3irf:sha-c1e2a18
         - display_name: "KM3NeT and CTA combined analysis environment"
           description: "Contains gammapy=0.17 and astropy - python-3.8 kernel."
           kubespawner_override:
