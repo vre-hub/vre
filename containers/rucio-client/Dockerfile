@@ -6,9 +6,13 @@ LABEL maintainer="VRE Team @ CERN 22/23 - E. Garcia, E. Gazzarrini, D. Gosein"
 
 USER root
 
+RUN yum upgrade -y \
+    && yum clean all \
+    && rm -rf /var/cache/yum
+
 # EGI trust anchors
-RUN curl -Lo /etc/yum.repos.d/EGI-trustanchors.repo https://repository.egi.eu/sw/production/cas/1/current/repo-files/EGI-trustanchors.repo \
-    && yum -y update
+RUN curl -Lo /etc/yum.repos.d/egi-trustanchors.repo https://repository.egi.eu/sw/production/cas/1/current/repo-files/egi-trustanchors.repo \
+    && yum update -y 
 
 RUN yum clean metadata
 RUN yum -y install wget ca-certificates ca-policy-egi-core
