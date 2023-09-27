@@ -33,5 +33,5 @@ data:
         - display_name: "Indirect Dark Matter Detection Sciente Project environment"
           description: "Contains the MLFermiLATDwarfs and fermitools libraries"
           kubespawner_override:
-            image: ghcr.io/vre-hub/vre-singleuser-microomega:5cbf4f4
+            image: ghcr.io/vre-hub/vre-singleuser-microomega:sha-5cbf4f4
                         
