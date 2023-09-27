@@ -20,7 +20,9 @@ RUN yum update -y \
 RUN yum update -y \
     && yum install -y wget voms-clients-java xrootd-client
 
-ADD yum-repo/EGI-trustanchors.repo /etc/yum.repos.d/EGI-trustanchors.repo
+RUN curl -Lo /etc/yum.repos.d/egi-trustanchors.repo https://repository.egi.eu/sw/production/cas/1/current/repo-files/egi-trustanchors.repo \
+    && yum update -y 
+    
 RUN yum install -y ca-policy-egi-core
 
 RUN mkdir -p /etc/vomses \

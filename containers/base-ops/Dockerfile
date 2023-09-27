@@ -19,8 +19,8 @@ RUN pip install --upgrade pip
 USER root
 
 # EGI trust anchors
-RUN curl -o /etc/yum.repos.d/EGI-trustanchors.repo https://repository.egi.eu/sw/production/cas/1/current/repo-files/EGI-trustanchors.repo \
-    && yum -y update
+RUN curl -Lo /etc/yum.repos.d/egi-trustanchors.repo https://repository.egi.eu/sw/production/cas/1/current/repo-files/egi-trustanchors.repo \
+    && yum update -y 
 
 RUN yum -y install gfal2* python3-gfal2 xrootd-client voms-clients-java 
 RUN yum -y install ca-certificates ca-policy-egi-core
