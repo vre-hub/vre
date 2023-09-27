@@ -4,6 +4,8 @@ name: Docker base container for VRE ops build
 # and when a new tag is created.
 on:
   push:
+    branches: 
+      - main
     paths:
       - containers/base-ops/**
     tags:
