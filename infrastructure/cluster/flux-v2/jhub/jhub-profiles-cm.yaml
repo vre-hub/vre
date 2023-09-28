@@ -1,4 +1,4 @@
-apiVersion: v1
+meapiVersion: v1
 kind: ConfigMap
 metadata:
   name: jhub-profiles
@@ -26,10 +26,10 @@ data:
           description: "Contains gammapy=0.17 and astropy - python-3.8 kernel."
           kubespawner_override:
             image: ghcr.io/vre-hub/vre-singleuser-combined_ana_km3net_cta:sha-520edf8
-        - display_name: "Dask2023.8.1 + Python3.10 + ROOT6.28.06"
-          description: "Analysis Grand Challenge - CMS Open Data"
+        - display_name: "Dask environment"
+          description: "Create a Dask cluster to distribute your workflow across nodes"
           kubespawner_override:
-            image: ghcr.io/egazzarr/docker-tests-dask-root:latest
+            image: ghcr.io/egazzarr/docker-tests-vre-singleuser-dask:latest
         - display_name: "Indirect Dark Matter Detection Sciente Project environment"
           description: "Contains the MLFermiLATDwarfs and fermitools libraries"
           kubespawner_override:
