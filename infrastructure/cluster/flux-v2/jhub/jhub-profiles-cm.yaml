@@ -1,4 +1,4 @@
-meapiVersion: v1
+apiVersion: v1
 kind: ConfigMap
 metadata:
   name: jhub-profiles
