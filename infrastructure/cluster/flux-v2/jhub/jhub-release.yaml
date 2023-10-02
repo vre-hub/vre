@@ -36,6 +36,10 @@ spec:
       service:
         type: ClusterIP
     hub:
+      services:
+        dask-gateway:
+          apiToken: "89fa0a50e9cf1dc3447c7b757301bd3a275aa334db947560802c2f428223ed5c"
+          display: false
       service:
         type: ClusterIP
       # network policy needs to be modified to allow access to the Rucio server
