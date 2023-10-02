@@ -3,7 +3,7 @@ apiVersion: source.toolkit.fluxcd.io/v1beta1
 kind: HelmRepository
 metadata:
   name: dask-gateway-charts
-  namespace: dask-gateway
+  namespace: jhub
 spec:
   interval: 10m
   url: https://helm.dask.org/
