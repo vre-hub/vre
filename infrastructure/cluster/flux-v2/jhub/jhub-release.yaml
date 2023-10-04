@@ -174,7 +174,7 @@ spec:
             mountPropagation: HostToContainer
       image:
         name: ghcr.io/vre-hub/vre-singleuser
-        tag: sha-40199b2
+        tag: sha-423e01a
         pullPolicy: Always
       # nodeSelector:  # Keeping it as a comment to mark it as TODO
       #   # makes sure EOS eulake fuse mount is done on nodes designated to have the fuse mount
