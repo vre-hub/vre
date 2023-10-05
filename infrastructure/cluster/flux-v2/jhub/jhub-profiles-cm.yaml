@@ -34,4 +34,8 @@ data:
           description: "Contains the MLFermiLATDwarfs and fermitools libraries"
           kubespawner_override:
             image: ghcr.io/vre-hub/vre-singleuser-microomega:sha-5cbf4f4
+        - display_name: "Dev enviroment"
+          description: "For testing and development purposes"
+          kubespawner_override:
+            image: ghcr.io/vre-hub/vre-singleuser:dev
                         
