@@ -340,7 +340,7 @@ spec:
           cpu: "700m"
 
     reaper:
-      greedy: 0
+      greedy: 1
       scheme: ""
       threads: 2
       chunkSize: 2
