@@ -1,9 +1,0 @@
-# apiVersion: source.toolkit.fluxcd.io/v2beta1
-apiVersion: source.toolkit.fluxcd.io/v1beta1
-kind: HelmRepository
-metadata:
-  name: dask-gateway-charts
-  namespace: jhub
-spec:
-  interval: 10m
-  url: https://helm.dask.org/
