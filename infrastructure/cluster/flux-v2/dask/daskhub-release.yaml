@@ -36,6 +36,10 @@ spec:
       name: nb-vre-api-token
       valuesKey: apiToken
       targetPath: dask-gateway.gateway.auth.jupyterhub.apiToken
+    - kind: Secret
+      name: daskhub-vre-dbconnectstring
+      valuesKey: dbconnectstring
+      targetPath: jupyterhub.hub.db.url
 
   values:
 
@@ -58,8 +62,10 @@ spec:
         networkPolicy:
           enabled: false   
         db:
-          type: sqlite-memory
-          upgrade: true
+          type: postgres
+          
+          # type: sqlite-memory
+          # upgrade: true
 
         config:
           GenericOAuthenticator:
@@ -82,9 +88,6 @@ spec:
         tolerations:
             - key: "node-role.kubernetes.io/master"
               operator: Exists
-        db:
-          type: sqlite-memory
-          upgrade: true
 
         extraConfig:
           # Register Dask Gateway service and setup singleuser environment.
@@ -130,10 +133,10 @@ spec:
                 print("dask-gateway service not found. Did you set jupyterhub.hub.services.dask-gateway.apiToken?")
 
       singleuser:    
-        image:
-          name: pangeo/base-notebook  # Image to use for singleuser environment. Must include dask-gateway.
-          tag: 2021.06.05
-        defaultUrl: "/lab"  # Use jupyterlab by defualt.
+        # image:
+        #   name: pangeo/base-notebook  # Image to use for singleuser environment. Must include dask-gateway.
+        #   # tag: 2021.06.05
+        # defaultUrl: "/lab"  # Use jupyterlab by defualt.
         memory:
           guarantee: 500M
           limit: 1G
