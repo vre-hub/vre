@@ -121,8 +121,8 @@ spec:
       server: flask
       authServer: flask
 
-    monitoring:
-      enabled: true
+    # monitoring:
+    #   enabled: true
 
     automaticRestart:
       enabled: 1
