@@ -153,6 +153,9 @@ spec:
           - name: test-eulake-escape-tmpdata
             hostPath:
               path: /var/eos-eulake-home-test/eulake/escape/tmp_data
+          - name: debug-eos
+            hostPath:
+              path: /var/eos/
         extraVolumeMounts:
           - name: cvmfs-cern-instance 
             mountPath: /cvmfs
@@ -171,6 +174,9 @@ spec:
             readOnly: true
           - name: test-eulake-escape-tmpdata
             mountPath: /eos/test-fusemount-tmp_data
+            mountPropagation: HostToContainer
+          - name: debug-eos
+            mountPath: /eos/debug-eos
             mountPropagation: HostToContainer
       image:
         name: ghcr.io/vre-hub/vre-singleuser
