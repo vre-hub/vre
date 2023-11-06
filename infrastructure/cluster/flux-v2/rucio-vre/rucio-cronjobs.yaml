@@ -23,7 +23,7 @@ spec:
                 mountPath: /tmp/
               env:
               - name: IAM_SERVER
-                value: "https://iam-escape.cloud.cnaf.infn.it"
+                value: "https://iam-escape.cloud.cnaf.infn.it/"
               - name: IAM_CLIENT_SECRET
                 valueFrom:
                   secretKeyRef:
