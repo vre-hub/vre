@@ -70,7 +70,8 @@ spec:
         environment:
           REANA_USER_EMAIL_CONFIRMATION: false
       reana_workflow_controller:
-        image: docker.io/mdonadoni/reana-workflow-controller:0.9.1-7e03f0a-cvmfs-amd64
+        # image: docker.io/mdonadoni/reana-workflow-controller:0.9.1-7e03f0a-cvmfs-amd64
+        image: docker.io/mdonadoni/reana-workflow-controller:0.9.1-7e03f0a-cvmfs
 
     notifications:
       enabled: true 
