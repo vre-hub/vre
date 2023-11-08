@@ -37,5 +37,12 @@ for email in new_emails:
                 shell=True,
                 encoding="utf-8",
             )
+            subprocess.check_output(
+                [
+                    f"flask reana-admin token-grant --email {email} --admin-access-token {reana_admin_token}"
+                ],
+                shell=True,
+                encoding="utf-8",
+            )  # to be understood: the first token grant should happen at the user-create command, so maybe this last section is not needed 
         except subprocess.CalledProcessError as e:
             print(e.stderr)
