@@ -14,7 +14,7 @@ spec:
           restartPolicy: OnFailure 
           containers:
             - name: iam-sync
-              image: ghcr.io/vre-hub/vre-iam-reana-sync:latest # to be changed to correct version
+              image: ghcr.io/vre-hub/vre-iam-reana-sync:v1.0.0-rc0-35-02757b7 # to be changed to correct version
     
               env:
             
