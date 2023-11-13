@@ -35,8 +35,8 @@ spec:
         mountPath: /opt/rucio/etc/rse-accounts.json
         subPath: rse-accounts.json
              
-    replicaCount: 0
-    authReplicaCount: 0
+    replicaCount: 2
+    authReplicaCount: 2
 
     useSSL:
       server: true 
