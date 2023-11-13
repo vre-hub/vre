@@ -29,9 +29,15 @@ openstack server set --property landb-alias=vre-rucio--load-3-,vre-rucio-auth--l
 # TO USE CERN CLOUD LOADBALANCING: apply secrets, then terraform, when externalIP of LoadBalancer gets created run 'openstack loadbalancer list' on aiadm and use the newly created LB IDs to assign the DN name of your service to them:
 # backlog: this option uses the CERN's loadbalancer as a service 
 
+# set a description
 openstack loadbalancer set --description "vre-rucio.cern.ch" $LB_ID_MAIN
 openstack loadbalancer set --description "vre-rucio-auth.cern.ch" $LB_ID_AUTH
 openstack loadbalancer set --description "vre-rucio-ui.cern.ch" $LB_ID_UI
+
+#set a tag
+openstack loadbalancer set --tag landb-alias=vre-rucio $LB_ID_MAIN
+openstack loadbalancer set --tag landb-alias=vre-rucio-auth $LB_ID_AUTH
+openstack loadbalancer set --tag landb-alias=vre-rucio-ui $LB_ID_UI
 
 ## set reana HA node labels
 kubectl label "${NODE_PREFIX}-3" reana.io/system=infrastructure
