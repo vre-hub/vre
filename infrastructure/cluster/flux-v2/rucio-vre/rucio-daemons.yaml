@@ -511,3 +511,7 @@ spec:
         use_ssl: "False"
         brokers: "dashb-mb.cern.ch"
         voname: "escape"
+
+      credentials:
+        gcs: "/opt/rucio/etc/rse-accounts.cfg"
+        signature_lifetime: "3600"

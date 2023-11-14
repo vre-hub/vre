@@ -25,6 +25,7 @@ spec:
       valuesKey: values.yaml
 
   values:
+    
     additionalSecrets:
       idpsecrets:
         secretName: idpsecrets
@@ -32,11 +33,11 @@ spec:
         subPath: idpsecrets.json
       rse-accounts:
         secretName: rse-accounts
-        mountPath: /opt/rucio/etc/rse-accounts.json
-        subPath: rse-accounts.json
+        mountPath: /opt/rucio/etc/rse-accounts.cfg
+        subPath: rse-accounts.cfg
              
-    replicaCount: 2
-    authReplicaCount: 2
+    replicaCount: 1
+    authReplicaCount: 1
 
     useSSL:
       server: true 
@@ -177,6 +178,10 @@ spec:
         admin_issuer: "escape"
         expected_audience: "rucio"
         expected_scope: "openid profile"
+
+      credentials:
+        gcs: "/opt/rucio/etc/rse-accounts.cfg"
+        signature_lifetime: "3600"
 
       policy:
         permission: "escape"
