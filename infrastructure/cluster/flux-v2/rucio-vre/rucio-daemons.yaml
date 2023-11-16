@@ -41,6 +41,10 @@ spec:
         secretName: rucio-x509up 
         mountPath: /tmp/x509up
         subPath: x509up
+      - volumeName: rse-accounts
+        secretName: rse-accounts
+        mountPath: /opt/rucio/etc/rse-accounts.cfg
+        subPath: rse-accounts.cfg
    
       # TO START WITH
 
