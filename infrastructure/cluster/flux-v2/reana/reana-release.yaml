@@ -72,7 +72,9 @@ spec:
       reana_workflow_controller:
         # image: docker.io/mdonadoni/reana-workflow-controller:0.9.1-7e03f0a-cvmfs-amd64
         image: docker.io/mdonadoni/reana-workflow-controller:0.9.1-7e03f0a-cvmfs
-
+        
+    compute_backends: "kubernetes, htcondorcern, slurmcern"
+    
     notifications:
       enabled: true 
       email_config:
