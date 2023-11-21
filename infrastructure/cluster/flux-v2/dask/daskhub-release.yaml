@@ -132,11 +132,16 @@ spec:
             else:
                 print("dask-gateway service not found. Did you set jupyterhub.hub.services.dask-gateway.apiToken?")
 
-      singleuser:    
-        # image:
-        #   name: pangeo/base-notebook  # Image to use for singleuser environment. Must include dask-gateway.
-        #   # tag: 2021.06.05
-        # defaultUrl: "/lab"  # Use jupyterlab by defualt.
+      singleuser: 
+      
+        image:
+          name: ghcr.io/egazzarr/docker-tests-dask-root
+          # name: dask-root  # Image to use for singleuser environment. Must include dask-gateway.
+          tag: latest
+          pullPolicy: Always
+
+        defaultUrl: "/lab"  # Use jupyterlab by defualt.
+
         memory:
           guarantee: 500M
           limit: 1G
