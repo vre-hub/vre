@@ -192,7 +192,7 @@ spec:
           type: jupyterhub  # Use JupyterHub to authenticate with Dask Gateway
       traefik:
         service:
-          type: ClusterIP  # Access Dask Gateway through JupyterHub. To access the Gateway from outside JupyterHub, this must be changed to a `LoadBalancer`.
+          type: LoadBalancer  # Access Dask Gateway through JupyterHub. To access the Gateway from outside JupyterHub, this must be changed to a `LoadBalancer`.
 
     dask-kubernetes:
       # Use dask-kubernetes, rather than Dask Gateway, for creating Dask Clusters.
