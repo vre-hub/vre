@@ -134,11 +134,11 @@ spec:
 
       singleuser: 
       
-        image:
-          name: ghcr.io/egazzarr/docker-tests-dask-root
-          # name: dask-root  # Image to use for singleuser environment. Must include dask-gateway.
-          tag: latest
-          pullPolicy: Always
+        # image:
+        #   name: ghcr.io/egazzarr/docker-tests-dask-root
+        #   # name: dask-root  # Image to use for singleuser environment. Must include dask-gateway.
+        #   tag: latest
+        #   pullPolicy: Always
 
         defaultUrl: "/lab"  # Use jupyterlab by defualt.
 
