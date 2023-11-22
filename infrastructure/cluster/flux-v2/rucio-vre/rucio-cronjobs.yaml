@@ -67,7 +67,7 @@ spec:
           restartPolicy: OnFailure 
           containers:
             - name: rucio-noise
-              image: ghcr.io/vre-hub/vre-rucio-noise:v1.0.0-rc0-10-be00405
+              image: ghcr.io/vre-hub/vre-rucio-noise:v1.0.0-rc0-52-7e5585c
               volumeMounts:
               - name: rucio-cfg
                 mountPath: /opt/rucio/etc/
