@@ -148,10 +148,10 @@ spec:
         cpu:
           guarantee: 0.3
           limit: 1
-        storage:
-          type: static
-          static:
-            pvcName: daskhub-vre-dynamic
+        # storage:
+        #   type: static
+        #   static:
+        #     pvcName: daskhub-vre-dynamic
           
         # storage:
         #   type: dynamic
