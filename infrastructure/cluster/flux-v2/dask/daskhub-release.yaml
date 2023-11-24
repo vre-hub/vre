@@ -149,7 +149,9 @@ spec:
           guarantee: 0.3
           limit: 1
         storage:
-          type: none
+          type: dynamic
+          static:
+            pvcName: daskhub-vre-dynamic
           
         # storage:
         #   type: dynamic
