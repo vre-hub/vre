@@ -134,11 +134,11 @@ spec:
 
       singleuser: 
       
-        image:
-          name: ghcr.io/egazzarr/docker-tests-dask-root
-          # name: dask-root  # Image to use for singleuser environment. Must include dask-gateway.
-          tag: latest
-          pullPolicy: Always
+        # image:
+        #   name: ghcr.io/egazzarr/docker-tests-dask-root
+        #   # name: dask-root  # Image to use for singleuser environment. Must include dask-gateway.
+        #   tag: latest
+        #   pullPolicy: Always
 
         defaultUrl: "/lab"  # Use jupyterlab by defualt.
 
@@ -149,7 +149,9 @@ spec:
           guarantee: 0.3
           limit: 1
         storage:
-          type: none
+          type: dynamic
+          static:
+            pvcName: daskhub-vre-dynamic
           
         # storage:
         #   type: dynamic
@@ -192,7 +194,8 @@ spec:
           type: jupyterhub  # Use JupyterHub to authenticate with Dask Gateway
       traefik:
         service:
-          type: ClusterIP  # Access Dask Gateway through JupyterHub. To access the Gateway from outside JupyterHub, this must be changed to a `LoadBalancer`.
+          type: LoadBalancer
+            # Access Dask Gateway through JupyterHub. To access the Gateway from outside JupyterHub, this must be changed to a `LoadBalancer`.
 
     dask-kubernetes:
       # Use dask-kubernetes, rather than Dask Gateway, for creating Dask Clusters.
