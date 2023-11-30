@@ -32,16 +32,14 @@ spec:
       name: jhub-profiles
       valuesKey: values.yaml
 
-    - kind: Secret
-      name: nb-vre-api-token
-      namespace: daskhub
-      valuesKey: apiToken
-      targetPath: hub.services.dask-gateway.apiToken
-    - kind: Secret
-      name: nb-vre-api-token
-      namespace: daskhub
-      valuesKey: apiToken
-      targetPath: dask-gateway.gateway.auth.jupyterhub.apiToken
+    # - kind: Secret
+    #   name: nb-vre-api-token
+    #   valuesKey: apiToken
+    #   targetPath: hub.services.dask-gateway.apiToken
+    # - kind: Secret
+    #   name: nb-vre-api-token
+    #   valuesKey: apiToken
+    #   targetPath: dask-gateway.gateway.auth.jupyterhub.apiToken
       
   values:
     proxy:
