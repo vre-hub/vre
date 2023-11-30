@@ -42,6 +42,12 @@ spec:
       service:
         type: ClusterIP
     hub:
+    ##### adding this for testing
+      services:
+        dask-gateway:
+          # This makes the gateway available at ${HUB_URL}/services/dask-gateway
+          display: false
+          
       service:
         type: ClusterIP
       # network policy needs to be modified to allow access to the Rucio server
@@ -65,20 +71,20 @@ spec:
 
       extraConfig:
 
-        00-add-dask-gateway-values: |
-          # 1. Sets `DASK_GATEWAY__PROXY_ADDRESS` in the singleuser environment.
-          # 2. Adds the URL for the Dask Gateway JupyterHub service.
-          import os
-          gateway_address = "http://188.184.76.40/services/dask-gateway"
-          print("Setting DASK_GATEWAY__ADDRESS {} from HTTP service".format(gateway_address))
+        # 00-add-dask-gateway-values: |
+        #   # 1. Sets `DASK_GATEWAY__PROXY_ADDRESS` in the singleuser environment.
+        #   # 2. Adds the URL for the Dask Gateway JupyterHub service.
+        #   import os
+        #   gateway_address = "http://188.184.76.40/services/dask-gateway"
+        #   print("Setting DASK_GATEWAY__ADDRESS {} from HTTP service".format(gateway_address))
          
-          # Internal address to connect to the Dask Gateway.
-          c.KubeSpawner.environment.setdefault("DASK_GATEWAY__ADDRESS", gateway_address)
+        #   # Internal address to connect to the Dask Gateway.
+        #   c.KubeSpawner.environment.setdefault("DASK_GATEWAY__ADDRESS", gateway_address)
           
-          # Relative address for the dashboard link.
-          c.KubeSpawner.environment.setdefault("DASK_GATEWAY__PUBLIC_ADDRESS", "/services/dask-gateway/")
-          # Use JupyterHub to authenticate with Dask Gateway.
-          c.KubeSpawner.environment.setdefault("DASK_GATEWAY__AUTH__TYPE", "jupyterhub")
+        #   # Relative address for the dashboard link.
+        #   c.KubeSpawner.environment.setdefault("DASK_GATEWAY__PUBLIC_ADDRESS", "/services/dask-gateway/")
+        #   # Use JupyterHub to authenticate with Dask Gateway.
+        #   c.KubeSpawner.environment.setdefault("DASK_GATEWAY__AUTH__TYPE", "jupyterhub")
 
         token-exchange: |
           import pprint
