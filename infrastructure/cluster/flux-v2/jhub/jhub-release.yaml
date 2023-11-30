@@ -36,10 +36,6 @@ spec:
       name: api-dask-dask-gateway
       valuesKey: jupyterhub-api-token
       targetPath: hub.services.dask-gateway.apiToken
-    - kind: Secret
-      name: api-dask-dask-gateway
-      valuesKey: jupyterhub-api-token
-      targetPath: dask-gateway.gateway.auth.jupyterhub.apiToken
       
   values:
     proxy:
