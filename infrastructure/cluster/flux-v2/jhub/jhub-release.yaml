@@ -173,10 +173,10 @@ spec:
               claimName: cvmfs
           - name: eulake-cern-eos-rse # mounts the EOS RSE needed for the Rucio JupiterLab extension
             hostPath:
-              path: /var/eos/eulake/eulake/escape/data
+              path: /var/eos/eulake/escape/data
           - name: eulake-scratch-data # mounts the EOS scratch space which is not an RSE
             hostPath:
-              path: /var/eos/eulake/eulake/escape/tmp_data
+              path: /var/eos/eulake/escape/tmp_data
         extraVolumeMounts:
           - name: cvmfs-cern-instance 
             mountPath: /cvmfs
