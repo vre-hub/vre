@@ -171,42 +171,23 @@ spec:
           - name: cvmfs-cern-instance 
             persistentVolumeClaim:
               claimName: cvmfs
-          - name: eulake-escape-data # mounts the EOS RSE needed for the Rucio JupiterLab extension
+          - name: eulake-cern-eos-rse # mounts the EOS RSE needed for the Rucio JupiterLab extension
             hostPath:
-              path: /var/eos-eulake-home/eulake/escape/data
-          - name: eulake-escape-tmpdata # mounts the EOS scratch space which is not an RSE
+              path: /var/eos/eulake/eulake/escape/data
+          - name: eulake-scratch-data # mounts the EOS scratch space which is not an RSE
             hostPath:
-              path: /var/eos-eulake-home/eulake/escape/tmp_data
-          - name: test-eulake-escape-data
-            hostPath:
-              path: /var/eos-eulake-home-test/eulake/escape/data
-          - name: test-eulake-escape-tmpdata
-            hostPath:
-              path: /var/eos-eulake-home-test/eulake/escape/tmp_data
-          - name: debug-eos
-            hostPath:
-              path: /var/eos/
+              path: /var/eos/eulake/eulake/escape/tmp_data
         extraVolumeMounts:
           - name: cvmfs-cern-instance 
             mountPath: /cvmfs
             # CVMFS automount volumes must be mounted with HostToContainer mount propagation.
             mountPropagation: HostToContainer
-          - name: eulake-escape-data # mounts the EOS RSE needed for the Rucio JupiterLab extension
+          - name: eulake-cern-eos-rse # mounts the EOS RSE needed for the Rucio JupiterLab extension
             mountPath: /eos/cern-eos-rse
             mountPropagation: HostToContainer
             readOnly: true 
-          - name: eulake-escape-tmpdata # mounts the EOS RSE needed for the Rucio JupiterLab extension
+          - name: eulake-scratch-data 
             mountPath: /eos/scratch-space
-            mountPropagation: HostToContainer
-          - name: test-eulake-escape-data
-            mountPath: /eos/test-fusemount-data
-            mountPropagation: HostToContainer
-            readOnly: true
-          - name: test-eulake-escape-tmpdata
-            mountPath: /eos/test-fusemount-tmp_data
-            mountPropagation: HostToContainer
-          - name: debug-eos
-            mountPath: /eos/debug-eos
             mountPropagation: HostToContainer
       image:
         name: ghcr.io/vre-hub/vre-singleuser
