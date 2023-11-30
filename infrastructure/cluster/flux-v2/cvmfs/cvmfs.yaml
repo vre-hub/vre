@@ -28,7 +28,7 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: cvmfs-all-repos
+  name: cvmfs-client
   namespace: jhub
 spec:
   containers:
