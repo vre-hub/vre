@@ -71,20 +71,26 @@ spec:
 
       extraConfig:
 
-        # 00-add-dask-gateway-values: |
-        #   # 1. Sets `DASK_GATEWAY__PROXY_ADDRESS` in the singleuser environment.
-        #   # 2. Adds the URL for the Dask Gateway JupyterHub service.
-        #   import os
-        #   gateway_address = "http://188.184.76.40/services/dask-gateway"
-        #   print("Setting DASK_GATEWAY__ADDRESS {} from HTTP service".format(gateway_address))
-         
-        #   # Internal address to connect to the Dask Gateway.
-        #   c.KubeSpawner.environment.setdefault("DASK_GATEWAY__ADDRESS", gateway_address)
+        00-add-dask-gateway-values: |
+          # 1. Sets `DASK_GATEWAY__PROXY_ADDRESS` in the singleuser environment.
+          # 2. Adds the URL for the Dask Gateway JupyterHub service.
+          import os
+          gateway_address = "http://traefik-dask-dask-gateway/"
+          print("Setting DASK_GATEWAY__ADDRESS {} from HTTP service".format(gateway_address))
           
-        #   # Relative address for the dashboard link.
-        #   c.KubeSpawner.environment.setdefault("DASK_GATEWAY__PUBLIC_ADDRESS", "/services/dask-gateway/")
-        #   # Use JupyterHub to authenticate with Dask Gateway.
-        #   c.KubeSpawner.environment.setdefault("DASK_GATEWAY__AUTH__TYPE", "jupyterhub")
+          # Internal address to connect to the Dask Gateway.
+          c.KubeSpawner.environment.setdefault("DASK_GATEWAY__ADDRESS", gateway_address)
+          
+          # Relative address for the dashboard link.
+          c.KubeSpawner.environment.setdefault("DASK_GATEWAY__PUBLIC_ADDRESS", "/services/dask-gateway/")
+          # Use JupyterHub to authenticate with Dask Gateway.
+          c.KubeSpawner.environment.setdefault("DASK_GATEWAY__AUTH__TYPE", "jupyterhub")
+
+        10-patch-dask-labextension-config: |-
+          c.KubeSpawner.environment.setdefault("DASK_LABEXTENSION__FACTORY__MODULE", "dask_gateway")
+          c.KubeSpawner.environment.setdefault("DASK_LABEXTENSION__FACTORY__CLASS", "GatewayCluster")
+          c.KubeSpawner.environment.setdefault("DASK_LABEXTENSION__FACTORY__ARGS", "[]")
+          c.KubeSpawner.environment.setdefault("DASK_LABEXTENSION__FACTORY__KWARGS", "{}")
 
         token-exchange: |
           import pprint
