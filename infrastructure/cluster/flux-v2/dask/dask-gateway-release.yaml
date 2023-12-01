@@ -1,0 +1,59 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: dask-gateway
+  namespace: jhub
+  annotations:
+    flux.weave.works/automated: "false" 
+   
+spec:
+  releaseName: dask
+  interval: 5m
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        name: dask-gateway-charts
+        namespace: jhub
+      interval: 1m
+      chart: dask-gateway
+      # version: 2023.1.0 # support for python 3.11
+      version: 2022.4.0 # support for python 3.9
+
+  valuesFrom:
+    - kind: Secret
+      name: api-dask-dask-gateway
+      valuesKey: jupyterhub-api-token
+      targetPath: gateway.auth.jupyterhub.apiToken
+
+
+  values:
+
+    gateway:
+      # extraConfig:
+      #   clusteroptions: |
+      #       from dask_gateway_server.options import Options, Integer, Float, String
+
+      #       def option_handler(options):
+      #           return {
+      #               "worker_cores": options.worker_cores,
+      #               "worker_memory": "%fG" % options.worker_memory,
+      #               "image": options.image,
+      #           }
+
+      #       c.Backend.cluster_options = Options(
+      #           Integer("worker_cores", 2, min=1, max=4, label="Worker Cores"),
+      #           Float("worker_memory", 4, min=1, max=8, label="Worker Memory (GiB)"),
+      #           String("image", default="ghcr.io/dask/dask-gateway:2022.4.0", label="Image"),
+      #           handler=option_handler,
+      #       )
+
+      # Number of instances of the gateway-server to run
+      replicas: 1
+
+      # prefix: "/services/dask-gateway"
+
+      auth:
+        type: jupyterhub
+
+       
