@@ -173,10 +173,7 @@ spec:
               claimName: cvmfs
           - name: eulake-cern-eos-rse # mounts the EOS RSE needed for the Rucio JupiterLab extension
             hostPath:
-              path: /var/eos/eulake/escape/data
-          - name: eulake-scratch-data # mounts the EOS scratch space which is not an RSE
-            hostPath:
-              path: /var/eos/eulake/escape/tmp_data
+              path: /var/eos/eulake # This is pointing to /eos/eulake/escape/data, defined on the eosxd/configmap  
         extraVolumeMounts:
           - name: cvmfs-cern-instance 
             mountPath: /cvmfs
@@ -186,9 +183,6 @@ spec:
             mountPath: /eos/cern-eos-rse
             mountPropagation: HostToContainer
             readOnly: true 
-          - name: eulake-scratch-data 
-            mountPath: /eos/scratch-space
-            mountPropagation: HostToContainer
       image:
         name: ghcr.io/vre-hub/vre-singleuser
         tag: sha-423e01a
@@ -214,7 +208,7 @@ spec:
         RUCIO_DEFAULT_INSTANCE: "vre-rucio.cern.ch"
         RUCIO_DESTINATION_RSE: "CERN-EOS"
         RUCIO_RSE_MOUNT_PATH: "/eos/cern-eos-rse"
-        RUCIO_PATH_BEGINS_AT: "4"
+        RUCIO_PATH_BEGINS_AT: "2"
         RUCIO_CA_CERT: "/certs/rucio_ca.pem"
         OAUTH2_TOKEN: "FILE:/tmp/eos_oauth.token"
     ingress:
