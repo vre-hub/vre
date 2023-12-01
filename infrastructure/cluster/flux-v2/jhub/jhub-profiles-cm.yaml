@@ -38,4 +38,8 @@ data:
           description: "For testing and development purposes"
           kubespawner_override:
             image: ghcr.io/vre-hub/vre-singleuser:dev
+        - display_name: "Dask+ROOT"
+          description: "Dask latest and ROOT"
+          kubespawner_override:
+            image: ghcr.io/egazzarr/docker-tests-dask-root:latest
                         
