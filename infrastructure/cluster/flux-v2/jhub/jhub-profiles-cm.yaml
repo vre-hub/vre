@@ -41,5 +41,5 @@ data:
         - display_name: "Dask+ROOT"
           description: "Dask latest and ROOT"
           kubespawner_override:
-            image: ghcr.io/egazzarr/docker-tests-dask-root:latest
+            image: ghcr.io/egazzarr/docker-tests-vre-singleuser-root-dask:latest
                         
