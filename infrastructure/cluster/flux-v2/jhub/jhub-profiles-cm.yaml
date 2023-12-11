@@ -41,5 +41,6 @@ data:
         - display_name: "Dask+ROOT"
           description: "Gives you the ability to spawn Dask clusters"
           kubespawner_override:
-            image: ghcr.io/egazzarr/docker-tests-vre-singleuser-root-dask-python38:latest
+            # image: ghcr.io/egazzarr/docker-tests-vre-singleuser-root-dask-python38:latest
+            image:  ghcr.io/vre-hub/vre-singleuser-dask-root:sha-7805adc
                         
