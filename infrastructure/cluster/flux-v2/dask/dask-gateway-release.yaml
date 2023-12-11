@@ -17,7 +17,8 @@ spec:
         namespace: jhub
       interval: 1m
       chart: dask-gateway
-      version: 2023.1.0 # support for python 3.11
+      # version: 2023.1.0 # support for python 3.11
+      version: 2022.6.0
       # version: 2022.4.0 # support for python 3.9
 
   valuesFrom:
