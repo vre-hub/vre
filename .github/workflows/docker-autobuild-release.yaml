@@ -1,0 +1,117 @@
+name: Docker automatic build and publish on repository release
+
+on:
+  push:
+    tags: [ 'v*.*.*' ]
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  build-and-push-base-ops:
+    runs-on: ubuntu-latest
+    name: Build and push vre-base-ops image
+    strategy:
+      matrix:
+        context: [
+          'base-ops'
+        ]
+    
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Docker Checkout
+        uses: actions/checkout@v3
+
+        # TODO: probably do here the git checkout and the set of the version as a global VAR
+
+
+      - name: Log in to the GH Container Registry
+        id: login
+        uses: docker/login-action@v2.1.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Extract metadata for ${{ matrix.environments }}
+        id: meta
+        uses: docker/metadata-action@v4.3.0
+        with:
+          flavor: |
+            latest=true
+          tags: |
+            type=sha
+          # TODO: custome image tag so that it can be done a: tag_describe=$(git describe --tags | sed 's/-g/-/g')
+          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.environments }}
+
+      - name: Build and push ${{ matrix.environments }}
+        id: build
+        uses: docker/build-push-action@v4.0.0
+        with:
+          context: ./${{ matrix.environments }}
+          file: ./${{ matrix.environments }}/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: | 
+            BUILD_DATE=$(date +'%Y-%m-%dT%H:%M:%SZ')
+            #TODO implement to thing below !
+            TAG=$(git describe --tags | sed 's/-g/-/g')
+
+  build-and-push-container:
+  runs-on: ubuntu-latest
+    name: Build and push vre operation images
+    strategy:
+      matrix:
+        context: [
+          'iam-reana-sync',
+          'iam-rucio-sync',
+          'rucio-client',
+          'rucio-noise',
+        ]
+    
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Docker Checkout
+        uses: actions/checkout@v3
+
+      - name: Log in to the GH Container Registry
+        id: login
+        uses: docker/login-action@v2.1.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Extract metadata for ${{ matrix.environments }}
+        id: meta
+        uses: docker/metadata-action@v4.3.0
+        with:
+          flavor: |
+            latest=true
+          tags: |
+            type=sha
+          # TODO: custome image tag so that it can be done a: tag_describe=$(git describe --tags | sed 's/-g/-/g')
+          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.environments }}
+
+      - name: Build and push ${{ matrix.environments }}
+        id: build
+        uses: docker/build-push-action@v4.0.0
+        with:
+          context: ./${{ matrix.environments }}
+          file: ./${{ matrix.environments }}/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: | 
+            BUILD_DATE=$(date +'%Y-%m-%dT%H:%M:%SZ')
+            #TODO implement to thing below !
+            TAG=$(git describe --tags | sed 's/-g/-/g')
+
+
