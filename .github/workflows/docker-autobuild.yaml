@@ -43,7 +43,7 @@ jobs:
           for dir in ${{ steps.changed-files.outputs.all_changed_files }}; do
             echo "$dir was changed"
             tmp_dir=$(echo $dir | cut -d'/' -f2)
-            containers+="${tmp_dir}"
+            containers+=("\"${tmp_dir}\"")
           done
 
           echo "first echo $containers"
