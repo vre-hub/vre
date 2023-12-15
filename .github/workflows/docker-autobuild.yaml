@@ -88,9 +88,9 @@ jobs:
           echo "tag_version" is ${{ env.TAG_VERSION }}
           echo "describe_tag" is ${{ env.DESCRIBE_TAG }}
 
-      # - name: Action for git describe
-      #   id: ghd
-      #   uses: proudust/gh-describe@v1.5.3
+#      - name: Action for git describe
+#        id: ghd
+#        uses: proudust/gh-describe@v1.5.3
 
       - name: Log in to the GH Container Registry
         id: login
