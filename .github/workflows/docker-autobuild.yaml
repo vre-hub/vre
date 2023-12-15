@@ -4,9 +4,9 @@ on:
   push:
     branches:
       - ci_changes_in_containers
-  # pull_request:
-  #   branches:
-  #     - main
+#  pull_request:
+#    branches:
+#      - main
 
 env:
   REGISTRY: ghcr.io
@@ -43,7 +43,7 @@ jobs:
             echo "$dir was changed"
           done
 
-  build-and-push-changed-container:
+  build-and-push-modified-containers:
     needs: build-matrix-from-changed-dirs
     runs-on: ubuntu-latest
     strategy:
@@ -87,16 +87,16 @@ jobs:
           # ghcr.io/vre-hub/{vre}-{container_name}:{tag}
           images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ github.event.repository.name }}-${{ matrix.containers }}
 
-  #     - name: Build and push ${{ matrix.containers }}
-  #       id: build
-  #       uses: docker/build-push-action@v5.1.0
-  #       with:
-  #         context: ${{ matrix.containers }}
-  #         file: ${{ matrix.containers }}/Dockerfile
-  #         push: true
-  #         tags: ${{ steps.metadata.outputs.tags }}
-  #         labels: ${{ steps.metadata.outputs.labels }}
-  #         build-args: | 
-  #           BUILD_DATE=$(date +'%Y-%m-%dT%H:%M:%SZ')
-  #           TAG=${{ env.RELEASE_VERSION }}
+#      - name: Build and push ${{ matrix.containers }}
+#        id: build
+#        uses: docker/build-push-action@v5.1.0
+#        with:
+#          context: ${{ matrix.containers }}
+#          file: ${{ matrix.containers }}/Dockerfile
+#          push: true
+#          tags: ${{ steps.metadata.outputs.tags }}
+#          labels: ${{ steps.metadata.outputs.labels }}
+#          build-args: | 
+#            BUILD_DATE=$(date +'%Y-%m-%dT%H:%M:%SZ')
+#            TAG=${{ env.RELEASE_VERSION }}
 
