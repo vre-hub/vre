@@ -76,16 +76,18 @@ jobs:
           cd vre
           echo "describe_tag is $(git describe --tags | sed 's/-g/-/g')"
           describe_tag=$(git describe --tags | sed 's/-g/-/g')
-          echo "DESCRIBE_TAG=${describe_tag}" >> $GITHUB_ENV
+          echo "latest_tag is $(git describe --tags --abbrev=0)"
+          latest_tag=$(git describe --tags --abbrev=0)
 
-          echo "TAG_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+          echo "DESCRIBE_TAG=${describe_tag}" >> $GITHUB_ENV
+          echo "LATEST_TAG=${latest_tag}" >> $GITHUB_ENV
 
           echo "env.DESCRIBE_TAG is ${{ env.DESCRIBE_TAG }}"
-          echo "env.TAG_VERSION is ${{ env.TAG_VERSION }}"
+          echo "env.LATEST_TAG is ${{ env.LATEST_TAG }}"
 
       - name: Check env output
         run: |
-          echo "tag_version" is ${{ env.TAG_VERSION }}
+          echo "latest_version" is ${{ env.LATEST_TAG }}
           echo "describe_tag" is ${{ env.DESCRIBE_TAG }}
 
 #      - name: Action for git describe
@@ -107,7 +109,7 @@ jobs:
           flavor: |
             latest=true
           tags: |
-            type=raw,value=${{ steps.ghd.outputs.tag }}-${{ steps.ghd.outputs.distance }}-${{ steps.ghd.outputs.sha }}
+            type=raw,value=${{ env.DESCRIBE_TAG }}
           # ghcr.io/vre-hub/{vre}-{container_name}:{tag}
           images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ github.event.repository.name }}-${{ matrix.containers }}
 
