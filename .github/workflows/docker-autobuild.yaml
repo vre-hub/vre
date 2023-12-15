@@ -69,15 +69,28 @@ jobs:
       - name: Docker Checkout
         uses: actions/checkout@v4
 
-      # - name: Get tag
-      #   run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+     - name: Format tag
+        id: format-tag
+        run: |
+          git clone https://github.com/vre-hub/vre.git
+          cd vre
+          echo "describe_tag is $(git describe --tags | sed 's/-g/-/g')"
+          describe_tag=$(git describe --tags | sed 's/-g/-/g')
+          echo "DESCRIBE_TAG=${describe_tag}" >> $GITHUB_ENV
 
-      # - name: Check env output
-      #   run: echo "tag" is ${{ env.RELEASE_VERSION }}
+          echo "TAG_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
-      - name: Action for git describe
-        id: ghd
-        uses: proudust/gh-describe@v1.5.3
+          echo "env.DESCRIBE_TAG is ${{ env.DESCRIBE_TAG }}"
+          echo "env.TAG_VERSION is ${{ env.TAG_VERSION }}"
+
+      - name: Check env output
+        run: |
+          echo "tag_version" is ${{ env.TAG_VERSION }}
+          echo "describe_tag" is ${{ env.DESCRIBE_TAG }}
+
+      # - name: Action for git describe
+      #   id: ghd
+      #   uses: proudust/gh-describe@v1.5.3
 
       - name: Log in to the GH Container Registry
         id: login
@@ -94,7 +107,7 @@ jobs:
           flavor: |
             latest=true
           tags: |
-            type=raw,value=${{ steps.ghd.outputs.tag }}-${{ steps.ghd.outputs.distance }}-${{ steps.ghd.outputs.sha }}::5
+            type=raw,value=${{ steps.ghd.outputs.tag }}-${{ steps.ghd.outputs.distance }}-${{ steps.ghd.outputs.sha }}
           # ghcr.io/vre-hub/{vre}-{container_name}:{tag}
           images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ github.event.repository.name }}-${{ matrix.containers }}
 
