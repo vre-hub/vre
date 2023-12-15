@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest 
     name: Build matrix from directories with changed files
     outputs:
-      modified_container: ${{ steps.set-matrix.outputs.all_changed_files }}  
+      modified_container: ${{ steps.changed-files.outputs.all_changed_files }}  
     steps:
       - uses: actions/checkout@v4
         with:
