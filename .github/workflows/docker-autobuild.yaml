@@ -3,7 +3,7 @@ name: Docker automatic build and publish when changes in container dir
 on: 
   push:
     branches:
-      - main
+      - ci_changes_in_containers
   # pull_request:
   #   branches:
   #     - main
@@ -15,7 +15,9 @@ jobs:
   build-matrix-from-changed-dirs:
     runs-on: ubuntu-latest 
     name: Build matrix from directories with changed files
-
+    outputs:
+      container_list: ${{ steps.set-matrix.outputs.all_changed_files }}  
+      #container_list: ${{ steps.set-matrix.outputs.container_list }}  
     steps:
       - uses: actions/checkout@v4
         with:
@@ -42,60 +44,56 @@ jobs:
             echo "$dir was changed"
           done
 
-    outputs:
-      container_list: ${{ steps.set-matrix.outputs.all_changed_files }}  
-      #container_list: ${{ steps.set-matrix.outputs.container_list }}  
-
-  build-and-push-changed-container:
-    needs: build-matrix-from-changed-dirs
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        containers: ${{ fromJson(needs.build-matrix-from-changed-dirs.outputs.container_list) }} 
+  # build-and-push-changed-container:
+  #   needs: build-matrix-from-changed-dirs
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       containers: ${{ fromJson(needs.build-matrix-from-changed-dirs.outputs.all_changed_files) }} 
     
-    permissions:
-      contents: read
-      packages: write
+  #   permissions:
+  #     contents: read
+  #     packages: write
 
-    steps:
-      - name: Docker Checkout
-        uses: actions/checkout@v4
+  #   steps:
+  #     - name: Docker Checkout
+  #       uses: actions/checkout@v4
 
-      - name: Get tag
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+  #     - name: Get tag
+  #       run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
-      - name: Check env output
-        run: echo "tag" is ${{ env.RELEASE_VERSION }}
+  #     - name: Check env output
+  #       run: echo "tag" is ${{ env.RELEASE_VERSION }}
 
-      - name: Log in to the GH Container Registry
-        id: login
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+  #     - name: Log in to the GH Container Registry
+  #       id: login
+  #       uses: docker/login-action@v3
+  #       with:
+  #         registry: ${{ env.REGISTRY }}
+  #         username: ${{ github.actor }}
+  #         password: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Extract metadata for ${{ matrix.environments }}
-        id: metadata
-        uses: docker/metadata-action@v5.3.0
-        with:
-          flavor: |
-            latest=true
-          tags: |
-            type=ref,event=tag
-          # ghcr.io/vre-hub/{vre}-{container_name}:{tag}
-          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ github.event.repository.name }}-${{ matrix.environments }}
+  #     - name: Extract metadata for ${{ matrix.containers }}
+  #       id: metadata
+  #       uses: docker/metadata-action@v5.3.0
+  #       with:
+  #         flavor: |
+  #           latest=true
+  #         tags: |
+  #           type=ref,event=tag
+  #         # ghcr.io/vre-hub/{vre}-{container_name}:{tag}
+  #         images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ github.event.repository.name }}-${{ matrix.containers }}
 
-      - name: Build and push ${{ matrix.environments }}
-        id: build
-        uses: docker/build-push-action@v5.1.0
-        with:
-          context: ./${{ matrix.environments }}
-          file: ./${{ matrix.environments }}/Dockerfile
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          build-args: | 
-            BUILD_DATE=$(date +'%Y-%m-%dT%H:%M:%SZ')
-            TAG=${{ env.RELEASE_VERSION }}
+  #     - name: Build and push ${{ matrix.containers }}
+  #       id: build
+  #       uses: docker/build-push-action@v5.1.0
+  #       with:
+  #         context: containers/${{ matrix.containers }}
+  #         file: containers/${{ matrix.containers }}/Dockerfile
+  #         push: true
+  #         tags: ${{ steps.metadata.outputs.tags }}
+  #         labels: ${{ steps.metadata.outputs.labels }}
+  #         build-args: | 
+  #           BUILD_DATE=$(date +'%Y-%m-%dT%H:%M:%SZ')
+  #           TAG=${{ env.RELEASE_VERSION }}
 
