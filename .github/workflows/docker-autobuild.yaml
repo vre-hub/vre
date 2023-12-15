@@ -69,7 +69,7 @@ jobs:
       - name: Docker Checkout
         uses: actions/checkout@v4
 
-     - name: Format tag
+      - name: Format tag
         id: format-tag
         run: |
           git clone https://github.com/vre-hub/vre.git
