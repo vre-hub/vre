@@ -46,9 +46,7 @@ jobs:
             containers+=("\"${tmp_dir}\"")
           done
 
-          echo "first echo $containers"
           container_list=`echo "[${containers[@]}]" |  sed 's/ /,/g'`
-          echo "second echo $containers"
           echo "Updated containers list: $container_list"
           echo "container_list=$containers" >> $GITHUB_OUTPUT
       
@@ -60,7 +58,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        containers: ${{ fromJson(needs.build-matrix-from-changed-dirs.outputs.modified_containers) }} 
+        containers: ${{ fromJSON(needs.build-matrix-from-changed-dirs.outputs.modified_containers) }} 
     
     permissions:
       contents: read
