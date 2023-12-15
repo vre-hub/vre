@@ -15,8 +15,7 @@ jobs:
   build-matrix-from-changed-dirs:
     runs-on: ubuntu-latest 
     name: Build matrix from directories with changed files
-    outputs:
-      modified_container: ${{ steps.changed-files.outputs.all_changed_files }}  
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -39,16 +38,27 @@ jobs:
 
       - name: List all changed dirs 
         run: |
+          containers=()
           for dir in ${{ steps.changed-files.outputs.all_changed_files }}; do
             echo "$dir was changed"
+            tmp_dir=$(echo $dir | cut -d'/' -f2)
+            containers+=("\"${tmp_dir}\"")
           done
+
+          CONTAINERS_LIST=`echo "[${containers[@]}]" |  sed 's/ /,/g'`
+          echo ::set-output name=container_list::$CONTAINERS_LIST
+
+          echo "The final list is: ${CONTAINERS_LIST}"
+      
+    outputs:
+      modified_containers: ${{ steps.changed-files.outputs.container_list }}  
 
   build-and-push-modified-containers:
     needs: build-matrix-from-changed-dirs
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        containers: ${{ fromJson(needs.build-matrix-from-changed-dirs.outputs.modified_container) }} 
+        containers: ${{ fromJson(needs.build-matrix-from-changed-dirs.outputs.) }} 
     
     permissions:
       contents: read
@@ -91,8 +101,8 @@ jobs:
 #        id: build
 #        uses: docker/build-push-action@v5.1.0
 #        with:
-#          context: ${{ matrix.containers }}
-#          file: ${{ matrix.containers }}/Dockerfile
+#          context: containers/${{ matrix.containers }}
+#          file: containers/${{ matrix.containers }}/Dockerfile
 #          push: true
 #          tags: ${{ steps.metadata.outputs.tags }}
 #          labels: ${{ steps.metadata.outputs.labels }}
