@@ -13,5 +13,3 @@ COPY requirements.txt add_reana_users.py generate_email_list.py /home/
 RUN pip install -r /home/requirements.txt
 
 ENTRYPOINT ["/bin/bash"]
-
-

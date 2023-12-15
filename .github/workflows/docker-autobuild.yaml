@@ -46,9 +46,10 @@ jobs:
             containers+=("\"${tmp_dir}\"")
           done
 
-          container_list=`echo "[${containers[@]}]" |  sed 's/ /,/g'`
-          echo "Updated containers list: $container_list"
-          echo "container_list=$containers" >> $GITHUB_OUTPUT
+          CONT_LIST=`echo "[${containers[@]}]" |  sed 's/ /,/g'`
+          echo "Updated containers list: $CONT_LIST"
+
+          echo ::set-output name=container_list::$CONT_LIST
       
     outputs:
       modified_containers: ${{ steps.format-output.outputs.container_list }}  
