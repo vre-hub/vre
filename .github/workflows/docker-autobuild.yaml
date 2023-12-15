@@ -58,7 +58,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        containers: ${{ fromJson(needs.build-matrix-from-changed-dirs.outputs.) }} 
+        containers: ${{ fromJson(needs.build-matrix-from-changed-dirs.outputs.modified_containers) }} 
     
     permissions:
       contents: read
