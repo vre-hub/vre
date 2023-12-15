@@ -13,7 +13,7 @@ jobs:
     name: Build and push vre-base-ops image
     strategy:
       matrix:
-        context: [
+        container: [
           'base-ops'
         ]
     
@@ -35,7 +35,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Extract metadata for ${{ matrix.environments }}
+      - name: Extract metadata for ${{ matrix.container }}
         id: metadata
         uses: docker/metadata-action@v5.3.0
         with:
@@ -44,14 +44,14 @@ jobs:
           tags: |
             type=ref,event=tag
           # ghcr.io/vre-hub/{vre}-{base-ops}:{tag}
-          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ github.event.repository.name }}-${{ matrix.environments }}
+          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ github.event.repository.name }}-${{ matrix.container }}
 
-      - name: Build and push ${{ matrix.environments }}
+      - name: Build and push ${{ matrix.container }}
         id: build
         uses: docker/build-push-action@v5.1.0
         with:
-          context: ./${{ matrix.environments }}
-          file: ./${{ matrix.environments }}/Dockerfile
+          context: ./${{ matrix.container }}
+          file: ./${{ matrix.container }}/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -59,6 +59,7 @@ jobs:
             BUILD_DATE=$(date +'%Y-%m-%dT%H:%M:%SZ')
 
   build-and-push-container:
+    needs: build-and-push-base-ops
     runs-on: ubuntu-latest
     name: Build and push vre operation images
     strategy:
@@ -92,7 +93,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Extract metadata for ${{ matrix.environments }}
+      - name: Extract metadata for ${{ matrix.context }}
         id: metadata
         uses: docker/metadata-action@v5.3.0
         with:
@@ -101,14 +102,14 @@ jobs:
           tags: |
             type=ref,event=tag
           # ghcr.io/vre-hub/{vre}-{container_name}:{tag}
-          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ github.event.repository.name }}-${{ matrix.environments }}
+          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ github.event.repository.name }}-${{ matrix.context }}
 
-      - name: Build and push ${{ matrix.environments }}
+      - name: Build and push ${{ matrix.context }}
         id: build
         uses: docker/build-push-action@v5.1.0
         with:
-          context: ./${{ matrix.environments }}
-          file: ./${{ matrix.environments }}/Dockerfile
+          context: ./${{ matrix.context }}
+          file: ./${{ matrix.context }}/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
