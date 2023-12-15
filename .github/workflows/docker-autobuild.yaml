@@ -37,21 +37,23 @@ jobs:
           dir_names_exclude_current_dir: "true"
 
       - name: List all changed dirs 
+        id: format-output
         run: |
           containers=()
           for dir in ${{ steps.changed-files.outputs.all_changed_files }}; do
             echo "$dir was changed"
             tmp_dir=$(echo $dir | cut -d'/' -f2)
-            containers+=("\"${tmp_dir}\"")
+            containers+="${tmp_dir}"
           done
 
-          CONTAINERS_LIST=`echo "[${containers[@]}]" |  sed 's/ /,/g'`
-          echo ::set-output name=container_list::$CONTAINERS_LIST
-
-          echo "The final list is: ${CONTAINERS_LIST}"
+          echo "first echo $containers"
+          container_list=`echo "[${containers[@]}]" |  sed 's/ /,/g'`
+          echo "second echo $containers"
+          echo "Updated containers list: $container_list"
+          echo "container_list=$containers" >> $GITHUB_OUTPUT
       
     outputs:
-      modified_containers: ${{ steps.changed-files.outputs.container_list }}  
+      modified_containers: ${{ steps.format-output.outputs.container_list }}  
 
   build-and-push-modified-containers:
     needs: build-matrix-from-changed-dirs
@@ -110,3 +112,11 @@ jobs:
 #            BUILD_DATE=$(date +'%Y-%m-%dT%H:%M:%SZ')
 #            TAG=${{ env.RELEASE_VERSION }}
 
+
+#          echo ::set-output name=container_list::$CONTAINERS_LIST
+#
+#          echo "The final list is: ${CONTAINERS_LIST}"
+#
+#          myArray=$(jq --compact-output --null-input '$ARGS.positional' --args -- "${myArray[@]}")
+#          echo "Updated array list: $myArray"
+#          echo "array=$myArray" >> $GITHUB_OUTPUT
