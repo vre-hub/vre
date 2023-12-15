@@ -1,0 +1,119 @@
+name: Docker automatic build and publish with repository releases
+
+on:
+  push:
+    tags: [ 'v*.*.*' ]
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  build-and-push-base-ops:
+    runs-on: ubuntu-latest
+    name: Build and push vre-base-ops image
+    strategy:
+      matrix:
+        context: [
+          'base-ops'
+        ]
+    
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Docker Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Log in to the GH Container Registry
+        id: login
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Extract metadata for ${{ matrix.environments }}
+        id: metadata
+        uses: docker/metadata-action@v5.3.0
+        with:
+          flavor: |
+            latest=true
+          tags: |
+            type=ref,event=tag
+          # ghcr.io/vre-hub/{vre}-{base-ops}:{tag}
+          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ github.event.repository.name }}-${{ matrix.environments }}
+
+      - name: Build and push ${{ matrix.environments }}
+        id: build
+        uses: docker/build-push-action@v5.1.0
+        with:
+          context: ./${{ matrix.environments }}
+          file: ./${{ matrix.environments }}/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: | 
+            BUILD_DATE=$(date +'%Y-%m-%dT%H:%M:%SZ')
+
+  build-and-push-container:
+    runs-on: ubuntu-latest
+    name: Build and push vre operation images
+    strategy:
+      matrix:
+        context: [
+          'iam-reana-sync',
+          'iam-rucio-sync',
+          'rucio-client',
+          'rucio-noise',
+        ]
+      
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Docker Checkout
+        uses: actions/checkout@v4
+
+      - name: Get tag
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
+      - name: Check env output
+        run: echo "tag" is ${{ env.RELEASE_VERSION }}
+
+      - name: Log in to the GH Container Registry
+        id: login
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Extract metadata for ${{ matrix.environments }}
+        id: metadata
+        uses: docker/metadata-action@v5.3.0
+        with:
+          flavor: |
+            latest=true
+          tags: |
+            type=ref,event=tag
+          # ghcr.io/vre-hub/{vre}-{container_name}:{tag}
+          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ github.event.repository.name }}-${{ matrix.environments }}
+
+      - name: Build and push ${{ matrix.environments }}
+        id: build
+        uses: docker/build-push-action@v5.1.0
+        with:
+          context: ./${{ matrix.environments }}
+          file: ./${{ matrix.environments }}/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: | 
+            BUILD_DATE=$(date +'%Y-%m-%dT%H:%M:%SZ')
+            TAG=${{ env.RELEASE_VERSION }}
+
+

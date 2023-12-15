@@ -1,6 +1,0 @@
-[eos-tag]
-name=tagged EOS releases from EOS project
-baseurl=http://storage-ci.web.cern.ch/storage-ci/eos/citrine/tag/el-$releasever/$basearch/
-enabled=1
-gpgcheck=0
-priority=10
