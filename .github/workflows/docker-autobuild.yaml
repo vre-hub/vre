@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest 
     name: Build matrix from directories with changed files
     outputs:
-      container_list: ${{ steps.set-matrix.outputs.all_changed_files }}  
+      modified_container: ${{ steps.set-matrix.outputs.all_changed_files }}  
     steps:
       - uses: actions/checkout@v4
         with:
@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        containers: ${{ fromJson(needs.build-matrix-from-changed-dirs.outputs.all_changed_files) }} 
+        containers: ${{ fromJson(needs.build-matrix-from-changed-dirs.outputs.modified_container) }} 
     
     permissions:
       contents: read

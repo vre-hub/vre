@@ -13,3 +13,4 @@ RUN chmod +x ./produce_noise.sh
 RUN pip install -r /home/requirements.txt
 
 ENTRYPOINT ["/bin/bash"]
+
