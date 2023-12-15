@@ -50,8 +50,8 @@ jobs:
         id: build
         uses: docker/build-push-action@v5.1.0
         with:
-          context: ./${{ matrix.container }}
-          file: ./${{ matrix.container }}/Dockerfile
+          context: containers/${{ matrix.container }}
+          file: containers/${{ matrix.container }}/Dockerfile
           push: true
           tags: ${{ steps.metadata.outputs.tags }}
           labels: ${{ steps.metadata.outputs.labels }}
@@ -108,8 +108,8 @@ jobs:
         id: build
         uses: docker/build-push-action@v5.1.0
         with:
-          context: ./${{ matrix.context }}
-          file: ./${{ matrix.context }}/Dockerfile
+          context: containers/${{ matrix.context }}
+          file: containers/${{ matrix.context }}/Dockerfile
           push: true
           tags: ${{ steps.metadata.outputs.tags }}
           labels: ${{ steps.metadata.outputs.labels }}
