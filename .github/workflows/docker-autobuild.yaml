@@ -3,10 +3,10 @@ name: Docker automatic build and publish when changes in container dir
 on: 
   push:
     branches:
-      - ci_changes_in_containers
-#  pull_request:
-#    branches:
-#      - main
+      - main
+  pull_request:
+    branches:
+     - main
 
 env:
   REGISTRY: ghcr.io
@@ -82,9 +82,6 @@ jobs:
           echo "DESCRIBE_TAG=${describe_tag}" >> $GITHUB_ENV
           echo "LATEST_TAG=${latest_tag}" >> $GITHUB_ENV
 
-          echo "env.DESCRIBE_TAG is ${{ env.DESCRIBE_TAG }}"
-          echo "env.LATEST_TAG is ${{ env.LATEST_TAG }}"
-
       - name: Check env output
         run: |
           echo "latest_version" is ${{ env.LATEST_TAG }}
@@ -113,15 +110,15 @@ jobs:
           # ghcr.io/vre-hub/{vre}-{container_name}:{tag}
           images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ github.event.repository.name }}-${{ matrix.containers }}
 
-#      - name: Build and push ${{ matrix.containers }}
-#        id: build
-#        uses: docker/build-push-action@v5.1.0
-#        with:
-#          context: containers/${{ matrix.containers }}
-#          file: containers/${{ matrix.containers }}/Dockerfile
-#          push: true
-#          tags: ${{ steps.metadata.outputs.tags }}
-#          labels: ${{ steps.metadata.outputs.labels }}
-#          build-args: | 
-#            BUILD_DATE=$(date +'%Y-%m-%dT%H:%M:%SZ')
-#            TAG=${{ env.RELEASE_VERSION }}
+      - name: Build and push ${{ matrix.containers }}
+        id: build
+        uses: docker/build-push-action@v5.1.0
+        with:
+          context: containers/${{ matrix.containers }}
+          file: containers/${{ matrix.containers }}/Dockerfile
+          push: true
+          tags: ${{ steps.metadata.outputs.tags }}
+          labels: ${{ steps.metadata.outputs.labels }}
+          build-args: | 
+            BUILD_DATE=$(date +'%Y-%m-%dT%H:%M:%SZ')
+            TAG=${{ env.LATEST_TAG }}
