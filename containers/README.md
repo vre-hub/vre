@@ -12,9 +12,15 @@ The images are that can be found in this directory:
 1. `rucio-client`: to run on your local laptop, has all the packages installed to authenticate with the VRE Rucio instance, to upload, replicate and download data. It also contains the latest `REANA` client. This image starts from `rucio/rucio-clients:release-1.30.0`, though.
 2. `rucio-noise`: interacts with the `VRE` monitoring instance uploading, deleating and creating replication rules to test the status of the cluster. 
 3. `iam-rucio-sync`: image that runs asyncronisation script to keep the `accounts` table of the `Rucio` DB updated every time a new user registers with the `IAM ESCAPE` identity provider. 
-4. `iam-reana-sync`: TBC
+4. `iam-reana-sync`: adds any new user registered to the `IAM ESCAPE` to the `REANA` DB and grants access to the `VRE-REANA` instance.
 
 
 ## Version change
 
 Change the `Dockerfile` or any script within the different container sub-folders.
+
+ - Any change on the `base-ops` image **must** be followed by a minor tag/release (`vX.Y.(Z+1)`). 
+    - This will trigger a two step workflow in where first the `base-ops` container will be built, then the rest of containers.
+    - All containers will be then tagged with `vX.Y.(Z+1)`.
+ - On any other situation, any changes within the `Dockerfile` or the operations scripts of the corresponding subfolder, will trigger the build of the corresponding container.
+    - In this case, the container will be tagged as `vX.Y.Z-<git_distance>-<short-sha>`.
