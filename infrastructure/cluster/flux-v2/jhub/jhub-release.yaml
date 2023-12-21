@@ -190,6 +190,31 @@ spec:
       # nodeSelector:  # Keeping it as a comment to mark it as TODO
       #   # makes sure EOS eulake fuse mount is done on nodes designated to have the fuse mount
       #   jupyter-role: singleuser
+
+      # elena adds the volumes with dask config
+        volumeMounts:
+        - name: dask-lab-configmap-gateway
+          mountPath: /home/jovyan/.config/dask/
+          subPath: gateway.yaml
+        - name: dask-lab-configmap-labextension
+          mountPath: /home/jovyan/.config/dask/
+          subPath: labextension.yaml
+
+      volumes:
+      - name: dask-lab-configmap-gateway
+        configMap: 
+          name: dask-lab-configmap
+          items: 
+          - key: gateway.yaml
+            path: gateway.yaml
+      - name: dask-lab-configmap-labextension
+        configMap: 
+          name: dask-lab-configmap
+          items: 
+          - key: labextension.yaml
+            path: labextension.yaml
+
+
       cmd: null
       extraEnv:
         JUPYTERHUB_SINGLEUSER_APP: "notebook.notebookapp.NotebookApp"
