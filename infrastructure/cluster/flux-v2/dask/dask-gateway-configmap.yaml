@@ -1,0 +1,10 @@
+apiVersion: v1  
+kind: ConfigMap                                                                                                                                                            
+metadata:  
+  name: dask-lab-configmap
+  namespace: jhub                                                                                                                                                                                
+data:
+  labextension.yaml: "labextension:\n  factory:\n    module: dask_gateway\n    class:
+    GatewayCluster\n   \n  default:\n    workers: 2"                                                                                                                                                        
+  gateway.yaml: "gateway:\n  address: \"http://traefik-dask-dask-gateway/\"\n  auth:\n
+    \   type: jupyterhub  "
