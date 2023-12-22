@@ -28,8 +28,9 @@ spec:
       serviceType: "LoadBalancer"
       servicePort: 81
       image:
-        repository: "ghcr.io/egazzarr/docker-tests-dask-root" # Container image repository.
-        tag: "latest" # Container image tag.
+        # repository: "ghcr.io/egazzarr/docker-tests-dask-root" 
+        repository: ghcr.io/vre-hub/vre-singleuser-dask-root
+        tag: "sha-7805adc"
         pullPolicy: IfNotPresent
         
     worker:
