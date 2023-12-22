@@ -1,0 +1,40 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: dask-vre
+  namespace: dask-vre
+  annotations:
+    flux.weave.works/automated: "false" 
+   
+spec:
+  releaseName: dask
+  interval: 5m
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        name: dask-charts
+        namespace: dask-vre
+      interval: 1m
+      chart: dask
+      version: 2022.6.0
+
+  values:
+
+    jupyter:
+      name: jupyter # Jupyter name.
+      enabled: true # Enable/disable the bundled Jupyter notebook.
+      rbac: true # Create RBAC service account and role to allow Jupyter pod to scale worker pods and access logs.
+      serviceType: "LoadBalancer"
+      servicePort: 81
+      image:
+        # repository: "ghcr.io/egazzarr/docker-tests-dask-root" 
+        repository: ghcr.io/vre-hub/vre-singleuser-dask-root
+        tag: "sha-7805adc"
+        pullPolicy: IfNotPresent
+        
+    worker:
+      replicas: 4
+    
+    scheduler:
+      serviceType: "LoadBalancer"
