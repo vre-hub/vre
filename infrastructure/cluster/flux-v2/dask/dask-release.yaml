@@ -27,11 +27,11 @@ spec:
       rbac: true # Create RBAC service account and role to allow Jupyter pod to scale worker pods and access logs.
       serviceType: "LoadBalancer"
       servicePort: 81
-      # image:
-      #   # repository: "ghcr.io/egazzarr/docker-tests-dask-root" 
-      #   repository: ghcr.io/vre-hub/vre-singleuser-dask-root
-      #   tag: "sha-7805adc"
-      #   pullPolicy: IfNotPresent
+      image:
+        repository: "ghcr.io/egazzarr/docker-tests-dask-root" 
+        # repository: ghcr.io/vre-hub/vre-singleuser-dask-root
+        tag: "latest"
+        pullPolicy: IfNotPresent
         
     worker:
       replicas: 4
