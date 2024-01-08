@@ -3,7 +3,7 @@ name: Docker automatic build and publish when changes in container dir
 on: 
   push:
     branches:
-      - main
+      - CI_short_sha
   pull_request:
     branches:
      - main
@@ -55,6 +55,7 @@ jobs:
       modified_containers: ${{ steps.format-output.outputs.container_list }}  
 
   build-and-push-modified-containers:
+    if: ${{ fromJSON(needs.build-matrix-from-changed-dirs.outputs.modified_containers) }} == []
     needs: build-matrix-from-changed-dirs
     runs-on: ubuntu-latest
     strategy:
@@ -69,56 +70,64 @@ jobs:
       - name: Docker Checkout
         uses: actions/checkout@v4
 
-      - name: Format tag
-        id: format-tag
+      # - name: Format tag
+      #   id: format-tag
+      #   run: |
+      #     git clone https://github.com/vre-hub/vre.git
+      #     cd vre
+      #     echo "describe_tag is $(git describe --tags | sed 's/-g/-/g')"
+      #     describe_tag=$(git describe --tags | sed 's/-g/-/g')
+      #     echo "latest_tag is $(git describe --tags --abbrev=0)"
+      #     latest_tag=$(git describe --tags --abbrev=0)
+
+      #     echo "DESCRIBE_TAG=${describe_tag}" >> $GITHUB_ENV
+      #     echo "LATEST_TAG=${latest_tag}" >> $GITHUB_ENV
+
+      # - name: Check env output
+      #   run: |
+      #     echo "latest_version" is ${{ env.LATEST_TAG }}
+      #     echo "describe_tag" is ${{ env.DESCRIBE_TAG }}
+
+      - name: Action for git describe
+        id: ghd
+        uses: proudust/gh-describe@v1.6.0
+
+      - name: check env output
         run: |
-          git clone https://github.com/vre-hub/vre.git
-          cd vre
-          echo "describe_tag is $(git describe --tags | sed 's/-g/-/g')"
-          describe_tag=$(git describe --tags | sed 's/-g/-/g')
-          echo "latest_tag is $(git describe --tags --abbrev=0)"
-          latest_tag=$(git describe --tags --abbrev=0)
+          echo "describe  : ${{ steps.ghd.outputs.describe }}"
+          echo "tag       : ${{ steps.ghd.outputs.tag }}"
+          echo "distance  : ${{ steps.ghd.outputs.distance }}"
+          echo "sha       : ${{ steps.ghd.outputs.sha }}"
+          echo "short-sha : ${{ steps.ghd.outputs.short-sha }}"
 
-          echo "DESCRIBE_TAG=${describe_tag}" >> $GITHUB_ENV
-          echo "LATEST_TAG=${latest_tag}" >> $GITHUB_ENV
-
-      - name: Check env output
-        run: |
-          echo "latest_version" is ${{ env.LATEST_TAG }}
-          echo "describe_tag" is ${{ env.DESCRIBE_TAG }}
-
-#      - name: Action for git describe
-#        id: ghd
-#        uses: proudust/gh-describe@v1.5.3
-
-      - name: Log in to the GH Container Registry
-        id: login
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Log in to the GH Container Registry
+      #   id: login
+      #   uses: docker/login-action@v3
+      #   with:
+      #     registry: ${{ env.REGISTRY }}
+      #     username: ${{ github.actor }}
+      #     password: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Extract metadata for ${{ matrix.containers }}
-        id: metadata
-        uses: docker/metadata-action@v5.3.0
-        with:
-          flavor: |
-            latest=true
-          tags: |
-            type=raw,value=${{ env.DESCRIBE_TAG }}
-          # ghcr.io/vre-hub/{vre}-{container_name}:{tag}
-          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ github.event.repository.name }}-${{ matrix.containers }}
+      # - name: Extract metadata for ${{ matrix.containers }}
+      #   id: metadata
+      #   uses: docker/metadata-action@v5.3.0
+      #   with:
+      #     flavor: |
+      #       latest=true
+      #     tags: |
+      #       type=raw,value=${{ env.DESCRIBE_TAG }}
+      #     # Expected format: ghcr.io/vre-hub/{vre}-{container_name}:{tag}
+      #     images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ github.event.repository.name }}-${{ matrix.containers }}
 
-      - name: Build and push ${{ matrix.containers }}
-        id: build
-        uses: docker/build-push-action@v5.1.0
-        with:
-          context: containers/${{ matrix.containers }}
-          file: containers/${{ matrix.containers }}/Dockerfile
-          push: true
-          tags: ${{ steps.metadata.outputs.tags }}
-          labels: ${{ steps.metadata.outputs.labels }}
-          build-args: | 
-            BUILD_DATE=$(date +'%Y-%m-%dT%H:%M:%SZ')
-            TAG=${{ env.LATEST_TAG }}
+      # - name: Build and push ${{ matrix.containers }}
+      #   id: build
+      #   uses: docker/build-push-action@v5.1.0
+      #   with:
+      #     context: containers/${{ matrix.containers }}
+      #     file: containers/${{ matrix.containers }}/Dockerfile
+      #     push: true
+      #     tags: ${{ steps.metadata.outputs.tags }}
+      #     labels: ${{ steps.metadata.outputs.labels }}
+      #     build-args: | 
+      #       BUILD_DATE=$(date +'%Y-%m-%dT%H:%M:%SZ')
+      #       TAG=${{ env.LATEST_TAG }}
