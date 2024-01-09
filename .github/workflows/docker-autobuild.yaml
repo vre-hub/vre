@@ -3,7 +3,7 @@ name: Docker automatic build and publish when changes in container dir
 on: 
   push:
     branches:
-      - CI_short_sha
+      - main
 
 env:
   REGISTRY: ghcr.io
@@ -107,6 +107,7 @@ jobs:
           push: true
           tags: ${{ steps.metadata.outputs.tags }}
           labels: ${{ steps.metadata.outputs.labels }}
+          # The version of the base image of all ops containers is the latest tag of the base-ops image
           build-args: | 
-            BUILD_DATE=$(date +'%Y-%m-%dT%H:%M:%SZ')
-            TAG=${{ steps.metadata.outputs.tags }}
+            BUILD_DATE=$(date +'%Y-%m-%dT%H:%M:%SZ')          
+            TAG=${{ steps.ghd.outputs.tag }}
