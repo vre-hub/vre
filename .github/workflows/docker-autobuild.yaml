@@ -55,7 +55,7 @@ jobs:
       modified_containers: ${{ steps.format-output.outputs.container_list }}  
 
   build-and-push-modified-containers:
-    if: needs.build-matrix-from-changed-dirs.outputs.modified_containers == '[]'
+    if: needs.build-matrix-from-changed-dirs.outputs.modified_containers != '[]'
     needs: build-matrix-from-changed-dirs
     runs-on: ubuntu-latest
     strategy:
