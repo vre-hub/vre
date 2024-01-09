@@ -18,4 +18,3 @@ ADD --chown=user:user rucio.cfg.escape.j2 /opt/user/rucio.cfg.j2
 ENV LC_ALL=en_US.UTF-8
 
 ENTRYPOINT ["/bin/bash"]
-
