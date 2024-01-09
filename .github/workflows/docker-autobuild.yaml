@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-     - main
 
 env:
   REGISTRY: ghcr.io
@@ -17,13 +14,13 @@ jobs:
     name: Build matrix from directories with changed files
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.1.1
         with:
           fetch-depth: 2  # "0" (OR "2" -> To retrieve the preceding commit).
 
       - name: Run changed-files with dir_names
         id: changed-files
-        uses: tj-actions/changed-files@v37
+        uses: tj-actions/changed-files@v41.0.1
         with:
           files_ignore: |
             .github/**
@@ -55,6 +52,7 @@ jobs:
       modified_containers: ${{ steps.format-output.outputs.container_list }}  
 
   build-and-push-modified-containers:
+    if: needs.build-matrix-from-changed-dirs.outputs.modified_containers != '[]'
     needs: build-matrix-from-changed-dirs
     runs-on: ubuntu-latest
     strategy:
@@ -67,33 +65,23 @@ jobs:
 
     steps:
       - name: Docker Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.1
 
-      - name: Format tag
-        id: format-tag
+      - name: Action for git describe
+        id: ghd
+        uses: proudust/gh-describe@v1.6.0
+
+      - name: Check gh-describe output
         run: |
-          git clone https://github.com/vre-hub/vre.git
-          cd vre
-          echo "describe_tag is $(git describe --tags | sed 's/-g/-/g')"
-          describe_tag=$(git describe --tags | sed 's/-g/-/g')
-          echo "latest_tag is $(git describe --tags --abbrev=0)"
-          latest_tag=$(git describe --tags --abbrev=0)
-
-          echo "DESCRIBE_TAG=${describe_tag}" >> $GITHUB_ENV
-          echo "LATEST_TAG=${latest_tag}" >> $GITHUB_ENV
-
-      - name: Check env output
-        run: |
-          echo "latest_version" is ${{ env.LATEST_TAG }}
-          echo "describe_tag" is ${{ env.DESCRIBE_TAG }}
-
-#      - name: Action for git describe
-#        id: ghd
-#        uses: proudust/gh-describe@v1.5.3
+          echo "describe  : ${{ steps.ghd.outputs.describe }}"
+          echo "tag       : ${{ steps.ghd.outputs.tag }}"
+          echo "distance  : ${{ steps.ghd.outputs.distance }}"
+          echo "sha       : ${{ steps.ghd.outputs.sha }}"
+          echo "short-sha : ${{ steps.ghd.outputs.short-sha }}"
 
       - name: Log in to the GH Container Registry
         id: login
-        uses: docker/login-action@v3
+        uses: docker/login-action@v3.0.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -106,8 +94,8 @@ jobs:
           flavor: |
             latest=true
           tags: |
-            type=raw,value=${{ env.DESCRIBE_TAG }}
-          # ghcr.io/vre-hub/{vre}-{container_name}:{tag}
+            type=raw,value=${{ steps.ghd.outputs.tag }}-${{ steps.ghd.outputs.distance }}-${{ steps.ghd.outputs.short-sha }}
+          # Expected format: ghcr.io/vre-hub/{vre}-{container_name}:{tag}
           images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ github.event.repository.name }}-${{ matrix.containers }}
 
       - name: Build and push ${{ matrix.containers }}
@@ -119,6 +107,7 @@ jobs:
           push: true
           tags: ${{ steps.metadata.outputs.tags }}
           labels: ${{ steps.metadata.outputs.labels }}
+          # The version of the base image of all ops containers is the latest tag of the base-ops image
           build-args: | 
-            BUILD_DATE=$(date +'%Y-%m-%dT%H:%M:%SZ')
-            TAG=${{ env.LATEST_TAG }}
+            BUILD_DATE=$(date +'%Y-%m-%dT%H:%M:%SZ')          
+            TAG=${{ steps.ghd.outputs.tag }}
