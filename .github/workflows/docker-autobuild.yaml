@@ -71,7 +71,7 @@ jobs:
         id: ghd
         uses: proudust/gh-describe@v1.6.0
 
-      - name: check gh-describe output
+      - name: Check gh-describe output
         run: |
           echo "describe  : ${{ steps.ghd.outputs.describe }}"
           echo "tag       : ${{ steps.ghd.outputs.tag }}"
