@@ -1,10 +1,10 @@
 # VRE rucio-client image is the only which BASE is not the vre-base-ops image
 
+ARG BASEIMAGE=rucio/rucio-clients
 ARG BASETAG=release-1.30.0
 ARG BUILD_DATE
 
-#FROM ghcr.io/vre-hub/vre-base-ops:${TAG}
-FROM rucio/rucio-clients:${BASETAG}
+FROM ${BASEIMAGE}:${BASETAG}
 LABEL maintainer="VRE Team @ CERN 22/23 - E. Garcia, E. Gazzarrini, D. Gosein"
 LABEL org.opencontainers.image.source https://github.com/vre-hub/vre
 LABEL org.label-schema.build-date=${BUILD_DATE}
@@ -17,7 +17,7 @@ RUN yum upgrade -y \
 
 # EGI trust anchors
 RUN curl -Lo /etc/yum.repos.d/egi-trustanchors.repo https://repository.egi.eu/sw/production/cas/1/current/repo-files/egi-trustanchors.repo \
-    && yum update -y 
+    && yum update -y
 
 RUN yum clean metadata
 RUN yum -y install wget ca-certificates ca-policy-egi-core
