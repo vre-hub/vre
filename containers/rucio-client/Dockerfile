@@ -11,6 +11,7 @@ LABEL org.label-schema.build-date=${BUILD_DATE}
 
 USER root
 
+# cleanup yum cache
 RUN yum upgrade -y \
     && yum clean all \
     && rm -rf /var/cache/yum
@@ -28,8 +29,8 @@ RUN yum install -y CERN-CA-certs
 
 # ESCAPE VOMS setup
 RUN mkdir -p /etc/vomses \
-    && wget https://indigo-iam.github.io/escape-docs/voms-config/voms-escape.cloud.cnaf.infn.it.vomses -O /etc/vomses/voms-escape.cloud.cnaf.infn.it.vomses
-RUN mkdir -p /etc/grid-security/vomsdir/escape \
+    && wget https://indigo-iam.github.io/escape-docs/voms-config/voms-escape.cloud.cnaf.infn.it.vomses -O /etc/vomses/voms-escape.cloud.cnaf.infn.it.vomses \
+    && mkdir -p /etc/grid-security/vomsdir/escape \
     && wget https://indigo-iam.github.io/escape-docs/voms-config/voms-escape.cloud.cnaf.infn.it.lsc -O /etc/grid-security/vomsdir/escape/voms-escape.cloud.cnaf.infn.it.lsc
 
 # ESCAPE Rucio setup
