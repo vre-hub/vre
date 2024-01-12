@@ -9,7 +9,7 @@ Most of the images are built on top of a common base image that contains the com
 
 The images are that can be found in this directory:
 
-1. `rucio-client`: to run on your local laptop, has all the packages installed to authenticate with the VRE Rucio instance, to upload, replicate and download data. It also contains the latest `REANA` client. This image starts from `rucio/rucio-clients:release-1.30.0`, though.
+1. `rucio-client`: to run on your local laptop, has all the packages installed to authenticate with the VRE Rucio instance, to upload, replicate and download data. It also contains the latest `REANA` client. This image uses `rucio/rucio-clients` as the `BASE` image, though (Same `release-vX.Y.Z` as the rest of containers).
 2. `rucio-noise`: interacts with the `VRE` monitoring instance uploading, deleating and creating replication rules to test the status of the cluster. 
 3. `iam-rucio-sync`: image that runs asyncronisation script to keep the `accounts` table of the `Rucio` DB updated every time a new user registers with the `IAM ESCAPE` identity provider. 
 4. `iam-reana-sync`: adds any new user registered to the `IAM ESCAPE` to the `REANA` DB and grants access to the `VRE-REANA` instance.
