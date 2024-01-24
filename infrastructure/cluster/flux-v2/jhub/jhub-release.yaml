@@ -192,13 +192,13 @@ spec:
       #   jupyter-role: singleuser
 
       # elena adds the volumes with dask config
-        volumeMounts:
-        - name: dask-lab-configmap-gateway
-          mountPath: /home/jovyan/.config/dask/
-          subPath: gateway.yaml
-        - name: dask-lab-configmap-labextension
-          mountPath: /home/jovyan/.config/dask/
-          subPath: labextension.yaml
+        # volumeMounts:
+        # - name: dask-lab-configmap-gateway
+        #   mountPath: /home/jovyan/.config/dask/
+        #   subPath: gateway.yaml
+        # - name: dask-lab-configmap-labextension
+        #   mountPath: /home/jovyan/.config/dask/
+        #   subPath: labextension.yaml
 
       volumes:
       - name: dask-lab-configmap-gateway
