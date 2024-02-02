@@ -30,6 +30,10 @@ data:
           description: "Contains the MLFermiLATDwarfs and fermitools libraries"
           kubespawner_override:
             image: ghcr.io/vre-hub/vre-singleuser-microomega:sha-5cbf4f4
+        - display_name: "VIRGO - WDF environment"
+          description: "Contains the full WDF v2.2.1 environment"
+          kubespawner_override:
+            image: gitlab-registry.in2p3.fr/escape2020/virtual-environment/docker-images/datalake-singleuser-wdf:cd832522
         - display_name: "Dev enviroment"
           description: "For testing and development purposes"
           kubespawner_override:
