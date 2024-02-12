@@ -37,7 +37,7 @@ data:
         - display_name: "Dev enviroment"
           description: "For testing and development purposes"
           kubespawner_override:
-            image: ghcr.io/vre-hub/vre-singleuser-py311:sha-bb2dc16
+            image: ghcr.io/vre-hub/vre-singleuser-py311:latest
             #image: ghcr.io/vre-hub/vre-singleuser-dev:latest
         - display_name: "Dask+ROOT"
           description: "Gives you the ability to spawn Dask clusters"
