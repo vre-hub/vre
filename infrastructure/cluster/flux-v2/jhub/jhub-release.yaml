@@ -217,7 +217,7 @@ spec:
 
       cmd: null
       extraEnv:
-        JUPYTERHUB_SINGLEUSER_APP: "jupyter-server"
+        JUPYTERHUB_SINGLEUSER_APP: "notebook.notebookapp.NotebookApp"
         RUCIO_MODE: "replica"
         RUCIO_WILDCARD_ENABLED: "1"
         RUCIO_BASE_URL: "https://vre-rucio.cern.ch"
