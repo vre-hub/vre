@@ -187,9 +187,16 @@ spec:
         name: ghcr.io/vre-hub/vre-singleuser
         tag: sha-423e01a
         pullPolicy: Always
-      # nodeSelector:  # Keeping it as a comment to mark it as TODO
-      #   # makes sure EOS eulake fuse mount is done on nodes designated to have the fuse mount
-      #   jupyter-role: singleuser
+      nodeSelector: 
+        jupyter: singleuser
+      extraTolerations:
+        - key: jupyter
+          operator: Equal
+          value: singleuser
+          effect: NoSchedule
+      memory:
+        limit: 3.5Gi #4Gi
+        guarantee: 3Gi #2Gi
 
       # elena adds the volumes with dask config
       #   volumeMounts:
@@ -214,7 +221,6 @@ spec:
       #     - key: labextension.yaml
       #       path: labextension.yaml
 
-
       cmd: null
       extraEnv:
         JUPYTERHUB_SINGLEUSER_APP: "notebook.notebookapp.NotebookApp"
@@ -236,6 +242,7 @@ spec:
         RUCIO_PATH_BEGINS_AT: "2"
         RUCIO_CA_CERT: "/certs/rucio_ca.pem"
         OAUTH2_TOKEN: "FILE:/tmp/eos_oauth.token"
+
     ingress:
       enabled: true
       ingressClassName: nginx

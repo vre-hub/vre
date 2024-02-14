@@ -34,7 +34,7 @@ spec:
         pullPolicy: IfNotPresent
         
     worker:
-      replicas: 4
+      replicas: 1
     
     scheduler:
       serviceType: "LoadBalancer"
