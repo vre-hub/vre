@@ -5,6 +5,6 @@ metadata:
   namespace: jhub                                                                                                                                                                                
 data:
   labextension.yaml: "labextension:\n  factory:\n    module: dask_gateway\n    class:
-    GatewayCluster\n   \n  default:\n    workers: 2"                                                                                                                                                        
+    GatewayCluster\n   \n  default:\n    workers: 1"                                                                                                                                                        
   gateway.yaml: "gateway:\n  address: \"http://traefik-dask-dask-gateway/\"\n  auth:\n
     \   type: jupyterhub  "
