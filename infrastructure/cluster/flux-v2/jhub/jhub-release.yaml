@@ -195,8 +195,8 @@ spec:
           value: singleuser
           effect: NoSchedule
       memory:
-        limit: 3.5Gi #4Gi
-        guarantee: 3Gi #2Gi
+        limit: 3.5G #4G
+        guarantee: 3G #2G
 
       # elena adds the volumes with dask config
       #   volumeMounts:
