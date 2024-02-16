@@ -12,9 +12,11 @@ The CERN-VRE cluster is composed of 3 master nodes plus 20 worker nodes, running
 
 TO date (14 Feb 2024), nodes have been labelled as follows;
 `kubectl label node <NODE_NAME>> jupyter=singleuser`
+and these same 10 nodes need to be tainted to only allow jupyter sessions too
+`kubectl taint nodes <NODE_NAME> jupyter=singleuser:NoSchedule`
 
-Each Jupyter session is assigned with the following resources (declared on the jhub-release manifest).
-Resources have been assigned without much experienced, based on the following 
+Each Jupyter session is therefore spawned within the above nodes (by adding on the jhub-release manifest the `memory`, `nodeSelector` and `extraTolerations`, as showed below).
+Resources have been assigned/organised without much experienced, based on the following 
 [zero-to-jupyterhub-k8s documentation](https://github.com/jupyterhub/zero-to-jupyterhub-k8s/blob/main/docs/source/administrator/optimization.md#balancing-guaranteed-vs-maximum-memory-and-cpu).
 
 ```yaml
@@ -41,5 +43,41 @@ Notes:
  - `cpu` requests have been commented. From the avobe link one can read on point num 3 **If you set resource limits but omit resource requests, then k8s will assume you imply the same resource requests as your limits. No assumptions are made in the other direction.**
  - A ratio of `3.5:3` on `memory` will be set up on the cluster for the ET school happening on the 20 February 2024. To be elaborated / linked with a **leassons learned** post.
  - `nodeSelector` and `extraTolerations` would need to be applied to the `eos` and `cephfs` `Daemonsets` too, so that they are not deployed all along the first 10 nodes.
-    - Investigate how the `prePuller` config and the `continuous-image-puller` pods can be reduced in a `nodeSelector` way.
- -
+    - Investigate how the `prePuller` config and the `continuous-image-puller` pods can be reduced in a `nodeSelector` way. --> `Jhub` undestood that the image puller should only be on the nodes assigned for jupyter `:)`. Although there is a `Daemonset` that controls them.
+ 
+
+ ### Patching the cluster
+ #### EOS
+`Daemonset` `cern-magnum-eosxd` (`registry.cern.ch/magnum/eosd:4.8.51-1.2`) was deployed by default. The `Daemonset` was patched as follows
+
+```bash
+$ kubectl patch ds -n kube-system cern-magnum-eosxd --patch-file node_and_tolerations_jup.yaml
+daemonset.apps/cern-magnum-eosxd patched
+```
+with `cat node_and_tolerations_jup.yaml`
+```yaml
+spec:
+  template:
+    spec:
+      nodeSelector:
+        jupyter: singleuser
+      tolerations:
+      - effect: NoSchedule
+        key: jupyter
+        operator: Equal
+        value: singleuser
+```
+
+**Open doubt** Not sure why the tolerations patch needs to be applied to the whole `ds`, as the `ds` itself it doesn't use these tolerations. However, the pods spawned by, contain both the `nodeSelecter` and the `tolerations`.
+
+
+ #### CVMFS
+`Daemonset` `cvmfs-cvmfs-csi-nodeplugin` () was deployed into the cern-vre (not by default, manually if byt the k8s team, if I recall correctly), and patched as follows
+
+```bash
+$ kubectl patch ds -n kube-system cvmfs-cvmfs-csi-nodeplugin --patch-file node_and_tolerations_jup.yaml
+daemonset.apps/cvmfs-cvmfs-csi-nodeplugin patched
+```
+
+#### CEPHFS 
+Done nothing for the moment - not sure if master nodes (or any monitoring) send/connect to CephFS for any reason.
