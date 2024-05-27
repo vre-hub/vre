@@ -14,7 +14,7 @@ spec:
         namespace: jhub
       chart: jupyterhub
       interval: 5m
-      version: 3.3.7
+      version: 3.2.1
   valuesFrom:
     - kind: Secret
       name: jhub-cvre-iam-secrets
