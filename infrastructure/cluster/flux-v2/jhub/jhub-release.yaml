@@ -187,13 +187,13 @@ spec:
         name: ghcr.io/vre-hub/vre-singleuser
         tag: sha-423e01a
         pullPolicy: Always
-      nodeSelector: 
-        jupyter: singleuser
-      extraTolerations:
-        - key: jupyter
-          operator: Equal
-          value: singleuser
-          effect: NoSchedule
+      # nodeSelector: 
+      #   jupyter: singleuser
+      # extraTolerations:
+      #   - key: jupyter
+      #     operator: Equal
+      #     value: singleuser
+      #     effect: NoSchedule
       memory:
         limit: 3.5G #4G
         guarantee: 3G #2G
