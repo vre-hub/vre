@@ -10,10 +10,13 @@ The CERN-VRE cluster is composed of 3 master nodes plus 20 worker nodes, running
 10 nodes (0 to 9) nodes are "reserved" for infrastructure management; k8s, rucio, jhub, reana ...
 10 nodes (10 to 22 - nodes 14, 16 and 21 don't exist) are tagged for computing purposes; jhub-sessions and os, cvmfs and CephFS "connectors". WIP: reana sessions should be spawned here too.
 
-TO date (14 Feb 2024), nodes have been labelled as follows;
+To date (14 Feb 2024), nodes have been labelled as follows;
 `kubectl label node <NODE_NAME>> jupyter=singleuser`
 and these same 10 nodes need to be tainted to only allow jupyter sessions too
 `kubectl taint nodes <NODE_NAME> jupyter=singleuser:NoSchedule`
+
+To date (21 jun 2024), nodes and tains removed. 
+Reana was not able to reach cvmfs (ds was not deploying any nodeplugin on the nodes, because of the above restrictions). It was easier to un taint and un label everything, rather than taining all Reana deployment.
 
 Each Jupyter session is therefore spawned within the above nodes (by adding on the jhub-release manifest the `memory`, `nodeSelector` and `extraTolerations`, as showed below).
 Resources have been assigned/organised without much experienced, based on the following 
