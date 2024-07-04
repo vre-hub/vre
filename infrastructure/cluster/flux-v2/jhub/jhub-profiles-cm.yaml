@@ -42,8 +42,12 @@ data:
           description: "Gives you the ability to spawn Dask clusters"
           kubespawner_override:
             image:  ghcr.io/vre-hub/vre-singleuser-dask-root:sha-7805adc
-        - display_name: "Default environment - python3.11 + jupyterlab v4"
-          description: "With latest rucio jupyterlab extension version - under dev and testing"
+        - display_name: "REANA dev environment"
+          description: "For testing purposes"
           kubespawner_override:
-            image: ghcr.io/vre-hub/vre-singleuser-py311:latest
+            image:  ghcr.io/vre-hub/vre-singleuser-reana-dev:sha-7220d31
+        # - display_name: "Default environment - python3.11 + jupyterlab v4"
+        #   description: "With latest rucio jupyterlab extension version - under dev and testing"
+        #   kubespawner_override:
+        #     image: ghcr.io/vre-hub/vre-singleuser-py311:latest
                         
