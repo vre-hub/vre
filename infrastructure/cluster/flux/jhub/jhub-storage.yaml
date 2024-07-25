@@ -1,0 +1,52 @@
+# Follow the instructions in
+# https://kubernetes.docs.cern.ch/docs/storage/fileshares/#using-existing-shares
+#
+# Because we are recreating the cluster, the share already existed and we don't want to
+# create a new one. We will use the existing share.
+#
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: manila-preprovisioned-pv-vre-share
+spec:
+  csi:
+    driver: cephfs.manila.csi.openstack.org
+    # NOTE: volumeHandle MUST be unique across all PersistentVolume objects in the cluster.
+    #       The value itself can be arbitrary. You can use metadata.name for consistency.
+    volumeHandle: manila-preprovisioned-pv-vre-share
+    volumeAttributes:
+      shareID: 344b7a7f-6b8b-4eb9-8399-67895e1f1240
+      shareAccessID: 690c1631-901a-4a12-9a3d-d92879adaf3c
+
+      # CephFS shares can be mounted using either FUSE or kernel CephFS client.
+      # FUSE is used by default. Uncomment and modify the parameter below to change
+      # the mount tool. See openstack-manila-csi docs to see all supported parameters.
+      # cephfs-mounter: kernel
+
+    nodeStageSecretRef:
+      name: os-trustee
+      namespace: kube-system
+    nodePublishSecretRef:
+      name: os-trustee
+      namespace: kube-system
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 800Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jhub-vre-singleuser-preprovisioned-manila-pvc
+  namespace: jhub
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 800Gi
+  # volumeName must match the name we have set in the PersistentVolume defined above.
+  volumeName: manila-preprovisioned-pv-vre-share
+  # Storage class name must be set to an empty string ""
+  # to disable dynamic provisioning.
+  storageClassName: ""
