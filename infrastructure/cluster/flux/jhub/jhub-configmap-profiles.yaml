@@ -9,7 +9,7 @@ data:
       profileList:
         - display_name: "Default environment"
           description: "Based on a scipy-notebook environment with a python-3.11 kernel, the rucio-jupyterlab extension and the reana-client installed."
-          default: True
+          default: true
         - display_name: "Default environment - python 3.8"
           description: "Same environment as the default one except for a python-3.8 kernel installed. This environment will be deprecated soon."
           kubespawner_override:
@@ -45,13 +45,4 @@ data:
         - display_name: "REANA dev environment"
           description: "For testing purposes"
           kubespawner_override:
-            image:  ghcr.io/vre-hub/vre-singleuser-reana-dev:latest
-        # - display_name: "Default environment - python3.11 + jupyterlab v4"
-        #   description: "With latest rucio jupyterlab extension version - under dev and testing"
-        #   kubespawner_override:
-        #     image: ghcr.io/vre-hub/vre-singleuser-py311:latest
-        # - display_name: "Dask+ROOT"
-        #   description: "Gives you the ability to spawn Dask clusters"
-        #   kubespawner_override:
-        #     image:  ghcr.io/vre-hub/vre-singleuser-dask-root:sha-7805adc
-                        
+            image:  ghcr.io/vre-hub/vre-singleuser-reana-dev:latest                        
