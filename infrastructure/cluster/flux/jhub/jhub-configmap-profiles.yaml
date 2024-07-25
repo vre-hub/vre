@@ -4,7 +4,7 @@ metadata:
   name: jhub-profiles
   namespace: jhub
 data:
-  values.yaml: >-
+  values.yaml: |
     singleuser:
       profileList:
         - display_name: "Default environment"
