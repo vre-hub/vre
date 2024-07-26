@@ -4,8 +4,8 @@ resources:
 - gotk-components.yaml
 - gotk-sync.yaml
 patches:
-  - patch: |- 
-      apiVersion: v1
+  - patch:  |-
+      apiVersion: apps/v1
       kind: Deployment
       metadata:
         name: hub
@@ -17,3 +17,8 @@ patches:
               - name: pvc
                 persistentVolumeClaim:
                   claimName: jhub-vre-singleuser-preprovisioned-manila-pvc
+    target:
+      kind: Deployment
+      name: hub
+      namespace: jhub
+
