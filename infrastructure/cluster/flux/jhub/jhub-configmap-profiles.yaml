@@ -10,4 +10,7 @@ data:
         - display_name: "Default environment"
           description: "Based on a scipy notebook environment with a python-3.11 kernel, the rucio jupyterlab extension and the reana client installed."
           default: true
-        
+        - display_name: "Default environment - python 3.8"
+          description: "Same environment as the default one except for a python-3.8 kernel installed. This environment will be deprecated soon."
+          kubespawner_override:
+            image: ghcr.io/vre-hub/vre-singleuser-py38:sha-7ed7d80

@@ -31,7 +31,7 @@ spec:
     - kind: ConfigMap
       name: jhub-profiles
       valuesKey: values.yaml
-      targetPath: singleuser.profileList
+      #targetPath: singleuser.profileList
       
   values:
     proxy:
