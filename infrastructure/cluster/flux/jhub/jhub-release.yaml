@@ -31,7 +31,6 @@ spec:
     - kind: ConfigMap
       name: jhub-profiles
       valuesKey: values.yaml
-      #targetPath: singleuser.profileList
       
   values:
     proxy:
@@ -147,18 +146,18 @@ spec:
         type: static
         static:
           pvcName: jhub-vre-singleuser-preprovisioned-manila-pvc # manually added an existing share (refer to jhub-storage.yaml)
-        # extraVolumes:
-        #   - name: cvmfs-cern-instance 
-        #     persistentVolumeClaim:
-        #       claimName: cvmfs
+        extraVolumes:
+          - name: cvmfs-vre
+            persistentVolumeClaim:
+              claimName: cvmfs-vre-pvc
         #   - name: eulake-cern-eos-rse # mounts the EOS RSE needed for the Rucio JupiterLab extension
         #     hostPath:
         #       path: /var/eos/eulake # This is pointing to /eos/eulake/escape/data, defined on the eosxd/configmap  
-        # extraVolumeMounts:
-        #   - name: cvmfs-cern-instance 
-        #     mountPath: /cvmfs
-        #     # CVMFS automount volumes must be mounted with HostToContainer mount propagation.
-        #     mountPropagation: HostToContainer
+        extraVolumeMounts:
+          - name: cvmfs-vre
+            mountPath: /cvmfs
+            # CVMFS automount volumes must be mounted with HostToContainer mount propagation.
+            mountPropagation: HostToContainer
         #   - name: eulake-cern-eos-rse # mounts the EOS RSE needed for the Rucio JupiterLab extension
         #     mountPath: /eos/cern-eos-rse
         #     mountPropagation: HostToContainer
