@@ -1,5 +1,9 @@
 # K8s manifest to patch jhub deployment to point to an existing share
-
+ApiVersion: apps/v1
+Kind: Deployment
+metadata:
+  name: hub
+  namespace: jhub
 spec:
   template:
     spec:

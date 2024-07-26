@@ -8,7 +8,7 @@ data:
     singleuser:
       profileList:
         - display_name: "Default environment"
-          description: "Based on a scipy-notebook environment with a python-3.11 kernel, the rucio-jupyterlab extension and the reana-client installed."
+          description: "Based on a scipy-notebook environment with a python-3.11 kernel, the rucio jupyterlab extension and the reana client installed."
           default: true
         - display_name: "Default environment - python 3.8"
           description: "Same environment as the default one except for a python-3.8 kernel installed. This environment will be deprecated soon."
@@ -27,7 +27,7 @@ data:
           kubespawner_override:
             image: gitlab-registry.in2p3.fr/escape2020/virtual-environment/docker-images/datalake-singleuser-wdf:cd832522
         - display_name: "KM3Net Science Project environment"
-          description: "Contains gammapy=1.1, km3irf and km3net-testdata libraries - Python 3.9 kernel."
+          description: "Contains gammapy v1.1, km3irf and km3net testdata libraries - Python 3.9 kernel."
           kubespawner_override:
             image: ghcr.io/vre-hub/vre-singleuser-km3irf:sha-c1e2a18
         - display_name: "KM3NeT and CTA combined analysis environment"
@@ -38,8 +38,8 @@ data:
           description: "Contains the MLFermiLATDwarfs and fermitools libraries - Python 3.9 kernel."
           kubespawner_override:
             image: ghcr.io/vre-hub/vre-singleuser-microomega:sha-5cbf4f4
-        - display_name: "Dev enviroment"
-          description: "For testing and development purposes"
+        - display_name: "Dev environment"
+          description: "Development environment with various tools installed."
           kubespawner_override:
             image: ghcr.io/vre-hub/vre-singleuser-dev:sha-42bc682
         - display_name: "REANA dev environment"

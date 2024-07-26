@@ -3,3 +3,11 @@ kind: Kustomization
 resources:
 - gotk-components.yaml
 - gotk-sync.yaml
+spec:
+  patches:
+    - path: ../jhub/jhub-patch-deployment.yaml
+      target:
+        kind: Deployment
+        name: hub
+        namespace: jhub
+  
