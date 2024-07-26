@@ -1,4 +1,7 @@
 # # K8s manifest to patch jhub deployment to point to an existing share
+#
+# This patch is applied via flux on the kustomization.yaml manifests
+#
 # apiVersion: apps/v1
 # kind: Deployment
 # metadata:
