@@ -1,13 +1,13 @@
-# K8s manifest to patch jhub deployment to point to an existing share
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: hub
-  namespace: jhub
-spec:
-  template:
-    spec:
-      volumes:
-        - name: pvc
-          persistentVolumeClaim:
-            claimName: jhub-vre-singleuser-preprovisioned-manila-pvc
+# # K8s manifest to patch jhub deployment to point to an existing share
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: hub
+#   namespace: jhub
+# spec:
+#   template:
+#     spec:
+#       volumes:
+#         - name: pvc
+#           persistentVolumeClaim:
+#             claimName: jhub-vre-singleuser-preprovisioned-manila-pvc
