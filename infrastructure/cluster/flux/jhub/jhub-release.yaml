@@ -44,7 +44,7 @@ spec:
       networkPolicy:
         enabled: false
       db:
-        upgrade: true
+        #upgrade: true
         type: postgres # passed as s secret (dbconnect string) from the jhub-vre-db secret
       config:
         JupyterHub:
@@ -200,15 +200,15 @@ spec:
         RUCIO_CA_CERT: "/certs/rucio_ca.pem"
         OAUTH2_TOKEN: "FILE:/tmp/eos_oauth.token"
 
-      extraFiles:
-        jupyter_notebook_config.json:
-          mountPath: /etc/jupyter/jupyter_notebook_config.json
-          data:
-            MappingKMappingKernelManager:
-              cull_idle_timeout: 3600
-              cull_interval: 600
-              cull_busy: false
-              cull_connected: true
+      # extraFiles:
+      #   jupyter_notebook_config.json:
+      #     mountPath: /etc/jupyter/jupyter_notebook_config.json
+      #     data:
+      #       MappingKMappingKernelManager:
+      #         cull_idle_timeout: 3600
+      #         cull_interval: 600
+      #         cull_busy: false
+      #         cull_connected: true
 
     ingress:
       enabled: true
