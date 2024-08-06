@@ -5,6 +5,7 @@ echo " *** START rucio SERVERS Secret Script"
 # Once the certificates have been split, provide their path to be read when creating the secrets (NEEDS TO BE EXCLUDED FROM COMMITS!!):
 RAW_SECRETS_SERVERS="/root/clusters_CERTS/vre/servers"
 RAW_SECRETS_SERVERS_AUTH="/root/clusters_CERTS/vre/servers-auth"
+RAW_SECRETS_IDP="/root/software/vre/infrastructure/secrets/tmp_local_secrets/idpsecrets.json"
 
 # kubeseal controller namespace
 CONTROLLER_NS="sealed-secrets"
@@ -36,6 +37,8 @@ kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLE
 
 kubectl apply -f ${SECRETS_DIR}/ss_${HELM_RELEASE_SERVER}-server-cafile.yaml
 
+echo " *** Create and apply SERVER GRID CA secrets"
+
 # Create server secret for the GridCA file
 # The content of this file is the same as in /etc/grid-security/certificates/CERN-GridCA.pem but mv'd.
 kubectl create secret generic ${HELM_RELEASE_SERVER}-server-gridca --dry-run=client --from-file=${RAW_SECRETS_SERVERS}/CERN-GridCA.pem -o yaml | \
@@ -61,5 +64,11 @@ kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLE
 
 kubectl apply -f ${SECRETS_DIR}/ss_${HELM_RELEASE_SERVER_AUTH}-server-cafile.yaml
 
+echo " *** Create and apply OIDC secrets for SERVER AUTH"
+
+kubectl create secret generic ${HELM_RELEASE_SERVER_AUTH}-idpsecrets --dry-run=client --from-file=${RAW_SECRETS_IDP} -o yaml | \
+kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_DIR}/ss_${HELM_RELEASE_SERVER_AUTH}-idpsecrets.yaml
+
+kubectl apply -f ${SECRETS_DIR}/ss_${HELM_RELEASE_SERVER_AUTH}-idpsecrets.yaml
 
 echo " *** END rucio SERVERS Secret Script"
