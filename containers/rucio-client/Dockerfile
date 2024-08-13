@@ -48,7 +48,7 @@ USER user
 WORKDIR /home/user
 
 # ESCAPE Rucio client configuration
-ADD --chown=user:user rucio.cfg.escape.j2 /opt/user/rucio.cfg.j2
+# Overwrite rucio.default.cfg with the ESCAPE default config file
 ADD --chown=user:user rucio.default.cfg.escape /opt/user/rucio.default.cfg
 
 ENTRYPOINT ["/bin/bash"]
