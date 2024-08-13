@@ -10,7 +10,7 @@ LABEL org.label-schema.build-date=${BUILD_DATE}
 # Workdir is /home
 COPY produce_noise.sh requirements.txt rses.txt /home/
 RUN chmod +x ./produce_noise.sh
-RUN python -m pip install -r /home/requirements.txt
+RUN python3 -m pip install -r /home/requirements.txt
 
 ENTRYPOINT ["/bin/bash"]
 
