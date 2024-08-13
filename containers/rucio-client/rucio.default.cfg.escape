@@ -20,5 +20,5 @@ auth_oidc_refresh_activate = true
 permission = escape
 schema = escape
 lfn2pfn_algorithm_default = hash
-support = https://github.com/rucio/rucio/issues/
+support = https://github.com/vre-hub/vre/issues
 support_rucio = https://github.com/rucio/rucio/issues/

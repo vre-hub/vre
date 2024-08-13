@@ -1,7 +1,7 @@
 # VRE rucio-client image is the only which BASE is not the vre-base-ops image
 
 ARG BASEIMAGE=rucio/rucio-clients
-ARG BASETAG=release-1.30.0
+ARG BASETAG=release-34.6.0
 ARG BUILD_DATE
 
 FROM ${BASEIMAGE}:${BASETAG}
@@ -11,26 +11,28 @@ LABEL org.label-schema.build-date=${BUILD_DATE}
 
 USER root
 
+# Install epel-relaseas
+RUN dnf install -y epel-release
+
 # cleanup yum cache
-RUN yum upgrade -y \
-    && yum clean all \
-    && rm -rf /var/cache/yum
+RUN dnf upgrade -y \
+    && dnf clean all \
+    && rm -rf /var/cache/dnf
 
 # install useful tools
-RUN yum -y install git htop wget
-RUN pip install --upgrade pip
+RUN dnf -y install git htop wget
+RUN python3 -m pip install --upgrade pip
 
 # EGI trust anchors
 RUN curl -Lo /etc/yum.repos.d/egi-trustanchors.repo https://repository.egi.eu/sw/production/cas/1/current/repo-files/egi-trustanchors.repo \
     && yum update -y
 
-
-RUN yum -y install ca-certificates ca-policy-egi-core
+RUN dnf -y install ca-certificates ca-policy-egi-core
 
 # Install CERN CA certs from CERN maintained mirrors
 # This will add a `CERN-bundle.pem` file (among others) into `/etc/pki/tls/certs/`
-COPY ./linuxsupport7s-stable.repo /etc/yum.repos.d/
-RUN yum install -y CERN-CA-certs
+RUN dnf -y --repofrompath='tmpcern,https://linuxsoft.cern.ch/cern/alma/$releasever/CERN/$basearch/' upgrade almalinux-release --nogpgcheck
+RUN dnf install -y CERN-CA-certs
 
 # ESCAPE VOMS setup
 RUN mkdir -p /etc/vomses \
@@ -40,13 +42,13 @@ RUN mkdir -p /etc/vomses \
 
 # install reana-client 
 ENV LC_ALL=en_US.UTF-8
-RUN pip install reana-client==0.9.2
+RUN pip install reana-client==0.9.3
 
 USER user
 WORKDIR /home/user
 
 # ESCAPE Rucio client configuration
-ADD --chown=user:user rucio.cfg.escape.j2 /opt/user/rucio.cfg.j2
+# Overwrite rucio.default.cfg with the ESCAPE default config file
 ADD --chown=user:user rucio.default.cfg.escape /opt/user/rucio.default.cfg
 
 ENTRYPOINT ["/bin/bash"]
