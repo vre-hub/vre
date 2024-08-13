@@ -42,7 +42,7 @@ RUN mkdir -p /etc/vomses \
 
 # install reana-client 
 ENV LC_ALL=en_US.UTF-8
-RUN pip install reana-client==0.9.3
+RUN python3 -m pip install reana-client==0.9.3
 
 USER user
 WORKDIR /home/user
