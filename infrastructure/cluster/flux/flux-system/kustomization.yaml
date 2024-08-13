@@ -1,0 +1,24 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- gotk-components.yaml
+- gotk-sync.yaml
+patches:
+  - patch:  |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: hub
+        namespace: jhub
+      spec:
+        template:
+          spec:
+            volumes:
+              - name: pvc
+                persistentVolumeClaim:
+                  claimName: jhub-vre-singleuser-preprovisioned-manila-pvc
+    target:
+      kind: Deployment
+      name: hub
+      namespace: jhub
+

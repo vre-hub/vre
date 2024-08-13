@@ -1,7 +1,8 @@
 # Authors
 
-List of contributors in alphabetical order:
+List of contributors:
 
-- Enrique Garcia Garcia <enrique.garcia.garcia@cern.ch>
-- Elena Gazzarrini <elena.gazzarrini@cern.ch>
-- Domenic Gosein <domenic.gosein@cern.ch>
+- Elena Gazzarrini (CERN), 2022-2024
+- Enrique Garcia Garcia (CERN), 2022-2025
+- Domenic Gosein (CERN), 2022-2023
+- Giovanni Guerrieri (CERN), 2024-

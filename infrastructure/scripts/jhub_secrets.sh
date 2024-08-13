@@ -1,5 +1,18 @@
-kubectl create secret generic jhub-cvre-iam-secrets --from-literal=client_id=""  --from-literal=client_secret="" --dry-run=client -o yaml | \
-kubeseal --controller-name=sealed-secrets-cvre --controller-namespace=shared-services --format yaml --namespace=jhub > ss_jhub-cvre-iam-secrets.yaml
+#!/bin/bash
 
-kubectl create secret tls cern-sectigo-tls-certificate --key="tls.key" --cert="tls.crt" --dry-run=client -o yaml | \
-kubeseal --controller-name=sealed-secrets-cvre --controller-namespace=shared-services --format yaml --namespace=jhub > ss_cern-sectigo-tls-certificate.yaml
+RAW_SECRETS_TMP_DIR="/root/software/vre/infrastructure/secrets/tmp_local_secrets"
+SECRETS_STORE="/root/software/vre/infrastructure/secrets/jhub"
+NAMESPACE="jhub"
+
+SECRET_FILE="jhub-vre-iam-secrets.yaml"
+SECRET_FULL_PATH=${RAW_SECRETS_TMP_DIR}/${SECRET_FILE}
+echo "Creating ${SECRET_FILE} secret"
+cat $SECRET_FULL_PATH | kubeseal --controller-name=sealed-secrets-controller --controller-namespace=sealed-secrets --format yaml --namespace=${NAMESPACE} > ${SECRETS_STORE}/ss_${SECRET_FILE}
+kubectl apply -f ${SECRETS_STORE}/ss_${SECRET_FILE}
+
+
+SECRET_FILE="jhub-vre-db.yaml"
+SECRET_FULL_PATH=${RAW_SECRETS_TMP_DIR}/${SECRET_FILE}
+echo "Creating ${SECRET_FILE} secret"
+cat $SECRET_FULL_PATH | kubeseal --controller-name=sealed-secrets-controller --controller-namespace=sealed-secrets --format yaml --namespace=${NAMESPACE} > ${SECRETS_STORE}/ss_${SECRET_FILE}
+kubectl apply -f ${SECRETS_STORE}/ss_${SECRET_FILE}
