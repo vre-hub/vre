@@ -41,7 +41,7 @@ data:
         - display_name: "Dev environment"
           description: "Development environment with various tools installed."
           kubespawner_override:
-            image: ghcr.io/vre-hub/vre-singleuser-dev:sha-42bc682
+            image: ghcr.io/vre-hub/vre-singleuser-dev:latest
         - display_name: "REANA dev environment"
           description: "For testing purposes"
           kubespawner_override:
