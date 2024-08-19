@@ -17,4 +17,11 @@ OUTPUT_SECRET="rucio-root-account.yaml"
 cat ${RAW_SECRETS} | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_DIR}/ss_${OUTPUT_SECRET}
 kubectl apply -f ${SECRETS_DIR}/ss_${OUTPUT_SECRET}
 
+echo " *** Create and apply ESCAPE SERVICE ACCOUNT secret"
+
+RAW_SECRETS="/root/software/vre/infrastructure/secrets/tmp_local_secrets/escape-service-account.yaml"
+OUTPUT_SECRET="escape-service-account.yaml"
+cat ${RAW_SECRETS} | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_DIR}/ss_${OUTPUT_SECRET}
+kubectl apply -f ${SECRETS_DIR}/ss_${OUTPUT_SECRET}
+
 echo "Done"
