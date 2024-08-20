@@ -140,6 +140,7 @@ spec:
                 echo "auth_type = oidc" >> /opt/rucio/etc/rucio.cfg;
                 echo "oidc_audience = rucio" >> /opt/rucio/etc/rucio.cfg;
                 echo "oidc_polling = true" >> /opt/rucio/etc/rucio.cfg;
+                echo "oidc_issuer = escape" >> /opt/rucio/etc/rucio.cfg;
                 echo "auth_token_file_path = /tmp/rucio_oauth.token" >> /opt/rucio/etc/rucio.cfg;
       networkPolicy:
         enabled: false
