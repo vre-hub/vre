@@ -1,0 +1,140 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: servers
+  namespace: rucio
+  annotations:
+    flux.weave.works/automated: "false" 
+   
+spec: 
+  releaseName: servers
+  interval: 5m
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        name: rucio-charts
+        namespace: rucio
+      interval: 1m
+      chart: rucio-server
+      version: 34.0.4
+  valuesFrom:
+    - kind: Secret
+      name: rucio-db
+      valuesKey: dbfullstring
+      targetPath: config.database.default
+
+  values:
+    secretMounts:
+      - secretName: server-gridca
+        mountPath: /etc/grid-security/certificates/
+      # - secretName: server-hostcert
+      #   mountPath: /etc/grid-security/hostcert.pem
+      #   subPath: hostcert.pem
+      # - secretName: server-hostkey
+      #   mountPath: /etc/grid-security/hostkey.pem
+      #   subPath: hostkey.pem
+      # - secretName: server-cafile
+      #   mountPath: /etc/grid-security/ca.pem
+      #   subPath: ca.pem
+      # - secretName: rse-accounts
+      #   mountPath: /opt/rucio/etc/rse-accounts.cfg
+      #   subPath: rse-accounts.cfg
+
+    additionalEnvs:
+      - name: RUCIO_HTTPD_GRID_SITE_ENABLED
+        value: "True"  
+      - name: RUCIO_CA_PATH
+        value: "/etc/grid-security/certificates"   
+      # - name: RUCIO_CA_PATH
+      #   value: "/etc/grid-security/certificates"
+      - name: RUCIO_SSL_PROTOCOL
+        value: "-SSLv3 -TLSv1 -TLSv1.1 +TLSv1.2 +TLSv1.3"
+      # - name: RUCIO_HTTPD_PROXY_PROTOCOL_EXCEPTIONS
+      #   valueFrom:
+      #     fieldRef:
+      #       fieldPath: status.hostIP        
+             
+    replicaCount: 1
+    useSSL: true
+    
+    image:
+      repository: rucio/rucio-server
+      tag: release-34.6.0
+      pullPolicy: Always
+    imagePullSecrets: []
+    # - name: docker-regcreds
+
+    # The API server listens on port 6443 (by default). 
+    # Therefore, expose the API server on port 443 and listen to 6443. 
+
+  
+    service:
+      type: LoadBalancer
+      port: 443
+      targetPort: 443
+      protocol: TCP
+      name: https
+    #   # annotations:
+    #   #   # These annotations are only required for cluster templates <=1.18
+    #   #   loadbalancer.openstack.org/network-id: "798d00f3-2af9-48a0-a7c3-a26d909a2d64"
+    #   #   service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
+    #   #   loadbalancer.openstack.org/cascade-delete: "false"
+
+    serverType: flask
+
+    # automaticRestart:
+    #   enabled: 1
+    #   image:
+    #     repository: bitnami/kubectl
+    #     tag: latest
+    #     pullPolicy: IfNotPresent
+    #   schedule: "01 0 * * *"
+    #   selectorLabel: "'release in (servers-dev),app in (rucio-dev)'"
+
+    # httpd_config:
+    #   mpm_mode: "event"
+    #   timeout: "300"
+    #   enable_status: "True"
+    #   legacy_dn: "True"
+    #   keep_alive: "On"
+    #   keep_alive_timeout: "5"
+    #   max_keep_alive_requests: "128"
+    #   server_limit: "10"
+    #   start_servers: "4"
+    #   thread_limit: "128"
+    #   threads_per_child: "128"
+    #   min_spare_threads: "256"
+    #   max_spare_threads: "512"
+    #   max_request_workers: "1280"
+    #   max_connections_per_child: "2048"
+    #   max_clients: "20"
+      # mpm_mode: "worker"
+
+    ## values used to configure Rucio
+    config:
+      database:
+        pool_size: 10
+        max_overflow: 20
+      
+      # oidc:
+      #   idpsecrets: "/opt/rucio/etc/idpsecrets.json"
+      #   admin_issuer: "escape"
+      #   expected_audience: "rucio"
+      #   expected_scope: "openid profile"
+
+      policy:
+        permission: "escape"
+        schema: "escape"
+
+      # credentials:
+      #   gcs: "/opt/rucio/etc/rse-accounts.cfg"
+      
+    serverResources: 
+      limits:
+        cpu: "2000m" #"4000m"
+        memory: "1000Mi"
+      requests:
+        cpu: #"1000m" #"2000m"
+        memory: "500Mi"
+        
