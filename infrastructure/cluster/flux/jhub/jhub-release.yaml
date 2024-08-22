@@ -152,18 +152,18 @@ spec:
           - name: cvmfs-vre
             persistentVolumeClaim:
               claimName: cvmfs-vre-pvc
-          - name: eulake-cern-eos-rse # mounts the EOS RSE needed for the Rucio JupiterLab extension
-            hostPath:
-              path: /eos/eulake # This is pointing to /eos/pilot/eulake/escape/data, defined on the configmap/eos-csi-dir-etc-eo  
+          # - name: eulake-cern-eos-rse # mounts the EOS RSE needed for the Rucio JupiterLab extension
+          #   hostPath:
+          #     path: /var/eos/eulake # This is pointing to /eos/pilot/eulake/escape/data, defined on the configmap/eos-csi-dir-etc-eo  
         extraVolumeMounts:
           - name: cvmfs-vre
             mountPath: /cvmfs
             # CVMFS automount volumes must be mounted with HostToContainer mount propagation.
             mountPropagation: HostToContainer
-          - name: eulake-cern-eos-rse # mounts the EOS RSE needed for the Rucio JupiterLab extension
-            mountPath: /eos/cern-eos-rse
-            mountPropagation: HostToContainer
-            readOnly: true 
+          # - name: eulake-cern-eos-rse # mounts the EOS RSE needed for the Rucio JupiterLab extension
+          #   mountPath: /eos/cern-eos-rse
+          #   mountPropagation: HostToContainer
+          #   readOnly: true 
       image:
         name: ghcr.io/vre-hub/vre-singleuser-py311
         tag: sha-5106e39
