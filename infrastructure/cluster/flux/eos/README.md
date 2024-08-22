@@ -13,13 +13,13 @@ Any user connected to the VRE would be able to make use of the extension to acce
 
 ### Configuration
 
-## `eos/eulake` configuration
+## `eos/pilot/eulake` configuration
 
 During the summer of 2024, the eulake instance was moved into the EOS pilot instance. The snippets below have been edited acording to this changes.
 
-The `eulake` instance is not configured by default on the CERN OpenStack clusters - The cluster are deployed with EOS deployments, though. To do so, path the `eosxd` configmap to add the eulake instance into your cluster. Modified the various mount directories as you wish.
+The `eulake` instance is not configured by default on the CERN OpenStack clusters - The cluster are deployed with EOS deployments, though. To do so, path the `eos-csi-dir-etc-eos` configmap to add the eulake instance into your cluster. Modified the various mount directories as you wish.
 
-Then, add the `eulake` keytab secret as described below. The keytab srcret string can be find on the cern-ver `tbag`.
+Then, add the `eulake` keytab secret as described below. The keytab sercret string can be find on the CERN-VRE `tbag`.
 
 ```bash
 # charts `eosxd-csi-1.3.1` are deployed with k8s clusters v1.29.
