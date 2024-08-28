@@ -82,7 +82,8 @@ spec:
     #   schedule: "01 0 * * *"
     #   selectorLabel: "'release in (servers-auth-dev),app in (rucio-dev)'"
 
-    # httpd_config:
+    httpd_config:
+      grid_site_enabled: "True"
     #   mpm_mode: "event"
     #   timeout: "300"
     #   enable_status: "True"
