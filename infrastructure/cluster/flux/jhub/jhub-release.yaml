@@ -161,7 +161,7 @@ spec:
             # CVMFS automount volumes must be mounted with HostToContainer mount propagation.
             mountPropagation: HostToContainer
           - name: eospilot-eulake # mounts the EOS RSE needed for the Rucio JupiterLab extension
-            mountPath: /eos/eulake
+            mountPath: /eos/eulake/escape/data
             mountPropagation: HostToContainer
             readOnly: true 
       image:
@@ -197,8 +197,8 @@ spec:
         RUCIO_OAUTH_ID: "rucio"
         RUCIO_DEFAULT_INSTANCE: "vre-rucio.cern.ch"
         RUCIO_DESTINATION_RSE: "CERN-EOS"
-        RUCIO_RSE_MOUNT_PATH: "/eos/eulake"
-        RUCIO_PATH_BEGINS_AT: "2"
+        RUCIO_RSE_MOUNT_PATH: "/eos/eulake/escape/data"
+        RUCIO_PATH_BEGINS_AT: "4"
         RUCIO_CA_CERT: "/certs/rucio_ca.pem"
         OAUTH2_TOKEN: "FILE:/tmp/eos_oauth.token"
 
