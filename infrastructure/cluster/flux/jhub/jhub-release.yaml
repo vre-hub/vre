@@ -169,6 +169,10 @@ spec:
         tag: sha-5106e39
         pullPolicy: Always
 
+      prePuller:
+        hook:
+          enabled: true
+
       # nodeSelector: 
       #   jupyter: singleuser
       # extraTolerations:
