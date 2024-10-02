@@ -196,7 +196,7 @@ spec:
         RUCIO_DEFAULT_AUTH_TYPE: "oidc"
         RUCIO_OAUTH_ID: "rucio"
         RUCIO_DEFAULT_INSTANCE: "vre-rucio.cern.ch"
-        RUCIO_DESTINATION_RSE: "CERN-EOS"
+        RUCIO_DESTINATION_RSE: "CERN-EOSPILOT"
         RUCIO_RSE_MOUNT_PATH: "/eos/eulake/escape/data"
         RUCIO_PATH_BEGINS_AT: "4"
         RUCIO_CA_CERT: "/certs/rucio_ca.pem"
