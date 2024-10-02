@@ -86,7 +86,7 @@ spec:
                       'subject_token': token,
                       'scope': 'openid profile',
                       'audience': 'rucio',
-                      'wlgc_groups': 'escape'
+                      'wlgc.groups': 'escape'
                   }
                   response = requests.post(self.token_url, data=params)
                   rucio_token = response.json()['access_token']
