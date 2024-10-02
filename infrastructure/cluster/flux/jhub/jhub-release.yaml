@@ -84,8 +84,9 @@ spec:
                       'client_secret': self.client_secret,
                       'grant_type': 'urn:ietf:params:oauth:grant-type:token-exchange',
                       'subject_token': token,
-                      'scope': 'openid profile wlgc.groups',
-                      'audience': 'rucio'
+                      'scope': 'openid profile',
+                      'audience': 'rucio',
+                      'wlgc_groups': 'escape'
                   }
                   response = requests.post(self.token_url, data=params)
                   rucio_token = response.json()['access_token']
