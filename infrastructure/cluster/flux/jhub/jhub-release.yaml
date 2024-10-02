@@ -169,10 +169,6 @@ spec:
         tag: sha-5106e39
         pullPolicy: Always
 
-      prePuller:
-        hook:
-          enabled: true
-
       # nodeSelector: 
       #   jupyter: singleuser
       # extraTolerations:
@@ -215,6 +211,10 @@ spec:
       #         cull_interval: 600
       #         cull_busy: false
       #         cull_connected: true
+
+    prePuller:
+      hook:
+        enabled: true
 
     ingress:
       enabled: true
