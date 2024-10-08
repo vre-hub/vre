@@ -155,6 +155,9 @@ spec:
           - name: eospilot-eulake # mounts the EOS RSE needed for the Rucio JupiterLab extension
             hostPath:
               path: /var/eos/eulake # This is pointing to /eos/pilot/eulake/escape/data, defined on the configmap/eos-csi-dir-etc-eo  
+          - name: eos-atlas
+            hostPath:
+              path: /var/eos/atlas
         extraVolumeMounts:
           - name: cvmfs-vre
             mountPath: /cvmfs
@@ -164,9 +167,13 @@ spec:
             mountPath: /eos/eulake/escape/data
             mountPropagation: HostToContainer
             readOnly: true 
+          - name: eos-atlas
+            mountPath: /eos/atlas
+            mountPropagation: HostToContainer
+            readOnly: true
       image:
         name: ghcr.io/vre-hub/vre-singleuser-py311
-        tag: sha-5106e39
+        tag: sha-5bd80fc
         pullPolicy: Always
 
       # nodeSelector: 
