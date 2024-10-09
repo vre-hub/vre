@@ -38,11 +38,15 @@ data:
           description: "Contains the MLFermiLATDwarfs and fermitools libraries - Python 3.9 kernel."
           kubespawner_override:
             image: ghcr.io/vre-hub/vre-singleuser-microomega:sha-5cbf4f4
-        - display_name: "Dev environment"
+        - display_name: "DEV environment"
           description: "Development environment with various tools installed."
           kubespawner_override:
             image: ghcr.io/vre-hub/vre-singleuser-dev:latest
-        - display_name: "REANA dev environment"
+        - display_name: "Reana DEV environment"
           description: "For testing purposes"
           kubespawner_override:
             image: ghcr.io/vre-hub/vre-singleuser-reana-dev:latest
+        - display_name: "Zenodo extension DEV environment"
+          description: "For testing purposes"
+          kubespawner_override:
+            image: ghcr.io/vre-hub/vre-singleuser-zen_ext-dev:latest
