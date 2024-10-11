@@ -164,7 +164,7 @@ spec:
             # CVMFS automount volumes must be mounted with HostToContainer mount propagation.
             mountPropagation: HostToContainer
           - name: eospilot-eulake # mounts the EOS RSE needed for the Rucio JupiterLab extension
-            mountPath: /eos/eulake/escape/data
+            mountPath: /eos/eulake
             mountPropagation: HostToContainer
             readOnly: true 
           - name: eos-atlas
