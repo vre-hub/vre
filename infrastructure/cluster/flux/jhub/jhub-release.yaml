@@ -154,7 +154,7 @@ spec:
               claimName: cvmfs-vre-pvc
           - name: eospilot-eulake # mounts the EOS RSE needed for the Rucio JupiterLab extension
             hostPath:
-              path: /var/eos/eulake/escape/data # This is pointing to /eos/pilot/eulake/escape/data, defined on the configmap/eos-csi-dir-etc-eo  
+              path: /var/eos/eulake # This is pointing to /eos/pilot/eulake/escape/data, defined on the configmap/eos-csi-dir-etc-eo  
               # path: /var/eos/pilot/eulake
           - name: eos-atlas
             hostPath:
