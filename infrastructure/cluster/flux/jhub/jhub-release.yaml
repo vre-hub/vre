@@ -205,8 +205,10 @@ spec:
         RUCIO_OAUTH_ID: "rucio"
         RUCIO_DEFAULT_INSTANCE: "vre-rucio.cern.ch"
         RUCIO_DESTINATION_RSE: "CERN-EOSPILOT"
-        RUCIO_RSE_MOUNT_PATH: "/eos/eulake"
-        RUCIO_PATH_BEGINS_AT: "2"
+        #RUCIO_RSE_MOUNT_PATH: "/eos/eulake"
+        #RUCIO_PATH_BEGINS_AT: "2"
+        RUCIO_RSE_MOUNT_PATH: "/eos/pilot/eulake/escape/data"
+        RUCIO_PATH_BEGINS_AT: "5"
         RUCIO_CA_CERT: "/certs/rucio_ca.pem"
         OAUTH2_TOKEN: "FILE:/tmp/eos_oauth.token"
 
