@@ -63,6 +63,10 @@ spec:
             - profile
             - email
             - offline_access
+          
+      extraEnvFrom:
+        - secretRef:
+          name: jupyterhub-auth-state  # in the secret: export JUPYTERHUB_CRYPT_KEY=$(openssl rand -hex 32)
 
       extraConfig:
 
@@ -108,13 +112,6 @@ spec:
 
           # enable authentication state
           c.GenericOAuthenticator.enable_auth_state = True
-
-          if 'JUPYTERHUB_CRYPT_KEY' not in os.environ:
-              warnings.warn(
-                  "Need JUPYTERHUB_CRYPT_KEY env for persistent auth_state.\n"
-                  "    export JUPYTERHUB_CRYPT_KEY=$(openssl rand -hex 32)"
-              )
-              c.CryptKeeper.keys = [os.urandom(32)]
         
     singleuser:
       defaultUrl: "/lab"
