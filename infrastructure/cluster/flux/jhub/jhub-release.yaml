@@ -31,6 +31,10 @@ spec:
     - kind: ConfigMap
       name: jhub-profiles
       valuesKey: values.yaml
+    - kind: Secret
+      name: jupyterhub-auth-state
+      valuesKey: JUPYTERHUB_CRYPT_KEY
+      targetPath: hub.extraEnv.JUPYTERHUB_CRYPT_KEY
       
   values:
     proxy:
@@ -46,9 +50,7 @@ spec:
       db:
         #upgrade: true
         type: postgres # passed as s secret (dbconnect string) from the jhub-vre-db secret
-      extraEnvFrom:
-        - secretRef:
-          name: jupyterhub-auth-state  # in the secret: export JUPYTERHUB_CRYPT_KEY=$(openssl rand -hex 32)
+      
       config:
         JupyterHub:
           authenticator_class: "generic-oauth"
