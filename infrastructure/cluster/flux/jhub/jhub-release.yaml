@@ -102,7 +102,7 @@ spec:
                   pprint.pprint(auth_state)
                   if not auth_state:
                       # user has no auth state
-                      return
+                      return False
                   
                   # define token environment variable from auth_state
                   spawner.environment['RUCIO_ACCESS_TOKEN'] = self.exchange_token(auth_state['access_token'])
