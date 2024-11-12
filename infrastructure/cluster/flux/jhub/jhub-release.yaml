@@ -100,7 +100,7 @@ spec:
                   
               async def pre_spawn_start(self, user, spawner):
                   auth_state = await user.get_auth_state()
-                  print(AUTH_state:)
+                  print("AUTH_state")
                   pprint.pprint(auth_state)
                   if not auth_state:
                       # user has no auth state
