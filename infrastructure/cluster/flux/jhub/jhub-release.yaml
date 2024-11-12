@@ -93,8 +93,10 @@ spec:
                       'audience': 'rucio'
                   }
                   response = requests.post(self.token_url, data=params)
+                  print("EXCHANGE TOKEN")
                   print(response.json())
                   rucio_token = response.json()['access_token']
+
                   return rucio_token
                   
               async def pre_spawn_start(self, user, spawner):
@@ -108,6 +110,8 @@ spec:
                   # define token environment variable from auth_state
                   spawner.environment['RUCIO_ACCESS_TOKEN'] = auth_state['access_token']  #self.exchange_token(auth_state['access_token'])
                   spawner.environment['EOS_ACCESS_TOKEN'] = auth_state['access_token']
+
+                  spawner.environment.update({'RUCIO_ACCESS_TOKEN': self.exchange_token(auth_state['access_token'])})
           
           # set the above authenticator as the default
           c.JupyterHub.authenticator_class = RucioAuthenticator
