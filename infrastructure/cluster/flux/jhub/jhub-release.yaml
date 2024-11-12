@@ -94,13 +94,14 @@ spec:
                       'audience': 'rucio'
                   }
                   response = requests.post(self.token_url, data=params)
-                  pprint.pprint("RESPONSE:\n", response.json())
+                  print(response.json())
                   rucio_token = response.json()['access_token']
                   return rucio_token
                   
               async def pre_spawn_start(self, user, spawner):
                   auth_state = await user.get_auth_state()
-                  pprint.pprint("AUTH_state:\n", auth_state)
+                  print(AUTH_state:)
+                  pprint.pprint(auth_state)
                   if not auth_state:
                       # user has no auth state
                       return False
