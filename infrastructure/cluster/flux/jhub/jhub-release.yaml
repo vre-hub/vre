@@ -60,7 +60,7 @@ spec:
           authorize_url: https://iam-escape.cloud.cnaf.infn.it/authorize
           token_url: https://iam-escape.cloud.cnaf.infn.it/token
           userdata_url: https://iam-escape.cloud.cnaf.infn.it/userinfo
-          oauth_callback_url: https://jhub-vre.cern.ch/hub/oauth_callback
+          
           username_key: preferred_username
           enable_auth_state: true
           allow_all: true
