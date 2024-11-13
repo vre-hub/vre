@@ -111,17 +111,17 @@ spec:
     #   max_clients: "20"
       # mpm_mode: "worker"
 
-    ## values used to configure Rucio
+    ## values used to be propagated to the rucio.cfg files within the container
     config:
       database:
         pool_size: 10
         max_overflow: 20
       
-      # oidc:
-      #   idpsecrets: "/opt/rucio/etc/idpsecrets.json"
-      #   admin_issuer: "escape"
-      #   expected_audience: "rucio"
-      #   expected_scope: "openid profile"
+      oidc:
+        idpsecrets: "/opt/rucio/etc/idpsecrets.json"
+        admin_issuer: "escape"
+        expected_audience: "rucio"
+        expected_scope: "openid profile"
 
       policy:
         permission: "escape"
