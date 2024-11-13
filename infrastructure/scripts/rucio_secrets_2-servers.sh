@@ -64,7 +64,12 @@ kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLE
 
 kubectl apply -f ${SECRETS_DIR}/ss_${HELM_RELEASE_SERVER_AUTH}-server-cafile.yaml
 
-echo " *** Create and apply OIDC secrets for SERVER AUTH"
+echo " *** Create and apply OIDC secrets for both SERVER and SERVER AUTH"
+
+kubectl create secret generic ${HELM_RELEASE_SERVER}-idpsecrets --dry-run=client --from-file=${RAW_SECRETS_IDP} -o yaml | \
+kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_DIR}/ss_${HELM_RELEASE_SERVER}-idpsecrets.yaml
+
+kubectl apply -f ${SECRETS_DIR}/ss_${HELM_RELEASE_SERVER}-idpsecrets.yaml
 
 kubectl create secret generic ${HELM_RELEASE_SERVER_AUTH}-idpsecrets --dry-run=client --from-file=${RAW_SECRETS_IDP} -o yaml | \
 kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_DIR}/ss_${HELM_RELEASE_SERVER_AUTH}-idpsecrets.yaml
