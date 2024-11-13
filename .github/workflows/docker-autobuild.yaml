@@ -3,7 +3,7 @@ name: Docker automatic build and publish when changes in container dir
 on: 
   push:
     branches:
-      - main
+      - iam_sync_debug
 
 env:
   REGISTRY: ghcr.io
