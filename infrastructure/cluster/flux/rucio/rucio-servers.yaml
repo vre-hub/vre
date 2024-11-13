@@ -40,6 +40,9 @@ spec:
       # - secretName: rse-accounts
       #   mountPath: /opt/rucio/etc/rse-accounts.cfg
       #   subPath: rse-accounts.cfg
+      - secretName: idpsecrets
+        mountPath: /opt/rucio/etc/idpsecrets.json
+        subPath: idpsecrets.json
 
     additionalEnvs:
       - name: RUCIO_HTTPD_GRID_SITE_ENABLED
