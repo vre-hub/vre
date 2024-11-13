@@ -60,7 +60,7 @@ spec:
           authorize_url: https://iam-escape.cloud.cnaf.infn.it/authorize
           token_url: https://iam-escape.cloud.cnaf.infn.it/token
           userdata_url: https://iam-escape.cloud.cnaf.infn.it/userinfo
-          oauth_callback_url: https://jhub-vre.cern.ch/hub/oauth_callback
+          #oauth_callback_url: https://jhub-vre.cern.ch/hub/oauth_callback
           username_key: preferred_username
           enable_auth_state: true
           allow_all: true
@@ -110,7 +110,7 @@ spec:
                       return False
                   
                   # define token environment variable from auth_state
-                  spawner.environment['RUCIO_ACCESS_TOKEN'] = self.exchange_token(auth_state['access_token'])
+                  spawner.environment['RUCIO_ACCESS_TOKEN'] = auth_state['access_token'] # self.exchange_token(auth_state['access_token'])
                   spawner.environment['EOS_ACCESS_TOKEN'] = auth_state['access_token']
           
           # set the above authenticator as the default
