@@ -6,7 +6,7 @@ metadata:
 
 spec:
   releaseName: ui
-  interval: 5m
+  interval: 1m
   chart:
     spec:
       sourceRef:
@@ -24,11 +24,19 @@ spec:
       targetPath: config.database.default
   
   values:
-    additionalSecrets:
-      - volumeName: idpsecrets
-        secretName: idpsecrets
-        mountPath: /opt/rucio/etc/idpsecrets.json
-        subPath: idpsecrets.json
+    secretMounts:
+      - secretName: hostcert
+        mountPath: /etc/grid-security/hostcert.pem
+        subPath: hostcert.pem
+      - secretName: hostkey
+        mountPath: /etc/grid-security/hostkey.pem
+        subPath: hostkey.pem
+      - secretName: cafile
+        mountPath: /etc/grid-security/ca.pem
+        subPath: ca.pem
+      # - secretName: idpsecrets
+      #   mountPath: /opt/rucio/etc/idpsecrets.json
+      #   subPath: idpsecrets.json
 
     replicaCount: 1
     exposeErrorLogs: True
@@ -71,21 +79,43 @@ spec:
     #     - vre-rucio-ui.cern.ch
         
     ## values used to configure apache
-    httpd_config:
-      legacy_dn: "False"
-      rucio_hostname: "vre-rucio-ui.cern.ch"
+    # httpd_config:
+    #   legacy_dn: "False"
+    #   rucio_hostname: "vre-rucio-ui.cern.ch"
       
     config:
+      httpd:
+        mpm_mode: "event"
+        rucio_hostname: "vre-rucio-ui.cern.ch"
+        start_servers: "1"
+        min_spare_threads: "1"
+        max_spare_threads: "20"
+        threads_per_child: "5"
+        max_clients: "20"
+        max_requests_per_child: "8192"
+        timeout: 300
+        min_spare_servers: "1"
+        max_spare_servers: "5"
+        server_limit: "10"
+        keep_alive: "On"
+        keep_alive_timeout: "5"
+        max_keep_alive_requests: "128"
+        threads_limit: "128"
+        max_request_workers: "1280"
+        max_connections_per_child: "2048"
+
+
+
       policy:
         permission: "escape" # "generic"
         schema: "escape" # "generic"
         # lfn2pfn_algorithm_default: "identity"
 
-      oidc:
-        idpsecrets: "/opt/rucio/etc/idpsecrets.json"
-        admin_issuer: "escape"
-        expected_audience: "rucio"
-        expected_scope: "openid profile"
+      # oidc:
+      #   idpsecrets: "/opt/rucio/etc/idpsecrets.json"
+      #   admin_issuer: "escape"
+      #   expected_audience: "rucio"
+      #   expected_scope: "openid profile"
 
       # credentials:
       #   gcs: "/opt/rucio/etc/rse-accounts.cfg"
