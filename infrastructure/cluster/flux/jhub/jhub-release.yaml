@@ -60,12 +60,9 @@ spec:
           authorize_url: https://iam-escape.cloud.cnaf.infn.it/authorize
           token_url: https://iam-escape.cloud.cnaf.infn.it/token
           userdata_url: https://iam-escape.cloud.cnaf.infn.it/userinfo
-          #oauth_callback_url: https://jhub-vre.cern.ch/hub/oauth_callback
           username_key: preferred_username
           enable_auth_state: true
           allow_all: true
-          #exchange_tokens:
-          #  - rucio
           scope:
             - openid
             - profile
@@ -105,8 +102,8 @@ spec:
                   
               async def pre_spawn_start(self, user, spawner):
                   auth_state = await user.get_auth_state()
-                  print("AUTH_state")
-                  pprint.pprint(auth_state)
+                  #print("AUTH_state")
+                  #pprint.pprint(auth_state)
                   if not auth_state:
                       # user has no auth state
                       return False
