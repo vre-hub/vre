@@ -70,15 +70,15 @@ spec:
       rucioAuthProxy: "vre-rucio-auth.cern.ch"
       rucioAuthProxyScheme: "https"
 
-    # ingress:
-    #   enabled: true
-    #   annotations:
-    #     kubernetes.io/ingress.class: nginx
-    #     nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-    #     nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    #   path: /
-    #   hosts: 
-    #     - vre-rucio-ui.cern.ch
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: nginx
+        nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+        nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      path: /
+      hosts: 
+        - vre-rucio-ui.cern.ch
         
     ## values used to configure apache
     # httpd_config:
