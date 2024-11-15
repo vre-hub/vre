@@ -31,11 +31,11 @@ kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLE
 
 kubectl apply -f ${SECRETS_DIR}/ss_${HELM_RELEASE_UI}-hostkey.yaml
 
-# The content of this file is the same as in /etc/pki/tls/certs/CERN-bundle.pem but renamed to cafile.pem
-kubectl create secret generic ${HELM_RELEASE_UI}-cafile --dry-run=client --from-file=${RAW_SECRETS_UI}/cafile.pem -o yaml | \
-kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_DIR}/ss_${HELM_RELEASE_UI}-cafile.yaml
+# The content of this file is the same as in /etc/pki/tls/certs/CERN-bundle.pem but renamed to ca.pem (inconsistant wiht doc; where it is cafile.pem !!)
+kubectl create secret generic ${HELM_RELEASE_UI}-cafile --dry-run=client --from-file=${RAW_SECRETS_UI}/ca.pem -o yaml | \
+kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${RUCIO_NS} > ${SECRETS_DIR}/ss_${HELM_RELEASE_UI}-ca.yaml
 
-kubectl apply -f ${SECRETS_DIR}/ss_${HELM_RELEASE_UI}-cafile.yaml
+kubectl apply -f ${SECRETS_DIR}/ss_${HELM_RELEASE_UI}-ca.yaml
 
 
 echo " *** END rucio UI Secrets Script"
