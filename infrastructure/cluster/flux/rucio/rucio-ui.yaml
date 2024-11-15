@@ -70,16 +70,19 @@ spec:
       rucioAuthProxy: "vre-rucio-auth.cern.ch"
       rucioAuthProxyScheme: "https"
 
-    
-    ingress:
-      enabled: true
-      annotations:
-        kubernetes.io/ingress.class: nginx
-        nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-        nginx.ingress.kubernetes.io/ssl-redirect: "true"
-      path: /
-      hosts: 
-        - vre-rucio-ui.cern.ch
+    # Followinf documentation [1] this should be enable, but when auth via x509 there is and
+    #  error that no rucio account is mapped to that cert --> Disenabiling it
+    # [1] https://github.com/rucio/helm-charts/tree/master/charts/rucio-ui#ingress
+
+    # ingress:
+    #   enabled: true
+    #   annotations:
+    #     kubernetes.io/ingress.class: nginx
+    #     nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    #     nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    #   path: /
+    #   hosts: 
+    #     - vre-rucio-ui.cern.ch
         
     ## values used to configure apache
     # httpd_config:
