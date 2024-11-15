@@ -34,9 +34,9 @@ spec:
       - secretName: cafile
         mountPath: /etc/grid-security/ca.pem
         subPath: ca.pem
-      # - secretName: idpsecrets
-      #   mountPath: /opt/rucio/etc/idpsecrets.json
-      #   subPath: idpsecrets.json
+      - secretName: idpsecrets
+        mountPath: /opt/rucio/etc/idpsecrets.json
+        subPath: idpsecrets.json
 
     replicaCount: 1
     exposeErrorLogs: True
@@ -70,6 +70,7 @@ spec:
       rucioAuthProxy: "vre-rucio-auth.cern.ch"
       rucioAuthProxyScheme: "https"
 
+    
     ingress:
       enabled: true
       annotations:
@@ -105,18 +106,15 @@ spec:
       # max_request_workers: "1280"
       # max_connections_per_child: "2048"
 
-
     config:
       policy:
-        permission: "escape" # "generic"
-        schema: "escape" # "generic"
-        # lfn2pfn_algorithm_default: "identity"
+        permission: "generic"
+        schema: "generic"
+        lfn2pfn_algorithm_default: "identity"
 
-      # oidc:
-      #   idpsecrets: "/opt/rucio/etc/idpsecrets.json"
-      #   admin_issuer: "escape"
-      #   expected_audience: "rucio"
-      #   expected_scope: "openid profile"
+      oidc:
+        idpsecrets: "/opt/rucio/etc/idpsecrets.json"
+        admin_issuer: "escape"
 
       # credentials:
       #   gcs: "/opt/rucio/etc/rse-accounts.cfg"
