@@ -20,14 +20,14 @@ spec:
       version: 0.9.3
 
   valuesFrom:
-    # - kind: Secret
-    #   name: reana-vre-iam-client
-    #   valuesKey: client_id
-    #   targetPath: secrets.login.escape-iam.consumer_key
-    # - kind: Secret
-    #   name: reana-vre-iam-client
-    #   valuesKey: client_secret
-    #   targetPath: secrets.login.escape-iam.consumer_secret
+    - kind: Secret
+      name: reana-vre-iam-client
+      valuesKey: client_id
+      targetPath: secrets.login.escape-iam.consumer_key
+    - kind: Secret
+      name: reana-vre-iam-client
+      valuesKey: client_secret
+      targetPath: secrets.login.escape-iam.consumer_secret
     - kind: Secret
       name: reana-db
       valuesKey: user
@@ -91,18 +91,18 @@ spec:
       # REANA_DB_USERNAME: containing the database user name.
       # REANA_DB_PASSWORD: containing the password for the user previously set.
       # Both environment variables should be set inside a Kubernetes secret:
-      # `[release-name]-db-secrets`
+      # `[release-name]-db`
   
-    # login:
-    #   - name: "escape-iam"
-    #     type: "keycloak"
-    #     config:
-    #       title: "ESCAPE IAM"
-    #       base_url: "https://iam-escape.cloud.cnaf.infn.it"
-    #       realm_url: "https://iam-escape.cloud.cnaf.infn.it" 
-    #       auth_url: "https://iam-escape.cloud.cnaf.infn.it/authorize" 
-    #       token_url: "https://iam-escape.cloud.cnaf.infn.it/token" 
-    #       userinfo_url: "https://iam-escape.cloud.cnaf.infn.it/userinfo"
+    login:
+      - name: "escape-iam"
+        type: "keycloak"
+        config:
+          title: "ESCAPE IAM"
+          base_url: "https://iam-escape.cloud.cnaf.infn.it"
+          realm_url: "https://iam-escape.cloud.cnaf.infn.it" 
+          auth_url: "https://iam-escape.cloud.cnaf.infn.it/authorize" 
+          token_url: "https://iam-escape.cloud.cnaf.infn.it/token" 
+          userinfo_url: "https://iam-escape.cloud.cnaf.infn.it/userinfo"
 
     ingress:
       enabled: false
