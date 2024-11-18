@@ -14,22 +14,22 @@ SECRETS_DIR="/root/software/vre/infrastructure/secrets/reana"
 RAW_SECRETS_TMP_DIR="/root/software/vre/infrastructure/secrets/tmp_local_secrets"
 
 
-echo "Create REANA DB secret"
+# echo "Create REANA DB secret"
 
-DB_OUTPUT_SECRET="reana-db.yaml"
-RAW_DB_FILE_SECRET=${RAW_SECRETS_TMP_DIR}/${DB_OUTPUT_SECRET}
+# DB_OUTPUT_SECRET="reana-db.yaml"
+# RAW_DB_FILE_SECRET=${RAW_SECRETS_TMP_DIR}/${DB_OUTPUT_SECRET}
 
-cat ${RAW_DB_FILE_SECRET} | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${REANA_NS} > ${SECRETS_DIR}/ss_${DB_OUTPUT_SECRET}
-kubectl apply -f ${SECRETS_DIR}/ss_${DB_OUTPUT_SECRET}
+# cat ${RAW_DB_FILE_SECRET} | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${REANA_NS} > ${SECRETS_DIR}/ss_${DB_OUTPUT_SECRET}
+# kubectl apply -f ${SECRETS_DIR}/ss_${DB_OUTPUT_SECRET}
 
 
-echo "Create REANA Admin Access Token secret"
+# echo "Create REANA Admin Access Token secret"
 
-ADMIN_ACCOUNT_SECRET='reana-admin-access-token.yaml'
-RAW_ADMIN_FILE_SECRET=${RAW_SECRETS_TMP_DIR}/${ADMIN_ACCOUNT_SECRET}
+# ADMIN_ACCOUNT_SECRET='reana-admin-access-token.yaml'
+# RAW_ADMIN_FILE_SECRET=${RAW_SECRETS_TMP_DIR}/${ADMIN_ACCOUNT_SECRET}
 
-cat ${RAW_ADMIN_FILE_SECRET} | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${REANA_NS} > ${SECRETS_DIR}/ss_${ADMIN_ACCOUNT_SECRET}
-kubectl apply -f ${SECRETS_DIR}/ss_${ADMIN_ACCOUNT_SECRET}
+# cat ${RAW_ADMIN_FILE_SECRET} | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${REANA_NS} > ${SECRETS_DIR}/ss_${ADMIN_ACCOUNT_SECRET}
+# kubectl apply -f ${SECRETS_DIR}/ss_${ADMIN_ACCOUNT_SECRET}
 
 
 echo "Create REANA IAM client credentials"
