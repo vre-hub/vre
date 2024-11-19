@@ -1,0 +1,54 @@
+# Follow the instructions in
+# https://kubernetes.docs.cern.ch/docs/storage/fileshares/#using-existing-shares
+#
+# Because we are recreating the cluster, the share already existed and we don't want to
+# create a new one. We will use the existing share.
+#
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: manila-preprovisioned-pv-reana-share
+spec:
+  csi:
+    driver: cephfs.manila.csi.openstack.org
+    # NOTE: volumeHandle MUST be unique across all PersistentVolume objects in the cluster.
+    #       The value itself can be arbitrary. You can use metadata.name for consistency.
+
+    # These values are just IDs and can be shared publically in github.
+    volumeHandle: manila-preprovisioned-pv-reana-share
+    volumeAttributes:
+      shareID: a6a85651-0b95-4e31-89ac-4ff31037f342
+      shareAccessID: 1cd91c50-8cc6-449d-ae39-83249aca398b
+
+      # CephFS shares can be mounted using either FUSE or kernel CephFS client.
+      # FUSE is used by default. Uncomment and modify the parameter below to change
+      # the mount tool. See openstack-manila-csi docs to see all supported parameters.
+      # cephfs-mounter: kernel
+
+    nodeStageSecretRef:
+      name: os-trustee
+      namespace: kube-system
+    nodePublishSecretRef:
+      name: os-trustee
+      namespace: kube-system
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 1000Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: manila-preprovisioned-pvc-reana
+  namespace: reana
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 1000Gi
+  # volumeName must match the name we have set in the PersistentVolume defined above.
+  volumeName: manila-preprovisioned-pv-reana-share
+  # Storage class name must be set to an empty string ""
+  # to disable dynamic provisioning.
+  storageClassName: ""
