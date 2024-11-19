@@ -41,15 +41,16 @@ cat ${RAW_REANA_IAM_FILE_SECRET} | kubeseal --controller-name=${CONTROLLER_NAME}
 kubectl apply -f ${SECRETS_DIR}/ss_${REANA_IAM_ACCOUNT_SECRET}
 
 
-# echo "Create 'REANA secrets' secret"
-# # This secret is unknow for what is used - no doc :harold:
-# # Kept commented for the moment
+echo "Create 'REANA secrets' secret"
+# :harold:
+# REANA_SECRET_KEY is used for some security-related things, including the encryption of some DB columns. So if that's not set, the database columns will not be decrypted correctly
+# Said in other words, it is a secret needed when interacting with REANA via `--admin-access-token $REANA_ADMIN_TOKEN`
 
-# REANA_SECRETS_SECRET='reana-secrets.yaml'
-# RAW_REANA_SECRETS_FILE_SECRET=${RAW_SECRETS_TMP_DIR}/${REANA_SECRETS_SECRET}
+REANA_SECRETS_SECRET='reana-secrets.yaml'
+RAW_REANA_SECRETS_FILE_SECRET=${RAW_SECRETS_TMP_DIR}/${REANA_SECRETS_SECRET}
 
-# cat ${RAW_REANA_SECRETS_FILE_SECRET} | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${REANA_NS} > ${SECRETS_DIR}/ss_${REANA_SECRETS_SECRET}
-# kubectl apply -f ${SECRETS_DIR}/ss_${REANA_SECRETS_SECRET}
+cat ${RAW_REANA_SECRETS_FILE_SECRET} | kubeseal --controller-name=${CONTROLLER_NAME} --controller-namespace=${CONTROLLER_NS} --format yaml --namespace=${REANA_NS} > ${SECRETS_DIR}/ss_${REANA_SECRETS_SECRET}
+kubectl apply -f ${SECRETS_DIR}/ss_${REANA_SECRETS_SECRET}
 
 
 echo "END REANA Secret Script"
