@@ -25,7 +25,7 @@ data:
         - display_name: "ROOT Higgs 2024 environment"
           description: "ROOT v6.26.02."
           kubespawner_override:
-            image: ghcr.io/vre-hub/vre-singleuser-root-base:sha-c86ae9c
+            image: ghcr.io/vre-hub/vre-singleuser-root-base:latest
         - display_name: "VIRGO - WDF environment"
           description: "Contains the full WDF v2.2.1 environment - Python 3.9 kernel."
           kubespawner_override:
