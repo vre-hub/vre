@@ -124,13 +124,15 @@ spec:
       # and the token file by copying the REFRESH_TOKEN from the environment variable to the token file.
       startTimeout: 600
       lifecycleHooks:
-        {{- if ne .Values.image "ghcr.io/vre-hub/vre-singleuser-root-base:latest" }}
-          postStart:
-            exec:
-              command:
-                - "sh"
-                - "-c"
-                - >
+        postStart:
+          exec:
+            command:
+              - "sh"
+              - "-c"
+              - |
+                if [ "${SKIP_POSTSTART_HOOK}" = "true" ]; then
+                  echo "hello world";
+                else
                   mkdir -p /certs /tmp;
                   echo -n $RUCIO_ACCESS_TOKEN > /tmp/rucio_oauth.token;
                   echo -n "oauth2:${EOS_ACCESS_TOKEN}:iam-escape.cloud.cnaf.infn.it/userinfo" > /tmp/eos_oauth.token;
@@ -147,7 +149,8 @@ spec:
                   echo "oidc_issuer = escape" >> /opt/rucio/etc/rucio.cfg;
                   echo "oidc_scope = openid profile offline_access" >> /opt/rucio/etc/rucio.cfg;
                   echo "auth_token_file_path = /tmp/rucio_oauth.token" >> /opt/rucio/etc/rucio.cfg;
-        {{- end }}
+                fi;
+                
       networkPolicy:
         enabled: false
       storage:
