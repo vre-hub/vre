@@ -184,7 +184,7 @@ spec:
       image:
         name: ghcr.io/vre-hub/vre-singleuser-py311
         tag: sha-281055c
-        pullPolicy: Always
+        pullPolicy: IfNotPresent
 
       # nodeSelector: 
       #   jupyter: singleuser
