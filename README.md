@@ -10,9 +10,11 @@ VRE links:
  - Code: https://github.com/vre-hub/vre/ 
  - User documentation: https://vre-hub.github.io/ 
  - Technical documentation: https://github.com/vre-hub/vre/wiki
+   - :construction: Ongoing migration: https://vre-hub.github.io/docs/tech-docs/home 
  - VRE file transfer monitoring: https://monit-grafana-open.cern.ch/d/PJ65OqBVz/vre-rucio-events?orgId=16
  - Live status of the VRE services: https://vre-hub.github.io/status/ 
- - VRE Slack channel: [invitation link](https://join.slack.com/t/eosc-escape/shared_invite/zt-1zd76ivit-Z2A2nszN0qfn4VF6Uk6UrQ).
+ - ESCAPE Mattermost Team: [invitation link](https://mattermost.web.cern.ch/signup_user_complete/?id=zqaa9p5fqfd9bnnc64at4b5aye&md=link&sbr=su).
+   - :exclamation: Afterwards please join the `VRE Support` channel
 
 
 [![flux check pipeline](https://github.com/vre-hub/vre/actions/workflows/merge-check-paths.yml/badge.svg)](https://github.com/vre-hub/vre/actions/workflows/merge-check-paths.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT) 
