@@ -50,3 +50,7 @@ data:
           description: "For testing purposes"
           kubespawner_override:
             image: ghcr.io/vre-hub/vre-singleuser-zen_ext-dev:latest
+        - display_name: "Python 3.11 environment"
+          description: "quay.io/jupyter/scipy-notebook:python-3.11 image"
+          kubespawner_override:
+            image: quay.io/jupyter/scipy-notebook:python-3.11.8
