@@ -5,6 +5,7 @@ on:
   pull_request:
     paths:
       - 'infrastructure/cluster/flux/**'
+      - '**.tf'
   push:
     branches:
       - main
