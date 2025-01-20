@@ -85,6 +85,37 @@ spec:
     - name: daemons-rucio-x509up
       secret:
         secretName: daemons-rucio-x509up 
-
-
-
+---
+# Same idea as the `rucio-iam-connected-client` pod but for the rucio-noise one
+apiVersion: v1
+kind: Pod
+metadata:
+  name: rucio-noise-test-pod
+  namespace: rucio
+spec:
+  containers:
+  - name: rucio-noise-test
+    # TODO: make new relase after fixing all the cronjobs/pods and change the image
+    image: ghcr.io/vre-hub/vre-rucio-noise:v1.0.0-rc.2-106-cfc1beb
+    imagePullPolicy: Always
+    volumeMounts:
+    - name: rucio-cfg
+      mountPath: /opt/rucio/etc/
+      # This secrets is the old 'prod-rucio-x509up'
+    - name: daemons-rucio-x509up
+      mountPath: /tmp/
+    command: ["sleep","3600"]
+  volumes:
+    - name: rucio-cfg
+      secret:
+        secretName: escape-service-account
+        defaultMode: 0400
+    # This secrets is the old 'prod-rucio-x509up'
+    - name: daemons-rucio-x509up
+      secret:
+        secretName: daemons-rucio-x509up
+#commands to be run are on the `rucio-noise` cronjob. Here there are a small 
+# summary NOT KEPT UPDATED !!!!! 
+# date; ls -l /etc/pki/tls/certs/; ls -l /tmp/; cd /opt/rucio/etc/; pwd; echo Hello from rucio-noise container; 
+# export RUCIO_CONFIG=/opt/rucio/etc/rucio.cfg; echo Exported config; cat /opt/rucio/etc/rucio.cfg; rucio -vvv whoami; 
+# cd /home; export FSIZE=10M; FILE_SIZE=${FSIZE} /bin/bash produce_noise.sh; echo "Rucio noise cronjob ${FSIZE} Done!"
