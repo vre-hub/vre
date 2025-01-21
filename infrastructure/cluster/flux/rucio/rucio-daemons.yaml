@@ -432,7 +432,7 @@ spec:
       vos:
         - vo: "escape"
           voms: "escape"
-      servers: "https://fts3-devel.cern.ch:8446,https://fts3-pilot.cern.ch:8446"
+      servers: "https://fts3-pilot.cern.ch:8446"
       script: "escape"
       secretMounts:
         - secretName: fts-cert
