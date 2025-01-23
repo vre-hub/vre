@@ -61,7 +61,7 @@ metadata:
 spec:
   # Change original schedule to 3 times a day and 1 Mb files
   #schedule: "*/10 * * * *"
-  schedule: "30 08,12,14 * * *"
+  schedule: "30 08 * * *"
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 1
   jobTemplate:
