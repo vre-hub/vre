@@ -490,7 +490,7 @@ spec:
         schema: "escape"
        
       conveyor:
-        scheme: "srm,gsiftp,root,http,https"
+        scheme: "https,http,root,davs"
         transfertool: "fts3"
         ftshosts: "https://fts3-pilot.cern.ch:8446"
         cacert: "/etc/grid-security/ca.pem"
