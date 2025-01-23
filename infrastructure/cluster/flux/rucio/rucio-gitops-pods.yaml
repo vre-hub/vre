@@ -1,0 +1,121 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: rucio-root-client
+  namespace: rucio
+spec:
+  containers:
+  - name: rucio-client
+    image: rucio/rucio-clients:release-34.6.0
+    imagePullPolicy: Always
+    volumeMounts:
+    - name: cern-bundle
+      mountPath: /etc/pki/tls/certs/
+    env:
+    - name: RUCIO_CFG_CLIENT_RUCIO_HOST
+      value: "https://vre-rucio.cern.ch"
+    - name: RUCIO_CFG_CLIENT_AUTH_HOST
+      value: "https://vre-rucio-auth.cern.ch"
+    - name: RUCIO_CFG_CLIENT_CA_CERT
+      value: "/etc/pki/tls/certs/CERN-bundle.pem"
+    - name: RUCIO_CFG_CLIENT_ACCOUNT
+      value: "root"
+    - name: RUCIO_CFG_CLIENT_AUTH_TYPE
+      value: "userpass"
+    - name: RUCIO_CFG_CLIENT_USERNAME
+      valueFrom:
+        secretKeyRef:
+          name: rucio-root-account
+          key: root-username
+    - name: RUCIO_CFG_CLIENT_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: rucio-root-account
+          key: root-password 
+    command: ["sleep","3600"]
+    resources:
+      limits:
+        cpu: 100m
+        memory: 50Mi
+      requests:
+        cpu: 100m
+        memory: 50Mi
+  volumes:
+    - name: cern-bundle
+      secret:
+        secretName: cern-bundle
+---
+# This pod deploys the same container as the `iam-sync` cronjob.
+# It allows testing RUCIO IAM connection and interacting with the IAM server via python/CLI
+apiVersion: v1
+kind: Pod
+metadata:
+  name: rucio-iam-connected-client
+  namespace: rucio
+spec:
+  containers:
+  - name: iam-debug
+    # TODO: make new relase after fixing all the cronjobs/pods and change the image
+    image: ghcr.io/vre-hub/vre-iam-rucio-sync:v1.0.0-rc.2-82-aea1b65
+    imagePullPolicy: Always
+    env:
+      - name: IAM_SERVER
+        value: "https://iam-escape.cloud.cnaf.infn.it/"
+      - name: IAM_CLIENT_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: rucio-admin-iam-client
+            key: admin-client_secret
+      - name: IAM_CLIENT_ID
+        valueFrom:
+          secretKeyRef:
+            name: rucio-admin-iam-client
+            key: admin-client_id
+    volumeMounts:
+      - name: rucio-cfg
+        mountPath: /opt/rucio/etc/
+      - name: daemons-rucio-x509up
+        mountPath: /tmp/ 
+    command: ["sleep","3600"]
+  volumes:
+    - name: rucio-cfg
+      secret:
+        secretName: escape-service-account
+    - name: daemons-rucio-x509up
+      secret:
+        secretName: daemons-rucio-x509up 
+---
+# Same idea as the `rucio-iam-connected-client` pod but for the rucio-noise one.
+# Connected to the ESCAPE Service account ewp2c01
+apiVersion: v1
+kind: Pod
+metadata:
+  name: rucio-noise-pod-and-rucio-ewp2c01
+  namespace: rucio
+spec:
+  containers:
+  - name: rucio-noise-test
+    # TODO: make new relase after fixing all the cronjobs/pods and change the image
+    image: ghcr.io/vre-hub/vre-rucio-noise:v1.0.0-rc.2-106-cfc1beb
+    imagePullPolicy: Always
+    volumeMounts:
+    - name: rucio-cfg
+      mountPath: /opt/rucio/etc/
+      # This secrets is the old 'prod-rucio-x509up'
+    - name: daemons-rucio-x509up
+      mountPath: /tmp/
+    command: ["sleep","3600"]
+  volumes:
+    - name: rucio-cfg
+      secret:
+        secretName: escape-service-account
+        defaultMode: 0400
+    # This secrets is the old 'prod-rucio-x509up'
+    - name: daemons-rucio-x509up
+      secret:
+        secretName: daemons-rucio-x509up
+# commands to be run are on the `rucio-noise` cronjob. Here there are a small 
+# summary NOT KEPT UPDATED !!!!! 
+# date; ls -l /etc/pki/tls/certs/; ls -l /tmp/; cd /opt/rucio/etc/; pwd; echo Hello from rucio-noise container; 
+# export RUCIO_CONFIG=/opt/rucio/etc/rucio.cfg; echo Exported config; cat /opt/rucio/etc/rucio.cfg; rucio -vvv whoami; 
+# cd /home; export FSIZE=10M; FILE_SIZE=${FSIZE} /bin/bash produce_noise.sh; echo "Rucio noise cronjob ${FSIZE} Done!"
