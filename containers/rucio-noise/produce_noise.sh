@@ -46,6 +46,8 @@ upload_and_transfer_and_delete () {
             echo '*** adding rule from '"${rses[$i]}"' to '"${rses[$j]}"' ***'
             rucio -v add-rule --lifetime $FILE_LIFETIME --activity "Functional Test" $RUCIO_SCOPE:$did 1 ${rses[$j]}
 
+            fi
+            
         done
 
         echo '*** Uploaded files and replicas should disappear after '${FILE_LIFETIME}' seconds ***'
