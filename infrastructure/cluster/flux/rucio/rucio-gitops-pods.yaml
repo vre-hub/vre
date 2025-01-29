@@ -96,7 +96,7 @@ spec:
   containers:
   - name: rucio-noise-test
     # TODO: make new relase after fixing all the cronjobs/pods and change the image
-    image: ghcr.io/vre-hub/vre-rucio-noise:v1.0.0-rc.2-106-cfc1beb
+    image: ghcr.io/vre-hub/vre-rucio-noise:v1.0.0-rc.2-112-25fcc54
     imagePullPolicy: Always
     volumeMounts:
     - name: rucio-cfg
