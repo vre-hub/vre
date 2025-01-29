@@ -494,7 +494,7 @@ spec:
         transfertool: "fts3"
         ftshosts: "https://fts3-pilot.cern.ch:8446"
         cacert: "/etc/grid-security/ca.pem"
-        usercert: "/tmp/x509up"
+        usercert: "/opt/proxy/x509up"
         allow_user_oidc_tokens: "True"
         request_oidc_scope: "openid profile offline_access wlcg.groups email fts:submit-transfer"
         request_oidc_audience: "fts"
