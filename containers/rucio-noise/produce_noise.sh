@@ -22,29 +22,31 @@ echo '*   FILE_LIFETIME = '"$FILE_LIFETIME"''
 
 upload_and_transfer_and_delete () {
 
-    for (( i=1; i<=$len; i++ )); do
+    for (( i=0; i<$len; i++ )); do
 
         echo '*** ======================================================================== ***'
         echo '*** '"${rses[$i]}"' ***'
 
         RANDOM_STRING=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
         echo '*** generated random file identifier: '"$RANDOM_STRING"' ***'
-        filename=/home/auto_uploaded_${RANDOM_STRING}_source${rses[$1]}
+        filename=/home/auto_uploaded_${RANDOM_STRING}_source${rses[$i]}
         did=auto_uploaded_${RANDOM_STRING}_source${rses[$i]}
         
         echo '*** generating '"$FILE_SIZE"' file on local storage ***'
-        head -c $FILE_SIZE < /dev/urandom  > $filename
+        #head -c $FILE_SIZE < /dev/urandom  > $filename
         echo '*** filename: '"$filename"' ***'
 
         echo '*** uploading filename: '"$filename"' to '"${rses[$i]}"' ***'
-        rucio -v upload --rse ${rses[$1]} --lifetime $FILE_LIFETIME --scope $RUCIO_SCOPE $filename
+        rucio -v upload --rse ${rses[$i]} --lifetime $FILE_LIFETIME --scope $RUCIO_SCOPE $filename
 
-        for (( j=1; j<=$len; j++ )); do
+        for (( j=0; j<$len; j++ )); do
 
             if [ $i != $j ]; then
 
             echo '*** adding rule from '"${rses[$i]}"' to '"${rses[$j]}"' ***'
             rucio -v add-rule --lifetime $FILE_LIFETIME --activity "Functional Test" $RUCIO_SCOPE:$did 1 ${rses[$j]}
+
+            fi
 
         done
 
