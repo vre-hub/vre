@@ -72,7 +72,7 @@ spec:
           containers:
             - name: rucio-noise
               # TODO: make new relase after fixing all the cronjobs/pods and change the image
-              image: ghcr.io/vre-hub/vre-rucio-noise:v1.0.0-rc.2-106-cfc1beb
+              image: ghcr.io/vre-hub/vre-rucio-noise:v1.0.0-rc.2-115-9144522
               volumeMounts:
               - name: rucio-cfg
                 mountPath: /opt/rucio/etc/
