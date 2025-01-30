@@ -1,20 +1,20 @@
-apiVersion: v1
-kind: Pod
-metadata:
-  name: eos-client
-  namespace: default
-spec:
-  containers:
-  - name: my-container
-    image: gitlab-registry.cern.ch/linuxsupport/alma9-base:latest
-    imagePullPolicy: IfNotPresent
-    command: ["sleep", "inf"]
-    volumeMounts:
-    - name: eos
-      mountPath: /eos
-      mountPropagation: HostToContainer
-  volumes:
-  - name: eos
-    hostPath:
-      path: /var/eos
-      type: Directory
+# apiVersion: v1
+# kind: Pod
+# metadata:
+#   name: eos-client
+#   namespace: kube-system
+# spec:
+#   containers:
+#   - name: my-container
+#     image: gitlab-registry.cern.ch/linuxsupport/alma9-base:latest
+#     imagePullPolicy: IfNotPresent
+#     command: ["sleep", "inf"]
+#     volumeMounts:
+#     - name: eos
+#       mountPath: /eos
+#       mountPropagation: HostToContainer
+#   volumes:
+#   - name: eos
+#     hostPath:
+#       path: /var/eos
+#       type: Directory
