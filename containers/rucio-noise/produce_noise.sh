@@ -33,7 +33,7 @@ upload_and_transfer_and_delete () {
         did=auto_uploaded_${RANDOM_STRING}_source${rses[$i]}
         
         echo '*** generating '"$FILE_SIZE"' file on local storage ***'
-        #head -c $FILE_SIZE < /dev/urandom  > $filename
+        head -c $FILE_SIZE < /dev/urandom  > $filename
         echo '*** filename: '"$filename"' ***'
 
         echo '*** uploading filename: '"$filename"' to '"${rses[$i]}"' ***'
