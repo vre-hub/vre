@@ -1,0 +1,45 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- gotk-components.yaml
+- gotk-sync.yaml
+patches:
+  - patch:  |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: hub
+        namespace: jhub
+      spec:
+        template:
+          spec:
+            volumes:
+              - name: pvc
+                persistentVolumeClaim:
+                  claimName: jhub-vre-singleuser-preprovisioned-manila-pvc
+    target:
+      kind: Deployment
+      name: hub
+      namespace: jhub
+  - patch:  |-
+      apiVersion: apps/v1
+      kind: ConfigMap
+      metadata:
+        name: eos-csi-dir-etc-eos
+        namespace: kube-system
+      spec:
+        data:
+          fuse.eulake.conf: "{
+            \"name\": \"eulake\", 
+            \"hostport\": \"eospilot.cern.ch\", 
+            \"remotemountdir\": \"/eos/pilot/eulake/escape/data\", 
+            \"localmountdir\": \"/eos/eulake\", 
+            \"auth\": {
+              \"ssskeytab\": \"/etc/eos.keytab\"
+              }
+            }"
+    target:
+      kind: ConfigMap
+      name: eos-csi-dir-etc-eos
+      namespace: kube-system
+

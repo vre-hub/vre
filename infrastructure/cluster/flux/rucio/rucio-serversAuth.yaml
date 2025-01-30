@@ -1,0 +1,130 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: servers-auth
+  namespace: rucio
+  annotations:
+    flux.weave.works/automated: "false" 
+   
+spec: 
+  releaseName: servers-auth
+  interval: 5m
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        name: rucio-charts
+        namespace: rucio
+      interval: 1m
+      chart: rucio-server
+      version: 34.0.4
+  valuesFrom:
+    - kind: Secret
+      name: rucio-db
+      valuesKey: dbfullstring
+      targetPath: config.database.default
+
+  values:
+    secretMounts:
+      # - secretName: server-hostcert
+      #   mountPath: /etc/grid-security/hostcert.pem
+      #   subPath: hostcert.pem
+      # - secretName: server-hostkey
+      #   mountPath: /etc/grid-security/hostkey.pem
+      #   subPath: hostkey.pem
+      # - secretName: server-cafile
+      #   mountPath: /etc/grid-security/ca.pem
+      #   subPath: ca.pem
+      - secretName: idpsecrets
+        mountPath: /opt/rucio/etc/idpsecrets.json
+        subPath: idpsecrets.json
+    
+    additionalEnvs: 
+      # - name: RUCIO_CA_PATH
+      #   value: "/etc/grid-security/certificates"
+      - name: RUCIO_SSL_PROTOCOL
+        value: "-SSLv3 -TLSv1 -TLSv1.1 +TLSv1.2 +TLSv1.3"
+      # - name: RUCIO_HTTPD_PROXY_PROTOCOL_EXCEPTIONS
+      #   valueFrom:
+      #     fieldRef:
+      #       fieldPath: status.hostIP
+
+             
+    replicaCount: 1
+    useSSL: true
+    
+    image:
+      repository: rucio/rucio-server
+      tag: release-34.6.0
+      pullPolicy: Always
+    
+    service:
+      type: LoadBalancer
+      port: 443
+      targetPort: 443
+      protocol: TCP
+      name: https
+      # allocateLoadBalancerNodePorts: true 
+      # externalTrafficPolicy: Cluster
+      # annotations:
+      #   service.beta.kubernetes.io/openstack-internal-load-balancer: "true" # this just tells openstack that the loadbalanced services are internal to the cluster.
+      #   loadbalancer.openstack.org/cascade-delete: "false"
+  
+
+    serverType: flask
+
+    # automaticRestart:
+    #   enabled: 1
+    #   image:
+    #     repository: bitnami/kubectl
+    #     tag: latest
+    #     pullPolicy: IfNotPresent
+    #   schedule: "01 0 * * *"
+    #   selectorLabel: "'release in (servers-auth-dev),app in (rucio-dev)'"
+
+    httpd_config:
+      grid_site_enabled: "True"
+      timeout: "300"
+      enable_status: "True"
+      legacy_dn: "True"
+      keep_alive: "On"
+      keep_alive_timeout: "5"
+      max_keep_alive_requests: "128"
+      server_limit: "10"
+      start_servers: "1"
+      thread_limit: "128"
+      threads_per_child: "128"
+      min_spare_threads: "1"
+      max_spare_threads: "512"
+      max_request_workers: "1280"
+      max_connections_per_child: "2048"
+      max_clients: "20"
+      mpm_mode: "worker"
+    #   # mpm_mode: "worker"
+
+    ## values used to be propagated to the rucio.cfg files within the container
+    config:
+      database:
+        pool_size: 10
+        max_overflow: 20
+      
+      api:
+        endpoints: "ping, auth"
+      
+      oidc:
+        idpsecrets: "/opt/rucio/etc/idpsecrets.json"
+        admin_issuer: "escape"
+        expected_audience: "rucio"
+        expected_scope: "openid profile"
+
+      policy:
+        permission: "escape"
+        schema: "escape"
+      
+    serverResources: 
+      limits:
+        cpu: "2000m" #"4000m"
+        memory: "1000Mi"
+      requests:
+        cpu: #"1000m" #"2000m"
+        memory: "500Mi"

@@ -1,0 +1,12 @@
+# K8s manifest originally used to patch the cmvfs and eos daemonsets
+
+spec:
+  template:
+    spec:
+      nodeSelector:
+        # jupyter: singleuser
+      tolerations:
+      # - effect: NoSchedule
+      #   key: jupyter
+      #   operator: Equal
+      #   value: singleuser

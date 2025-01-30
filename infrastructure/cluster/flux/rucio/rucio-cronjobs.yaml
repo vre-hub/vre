@@ -1,0 +1,97 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: iam-sync
+  namespace: rucio  
+spec:
+  schedule: "*/10 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure 
+          containers:
+            - name: iam-sync
+              # TODO: make new relase after fixing all the cronjobs/pods and change the image
+              image: ghcr.io/vre-hub/vre-iam-rucio-sync:v1.0.0-rc.2-82-aea1b65
+              volumeMounts:
+              - name: rucio-cfg
+                mountPath: /opt/rucio/etc/
+              - name: daemons-rucio-x509up
+                mountPath: /tmp/
+              env:
+              - name: IAM_SERVER
+                value: "https://iam-escape.cloud.cnaf.infn.it/"
+              - name: IAM_CLIENT_SECRET
+                valueFrom:
+                  secretKeyRef:
+                    name: rucio-admin-iam-client
+                    key: admin-client_secret
+              - name: IAM_CLIENT_ID
+                valueFrom:
+                  secretKeyRef:
+                    name: rucio-admin-iam-client
+                    key: admin-client_id
+              # For clarity/completeness the client_id value is can be passed via a secret/env var,
+              # but it is already passed as a value within the `iam-sync.conf` file.
+              tty: true
+              imagePullPolicy: Always
+              command:
+              - /bin/sh
+              - -c
+              - date; echo '* Hello from iam-rucio-sync container *'; 
+                pwd; ls; rucio whoami;
+                echo $IAM_SERVER; echo $IAM_CLIENT_ID; echo $IAM_CLIENT_SECRET; python3 /home/sync_iam_rucio.py; 
+                echo '* Sync to IAM * Done!'
+          volumes:
+            - name: rucio-cfg
+              secret:
+                secretName: escape-service-account
+            - name: daemons-rucio-x509up
+              secret:
+                secretName: daemons-rucio-x509up
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: rucio-noise
+  namespace: rucio
+spec:
+  # Change original schedule to 3 times a day and 1 Mb files
+  #schedule: "*/10 * * * *"
+  schedule: "30 08 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure 
+          containers:
+            - name: rucio-noise
+              # TODO: make new relase after fixing all the cronjobs/pods and change the image
+              image: ghcr.io/vre-hub/vre-rucio-noise:v1.0.0-rc.2-115-9144522
+              volumeMounts:
+              - name: rucio-cfg
+                mountPath: /opt/rucio/etc/
+              # This secrets is the old 'prod-rucio-x509up'
+              - name: daemons-rucio-x509up
+                mountPath: /tmp/
+              tty: true
+              imagePullPolicy: Always
+              command:
+              - /bin/sh
+              - -c
+              - date; ls -l /etc/pki/tls/certs/; ls -l /tmp/; cd /opt/rucio/etc/; pwd; echo Hello from rucio-noise container; 
+                export RUCIO_CONFIG=/opt/rucio/etc/rucio.cfg; echo Exported config; cat /opt/rucio/etc/rucio.cfg; rucio -vvv whoami; 
+                cd /home; export FSIZE=1M; FILE_SIZE=${FSIZE} /bin/bash produce_noise.sh; echo "Rucio noise cronjob ${FSIZE} Done!"
+          volumes:
+            - name: rucio-cfg
+              secret:
+                secretName: escape-service-account
+                defaultMode: 0400
+            - name: daemons-rucio-x509up
+              secret:
+                secretName: daemons-rucio-x509up

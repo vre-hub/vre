@@ -281,6 +281,7 @@ if __name__ == '__main__':
 
         # get all users from IAM
         iam_users = syncer.get_list_of_users(access_token)
+        logging.info(f"Syncing {len(iam_users)} users retrieved from IAM.")
 
         # DEBUG user output to file
         if debug:

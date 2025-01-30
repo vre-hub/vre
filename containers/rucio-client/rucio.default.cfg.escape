@@ -1,0 +1,24 @@
+[client]
+rucio_host = https://vre-rucio.cern.ch
+auth_host = https://vre-rucio-auth.cern.ch
+ca_cert = /etc/pki/tls/certs/CERN-bundle.pem
+auth_type = oidc
+username =
+password =
+account =
+client_cert = /opt/rucio/etc/client.crt
+client_key = /opt/rucio/etc/client.key
+client_x509_proxy = /tmp/x509up
+request_retries = 3
+oidc_issuer = escape
+oidc_polling = true
+oidc_audience = rucio
+oidc_scope = openid profile offline_access wlcg wlcg.groups fts:submit-transfer
+auth_oidc_refresh_activate = true
+
+[policy]
+permission = escape
+schema = escape
+lfn2pfn_algorithm_default = hash
+support = https://github.com/vre-hub/vre/issues
+support_rucio = https://github.com/rucio/rucio/issues/

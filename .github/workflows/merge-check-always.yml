@@ -3,8 +3,8 @@ name: flux check pipeline # Merge Check Workflow for Terraform and Flux Files if
 on: 
   pull_request:
     paths-ignore:
+      - 'infrastructure/cluster/flux/**'
       - '**.tf'
-      - 'infrastructure/cluster/flux-v2/**'
 
 jobs:
   terraform-validate:

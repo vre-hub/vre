@@ -21,32 +21,38 @@ echo '*   RUCIO_SCOPE = '"$RUCIO_SCOPE"''
 echo '*   FILE_LIFETIME = '"$FILE_LIFETIME"''
 
 upload_and_transfer_and_delete () {
+
     for (( i=0; i<$len; i++ )); do
 
-        if [ $1 != $i ]; then
+        echo '*** ======================================================================== ***'
+        echo '*** '"${rses[$i]}"' ***'
 
-            echo '*** ======================================================================== ***'
+        RANDOM_STRING=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+        echo '*** generated random file identifier: '"$RANDOM_STRING"' ***'
+        filename=/home/auto_uploaded_${RANDOM_STRING}_source${rses[$i]}
+        did=auto_uploaded_${RANDOM_STRING}_source${rses[$i]}
+        
+        echo '*** generating '"$FILE_SIZE"' file on local storage ***'
+        head -c $FILE_SIZE < /dev/urandom  > $filename
+        echo '*** filename: '"$filename"' ***'
 
-            RANDOM_STRING=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
-            echo '*** generated random file identifier: '"$RANDOM_STRING"' ***'
-	        filename=/home/auto_uploaded_${RANDOM_STRING}_source${rses[$1]}
-            did=auto_uploaded_${RANDOM_STRING}_source${rses[$1]}
-            
-            echo '*** generating '"$FILE_SIZE"' file on local storage ***'
-            head -c $FILE_SIZE < /dev/urandom  > $filename
-            echo '*** filename: '"$filename"''
+        echo '*** uploading filename: '"$filename"' to '"${rses[$i]}"' ***'
+        rucio -v upload --rse ${rses[$i]} --lifetime $FILE_LIFETIME --scope $RUCIO_SCOPE $filename
 
-            echo '*** uploading to rse '"${rses[$1]}"' and adding rule to rse '"${rses[$i]}"'' 
-            rucio -v upload --rse ${rses[$1]} --lifetime $FILE_LIFETIME --scope $RUCIO_SCOPE $filename && rucio add-rule --lifetime $FILE_LIFETIME --activity "Functional Test" $RUCIO_SCOPE:$did 1 ${rses[$i]}
+        for (( j=0; j<$len; j++ )); do
 
-            #echo 'sleeping' sleep 3600 
+            if [ $i != $j ]; then
 
-            echo '*** removing all replicas and dids associated to from rse '"${rses[$1]}"' and adding rule to rse '"${rses[$i]}"'' 
-            echo '*** testing if `rucio erase` is able to remove all the replicas too ***'
-            rucio -v erase $RUCIO_SCOPE:$did
+            echo '*** adding rule from '"${rses[$i]}"' to '"${rses[$j]}"' ***'
+            rucio -v add-rule --lifetime $FILE_LIFETIME --activity "Functional Test" $RUCIO_SCOPE:$did 1 ${rses[$j]}
 
-            rm -f $filename
-	    fi
+            fi
+
+        done
+
+        echo '*** Uploaded files and replicas should disappear after '${FILE_LIFETIME}' seconds ***'
+        # echo '*** Otherwise do a `rucio -v erase $RUCIO_SCOPE:$did` ***'
+
     done
 }
 
