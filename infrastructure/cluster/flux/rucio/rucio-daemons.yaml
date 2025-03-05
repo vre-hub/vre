@@ -62,7 +62,7 @@ spec:
     conveyorThrottlerCount: 0
     conveyorPreparerCount: 0 # for debugging, if it is not there the submitter will do the path computation adn source replica selection, and since the preparer needs a secret but I dont know of which kind, let's try without
     darkReaperCount: 0
-    hermesCount: 1 #2
+    hermesCount: 3 #2
     hermes2Count: 0
     judgeCleanerCount: 1
     judgeEvaluatorCount: 1
@@ -70,7 +70,7 @@ spec:
     judgeRepairerCount: 1
     oauthManagerCount: 1
     undertakerCount: 1
-    reaperCount: 1 #2
+    reaperCount: 3 #2
     replicaRecovererCount: 0
     transmogrifierCount: 1
     tracerKronosCount: 0
