@@ -28,7 +28,8 @@ VRE links:
 
 To cite us, please use the latest publication:
 
- - The Virtual Research Environment: towards a comprehensive analysis platform - [arXiv link](https://arxiv.org/abs/2305.10166).
+ - Data discovery, analysis and reproducibility in Virtual Research Environments. CHEP 2024 proceedings - [arXiv link](https://arxiv.org/abs/2503.02483).
+ - The Virtual Research Environment: A multi-science analysis platform. CHEP 2023 Proceedings - [EPJ Web of Conf.](https://doi.org/10.1051/epjconf/202429508023) and [arXiv link](https://arxiv.org/abs/2305.10166).
 
 
 ## Contact 
