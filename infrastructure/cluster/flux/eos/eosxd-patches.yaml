@@ -5,22 +5,5 @@
 #   namespace: kube-system
 # spec:
 #   data:
-#     fuse.eulake.conf: "{
-#       \"name\": \"eulake\", 
-#       \"hostport\": \"eospilot.cern.ch\", 
-#       \"remotemountdir\": \"/eos/pilot/eulake/escape/data\", 
-#       \"localmountdir\": \"/eos/eulake\", 
-#       \"auth\": {
-#         \"ssskeytab\": \"/etc/eos.keytab\"
-#         }
-#       }"
-# ---
-# apiVersion: apps/v1
-# kind: Secret
-# metadata:
-#   name: eos-csi-dir-etc-eos
-#   namespace: kube-system
-# spec:
-#   stringData:
-#     fuse.sss.keytab: |
-#       <KEYSTAB_SECRET_STRING>
+#     fuse.eulake.conf: | 
+#       '{"name":"eulake_test","hostport":"eospilot.cern.ch","remotemountdir":"/eos/pilot/eulake/escape/data/","localmountdir":"/eos/eulake/","auth":{"ssskeytab":"/etc/fuse.sss.keytab"}}'

@@ -11,35 +11,46 @@ Any user connected to the VRE would be able to make use of the extension to acce
 
 ## EOS EULAKE instance
 
-### Configuration
+### ~~`eos/eulake`~~ `eos/pilot/eulake` configuration
 
-## `eos/pilot/eulake` configuration
+During the summer of 2024, the eulake instance was transferred into the EOS pilot instance. The snippets below have been edited acording to these changes.
 
-During the summer of 2024, the eulake instance was moved into the EOS pilot instance. The snippets below have been edited acording to this changes.
+> [!IMPORTANT]
+> The `eospilot` instance is not configured by default on the CERN OpenStack clusters - in general, they are deployed with `cern-magnum` charts that brings EOS deployments to the cluster. Because `eulake` is a subdirectory within `eospilot`, note that the following snippets are set up to point to the `eospilot/eulake` subdirectory instead to `eospilot`.
 
-The `eulake` instance is not configured by default on the CERN OpenStack clusters - The cluster are deployed with EOS deployments, though. To do so, path the `eos-csi-dir-etc-eos` configmap to add the eulake instance into your cluster. Modified the various mount directories as you wish.
-
-Then, add the `eulake` keytab secret as described below. The keytab sercret string can be find on the CERN-VRE `tbag`.
+ To add the `eospilot` instance to the EOS deployment, patch the `eos-csi-dir-etc-eos` configmap as shown below. No `ssskeytab` is further needed - as `eulake` used to require - `eospilot` uses the commn eos keytab.
 
 ```bash
-# charts `eosxd-csi-1.3.1` are deployed with k8s clusters v1.29.
-> kubectl -n kube-system patch configmap eos-csi-dir-etc-eos -p '{"data": {"fuse.eulake.conf": "{\"name\": \"eulake\", \"hostport\": \"eospilot.cern.ch\", \"remotemountdir\": \"/eos/pilot/eulake/escape/data/\", \"localmountdir\": \"/eos/eulake/\", \"auth\": {\"ssskeytab\": \"/etc/eos.keytab\"}}"}}'
-
-> kubectl -n kube-system patch secret eos-csi-file-etc-eos-keytab -p '{"stringData": {"fuse.sss.keytab": "<KEYSTAB_SECRET_STRING>"}}'
+# charts `eosxd-csi-1.3.1` are deployed with k8s clusters v1.29.2 and cern-magnum-0.15.2.
+> kubectl -n kube-system patch configmap eos-csi-dir-etc-eos -p '{"data": {"fuse.pilot.conf": "{\"name\": \"pilot\", \"hostport\": \"eospilot.cern.ch\", \"remotemountdir\": \"/eos/pilot/eulake/escape/data/\", \"auth\": {\"ssskeytab\": \"/etc/eos.keytab\"}}"}}'
+```
+```yaml
+# Patch also the following line into the big chunk of the `auto.eos` section below the rest of eos instances
+data:
+  auto.eos: |
+    (...)
+    pilot -fstype=eosx,fsname=pilot  :eosxd
+    (...)
 ```
 
-Now you can add this volumes on the jupyter hub deployment to access the instance from any pod or jupyter session. On the jupyter hub helm release
+Now you can add this volume on the jupyterHub deployment to access the instance from any jupyter/pod session. On the jupyterHub helm Helm charts add:
 
 ```yaml
         extraVolumes:
           - name: eulake-cern-eos-rse 
             hostPath:
               # This is pointing to /eos/pilot/eulake/escape/data, as defined on the eos-csi-dir-etc-eos/configmap  
-              path: /var/eos/eulake 
+              path: /var/eos/pilot 
         extraVolumeMounts:
           - name: eulake-cern-eos-rse # mounts the EOS RSE needed for the Rucio JupiterLab extension
-            mountPath: /eos/cern-eos-rse
+            mountPath: /eos/eulake
             mountPropagation: HostToContainer
             readOnly: true 
 ```
 
+> [!IMPORTANT]
+> Please note that within this configuration there are two things happening.
+> 1. The propagation of a volume into the cluster (mounting a specific subdirectory of `eospilot`). 
+> 2. The user authentication & authorisation to that subdirectory - which is not detailed here, and needs to be done from the eos server side. 
+>
+> If A&A is not correctly given/propagated, users won't be able to access `/eos/eulake` from their session.
