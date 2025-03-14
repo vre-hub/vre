@@ -1,0 +1,312 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease 
+metadata:
+  name: cern-monit
+  namespace: monitoring
+spec:
+  releaseName: cern-vre-monit
+  interval: 5m
+  chart:
+    spec:
+      sourceRef:
+        kind: HelmRepository
+        name: cern-monit
+        namespace: monitoring
+      chart: cern-it-monitoring-kubernetes
+      interval: 5m
+      version: 1.0.0 
+
+values:
+  # OTLP default configuration.
+  otlp:
+    endpoint: "prom-vre.cern.ch" # @MONIT team: Please doble check - I don't think this is correct
+
+  tenant: # To be passed by k8s secrets, once we have them
+    name: nil
+    password: nil
+
+  kubernetes:    
+    clusterName: vre # @MONIT team: I would like to double check that there is no overwritting with old metrics
+
+  metrics:
+    enabled: true
+
+    # -- the default node selector will be applied when possible. In to the following components: metrics collectors (prometheus and fluentbit), metrics exporters (kube state).
+    defaultNodeSelector: {}
+
+    # @MONIT team: not sure if we need any of kubeExporter or kubeState 
+
+    # ==================================================================
+
+    # Node exporter is used to scrape node resources metrics like cpu, memory
+    # or network.
+    nodeExporter:
+      # -- if true node exporter will be installed as a daemon set together with a pod monitor
+      enabled: true
+      # -- indicates how often node exporter will be scraped by the local prometheus
+      scrapeInterval: "15s"
+      resources:
+        requests:
+          cpu: "5m"
+          memory: "15Mi"
+        limits:
+          cpu: "20m"
+          memory: "25Mi"
+      serviceMonitor:
+        relabelings: []
+
+    # Kube state is used to scrape metrics from kubernetes api, like limits
+    # and resources.
+    kubeState:
+      # If set it will override the metrics.defaultNodeSelector.
+      nodeSelector: {}
+      # -- if true kube state will be installed together with a service monitor
+      enabled: true
+      # -- indicates how often node exporter will be scraped by the local prometheus
+      scrapeInterval: "15s"
+      resources:
+        requests:
+          cpu: "5m"
+          memory: "15Mi"
+        limits:
+          cpu: "20m"
+          memory: "25Mi"
+      serviceMonitor:
+        relabelings: []
+
+    # ==================================================================
+
+    prometheus:
+      enabled: true
+
+      server:
+    
+        nodeSelector: {}
+        # -- prometheus version to use by the local cluster prometheus. Make sure this version exists in the indicated image repository.
+        image: registry.cern.ch/monit/cern-it-monitoring-prometheus:v2.50.0
+        version: "v2.50.0"
+        # -- interval used to self scrape metrics
+        scrapeInterval: "10s"
+        # -- timeout for self scraped metrics
+        scrapeTimeout: "5s"
+        # -- interval during which local cluster prometheus will store metrics
+        retention: "24h"
+        # -- set of static labels and values to add to all the metrics gathered by the in-cluster prometheus when exported to central monitoring
+        extraLabelsForMetrics: {}
+        # -- remote write prometheus configuration
+        remoteWrite: 
+          - endpoint: "https://prom-vre.cern.ch:9090/api/v1/write"
+            username: "your user" 
+            password: "your password"
+
+          # endpoint: "https://monit-prom-mom.cern.ch:9090/api/v1/write"
+          # username: "your user" # If user and password are not provided then
+          #           tenantName and tenantPassword will be used.
+          # password: "your password"
+
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "2Gi"
+          limits:
+            cpu: "500m"
+            memory: "5Gi"
+        # Service Monitors to be created by the helm chart install / upgrade. Ex:
+
+        serviceMonitors:
+          - name: nginx-vre
+            specs:
+              endpoints:
+                - interval: 30s
+                  port: metrics
+              namespaceSelector:
+                matchNames:
+                - kube-system
+                selector:
+                  matchLabels:
+                    app.kubernetes.io/component: controller
+                    app.kubernetes.io/instance: cern-magnum
+                    app.kubernetes.io/name: ingress-nginx
+
+        
+        serviceMonitors: []
+        # Allows to drop / relabel node Exporter metrics.
+        # More info on: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
+        # Example:
+        # - action: drop
+        #  sourceLabels:
+        #  - __name__
+        #  regex: "my_custom_counter_total|my_custom_counter_sum|my_custom_gauge"
+        relabelings: []
+
+    # This fluentbit is used to allow scraping and fordwarding metrics from
+    # the local prometheus and send them to Open Telemetry Collector.
+    # If the local .Values.metrics.prometheus enable=false will not be able
+    # to scrape from local prometheus. Provide different inputs then.
+    fluentbit:
+      # -- if true fluentbit metrics forwarder will be installed
+      enabled: true
+      replicas: 2
+      # If set it will override the metrics.defaultNodeSelector.
+      nodeSelector: {}
+      resources:
+        requests:
+          cpu: "1"
+          memory: "512Mi"
+        limits:
+          cpu: "1"
+          memory: "1Gi"
+      prometheusRemoteWriteInputConfig:
+        listen: 0.0.0.0
+        port: 8080
+        bufferMaxSize: 2G
+        bufferChunkSize: 128M
+        successfulResponseCode: 201
+        tagFromUri: false
+        tag: monit.prom.k8s
+        uri: /api/prom/push
+        threaded: false
+
+      # These scripts are available in the fluentbit /fluent-bit/etc/scripts path.
+      # Include your lua scripts in the following format:
+      # luaScripts:
+      #  my_lua_script.lua: |
+      #   function my_function(tag, timestamp, record)
+      #     // Do something...
+      #     return 2, timestamp, record
+      #   end
+      #  my_other_lua_script.lua: ...
+      luaScripts: {}
+
+      # -- max size for in-disk storage for fluent-bit
+      diskMaxCache: "5G"
+
+      # -- fluentbit service configuration options in a multiline string
+      service: |
+        daemon: off
+        flush: 1
+        log_level: warn
+        http_server: on
+        http_listen: 0.0.0.0
+        http_port: 2020
+        health_check: on
+        storage.path: /flb-storage/
+        storage.sync: normal
+        storage.checksum: off
+        storage.backlog.mem_limit: 5M
+        # sub (div .Values.metrics.fluentbit.resources.limits.memory 2097152) 5
+        # 2097152 is max chunk size in bytes || -5 to stay away from the pod memory limit
+        storage.max_chunks_up: 507
+
+      # -- fluentbit inputs as a yaml list in a multiline string
+      inputs: |
+        - name: prometheus_remote_write
+          tag: {{ .Values.metrics.fluentbit.prometheusRemoteWriteInputConfig.tag }}
+          listen: {{ .Values.metrics.fluentbit.prometheusRemoteWriteInputConfig.listen }}
+          port: {{ .Values.metrics.fluentbit.prometheusRemoteWriteInputConfig.port }}
+          uri: {{ .Values.metrics.fluentbit.prometheusRemoteWriteInputConfig.uri }}
+          buffer_max_size: {{ .Values.metrics.fluentbit.prometheusRemoteWriteInputConfig.bufferMaxSize }}
+          buffer_chunk_size: {{ .Values.metrics.fluentbit.prometheusRemoteWriteInputConfig.bufferChunkSize }}
+          successful_response_code: {{ .Values.metrics.fluentbit.prometheusRemoteWriteInputConfig.successfulResponseCode }}
+          tag_from_uri: {{ .Values.metrics.fluentbit.prometheusRemoteWriteInputConfig.tagFromUri }}
+          threaded: {{ .Values.metrics.fluentbit.prometheusRemoteWriteInputConfig.threaded }}
+
+      # -- fluentbit filters as a yaml list in a multiline string
+      filters: |
+
+      # -- fluentbit outputs as a yaml list in a multiline string
+      outputs: |
+        - name: opentelemetry
+          match: monit.prom.k8s
+          host: {{ .Values.otlp.endpoint }}
+          port: {{ .Values.otlp.port }}
+          metrics_uri: /v1/metrics
+          logs_uri: /v1/logs
+          traces_uri: /v1/traces
+          tls: on
+          tls.verify: off
+          http_user: {{ .Values.tenant.name }}
+          http_passwd: {{ .Values.tenant.password }}
+          storage.total_limit_size: {{ .Values.metrics.fluentbit.diskMaxCache }}
+          header: User-Agent {{ .Chart.Name }}/{{ .Chart.Version }}
+
+    # Pushgateway allows you to send metrics to the monitoring infrastructure
+    # by pushing them to the local cluster service it-monit-metrics-collector-pushgateway.
+    pushgateway:
+      enabled: false
+      image:
+        repository: registry.cern.ch/monit/cern-it-monitoring-pushgateway
+        tag: v1.10.0
+        pullPolicy: IfNotPresent
+      resources:
+        requests:
+          cpu: 0.2
+          memory: 100Mi
+        limits:
+          cpu: 0.2
+          memory: 100Mi
+      # If set to true will install register a new ingress with the given
+      # configuration.
+      ingress:
+        enabled: false
+        className: "" # If no class set then default.
+        path: /prometheus(/|$)(.*)
+        pathType: Prefix # ImplementationSpecific
+        hosts: [] # port 9090 ????
+        tls: {}
+      # If given will override the defaultNodeSelector and install the component
+      # only on the nodes that match the given condition.
+      nodeSelector: {}
+
+    # Alertmanager configuration. If configured the local prometheus will be
+    # automatically configured with this alertmanager as target for alerts.
+    alertmanager:
+      enabled: false
+      image: registry.cern.ch/monit/cern-it-monitoring-alertmanager
+      tag: v0.27.0
+      pullPolicy: IfNotPresent
+      replicas: 3
+      # If set to true will install register a new ingress with the given
+      # configuration.
+      ingress:
+        enabled: true
+        className: "" # If no class set then default.
+        path: /alertmanager(/|$)(.*)
+        pathType: Prefix # ImplementationSpecific
+        hosts: [] # port 9093 ????
+        tls: {}
+      # If given will override the defaultNodeSelector and install the component
+      # only on the nodes that match the given condition.
+      nodeSelector: {}
+
+    apiServer:
+      serviceMonitor:
+        relabelings: []
+    scheduler:
+      serviceMonitor:
+        relabelings: []
+    coredns:
+      serviceMonitor:
+        relabelings: []
+    etcd:
+      serviceMonitor:
+        relabelings: []
+    ingress:
+      nginx:
+        serviceMonitor:
+          relabelings: []
+    kubecontroller:
+      serviceMonitor:
+        relabelings: []
+    kubelet:
+      serviceMonitor:
+        relabelings: []
+    kubeProxy:
+      serviceMonitor:
+        relabelings: []
+    scheduler:
+      serviceMonitor:
+        relabelings: []
+
+  logs:
+    enabled: false
