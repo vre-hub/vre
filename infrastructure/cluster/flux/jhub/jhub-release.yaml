@@ -195,9 +195,9 @@ spec:
       #     operator: Equal
       #     value: singleuser
       #     effect: NoSchedule
-      # memory:
-      #   limit: 3.5G #4G
-      #   guarantee: 3G #2G
+      memory:
+        limit: 4G 
+        guarantee: 2G 
 
       cmd: null
       extraEnv:
