@@ -196,8 +196,8 @@ spec:
       #     value: singleuser
       #     effect: NoSchedule
       memory:
-        limit: 4G 
-        guarantee: 2G 
+        limit: 2G #4G 
+        guarantee: 1G #2G 
 
       cmd: null
       extraEnv:
