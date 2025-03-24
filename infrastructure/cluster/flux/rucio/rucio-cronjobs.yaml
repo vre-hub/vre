@@ -15,7 +15,7 @@ spec:
           containers:
             - name: iam-sync
               # TODO: make new relase after fixing all the cronjobs/pods and change the image
-              image: ghcr.io/vre-hub/vre-iam-rucio-sync:v1.0.0-rc.2-82-aea1b65
+              image: ghcr.io/vre-hub/vre-iam-rucio-sync:v1.0.0-rc.2-129-e9cda83
               volumeMounts:
               - name: rucio-cfg
                 mountPath: /opt/rucio/etc/
@@ -61,7 +61,7 @@ metadata:
 spec:
   # Change original schedule to 3 times a day and 1 Mb files
   #schedule: "*/10 * * * *"
-  schedule: "30 08 * * *"
+  schedule: "30 08,12 * * *"
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 1
   jobTemplate:
