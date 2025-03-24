@@ -56,7 +56,7 @@ spec:
   containers:
   - name: iam-debug
     # TODO: make new relase after fixing all the cronjobs/pods and change the image
-    image: ghcr.io/vre-hub/vre-iam-rucio-sync:v1.0.0-rc.2-82-aea1b65
+    image: ghcr.io/vre-hub/vre-iam-rucio-sync:v1.0.0-rc.2-129-e9cda83
     imagePullPolicy: Always
     env:
       - name: IAM_SERVER
