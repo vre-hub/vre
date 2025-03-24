@@ -3,7 +3,7 @@ name: Docker automatic build and publish when changes in container dir
 on: 
   push:
     branches:
-      - main
+      - change_rucio_attributes
 
 env:
   REGISTRY: ghcr.io
