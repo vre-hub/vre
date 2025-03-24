@@ -135,7 +135,7 @@ class IAM_RUCIO_SYNC():
 
             if not account.account_exists(InternalAccount(username)):
                 account.add_account(InternalAccount(username),
-                                    AccountType.SERVICE, email)
+                                    AccountType.USER, email)
                 logging.debug(
                     'Created account for User {} ***'.format(username))
 
@@ -144,10 +144,9 @@ class IAM_RUCIO_SYNC():
                     set_local_account_limit(InternalAccount(username),
                                             rse_obj['id'], 1000000000000)
 
-                # Make the user an admin & able to sign URLs
+                # Make the user able to sign URLs
+                # Admins are added by hand
                 try:
-                    add_account_attribute(InternalAccount(username), 'admin',
-                                          'True')
                     add_account_attribute(InternalAccount(username), 'sign-gcs',
                                           'True')
                 except Exception as e:
