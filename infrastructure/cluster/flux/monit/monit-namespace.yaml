@@ -1,6 +1,6 @@
 kind: Namespace
 apiVersion: v1
 metadata:
-  name: monitoring
+  name: monit
   labels:
-    name: monitoring
+    name: monit

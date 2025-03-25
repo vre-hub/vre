@@ -2,7 +2,9 @@ apiVersion: source.toolkit.fluxcd.io/v1beta1
 kind: HelmRepository
 metadata:
   name: cern-monit
-  namespace: monitoring
+  namespace: monit
 spec:
   interval: 10m
   url: oci://registry.cern.ch/monit/cern-it-monitoring-kubernetes
+
+# Monit releases on CERN harbor
