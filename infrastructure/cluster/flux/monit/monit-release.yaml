@@ -3,18 +3,19 @@ kind: HelmRelease
 metadata:
   name: cern-monit
   namespace: monit
+
 spec:
-  releaseName: cern-vre-monit
+  releaseName: cern-monit
   interval: 5m
   chart:
     spec:
       sourceRef:
-        kind: HelmRepository
+        kind: OCIRepository
         name: cern-monit
         namespace: monit
       chart: cern-it-monitoring-kubernetes
       interval: 5m
-      version: 2.1.0 
+      version: 2.1.0 # Monit releases on CERN harbor site
   valuesFrom:
     - kind: Secret
       name: monit-escape-vre-tenant
