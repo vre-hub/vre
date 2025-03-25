@@ -1,0 +1,37 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease 
+metadata:
+  name: cern-monit
+  namespace: monit
+
+spec:
+  releaseName: cern-monit
+  interval: 5m
+  chart:
+    spec:
+      sourceRef:
+        kind: OCIRepository
+        name: cern-monit
+        namespace: monit
+      chart: cern-it-monitoring-kubernetes
+      interval: 5m
+      version: 2.1.0 # Monit releases on CERN harbor site
+  valuesFrom:
+    - kind: Secret
+      name: monit-escape-vre-tenant
+      valuesKey: password
+      targetPath: tenant.password
+
+values:
+  tenant: 
+    name: escape-vre
+
+  kubernetes:    
+    clusterName: vre 
+
+  # All the rest comes from the upstream MONIT charts
+  metrics:
+    enabled: true
+
+  logs:
+    enabled: false # We would need to enable this
