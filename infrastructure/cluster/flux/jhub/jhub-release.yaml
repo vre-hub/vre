@@ -190,6 +190,8 @@ spec:
 
       # nodeSelector: 
       #   jupyter: singleuser
+      nodeSelector:
+        component: singleuser-server
       # extraTolerations:
       #   - key: jupyter
       #     operator: Equal
