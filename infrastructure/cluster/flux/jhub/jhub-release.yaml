@@ -249,3 +249,5 @@ spec:
             - jhub-vre.cern.ch
           secretName: cert-manager-tls-ingress-secret-jhub
                
+    debug:
+      enabled: true
