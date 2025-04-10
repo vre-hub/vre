@@ -52,13 +52,6 @@ spec:
         type: postgres # passed as s secret (dbconnect string) from the jhub-vre-db secret
       
       config:
-      
-        KubeSpawner:
-          extra_container_config:
-            securityContext:
-              fsGroup: 100
-              fsGroupChangePolicy: OnRootMismatch
-
         JupyterHub:
           authenticator_class: "generic-oauth"
         RucioAuthenticator:
@@ -126,6 +119,11 @@ spec:
           c.GenericOAuthenticator.enable_auth_state = True
         
     singleuser:
+    
+      securityContext:
+        fsGroup: 100
+        fsGroupChangePolicy: OnRootMismatch
+
       extraLabels:
         component: singleuser-server
       defaultUrl: "/lab"
