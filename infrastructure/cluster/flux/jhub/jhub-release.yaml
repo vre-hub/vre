@@ -39,9 +39,6 @@ spec:
         type: ClusterIP
         
     hub:
-      podSecurityContext:
-        fsGroup: 100
-        fsGroupChangePolicy: OnRootMismatch
       service:
         type: ClusterIP
       # network policy needs to be modified to allow access to the Rucio server
@@ -119,7 +116,7 @@ spec:
           # enable authentication state
           c.GenericOAuthenticator.enable_auth_state = True
 
-        01-custom-securityContex: |
+        01-custom-securityContext: |
 
           c.KubeSpawner.pod_security_context = {
               'fsGroup': 100,
