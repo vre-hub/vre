@@ -41,6 +41,8 @@ spec:
       service:
         type: ClusterIP
     hub:
+      podSecurityContext:
+        fsGroupChangePolicy: OnRootMismatch
       service:
         type: ClusterIP
       # network policy needs to be modified to allow access to the Rucio server
