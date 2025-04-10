@@ -119,8 +119,8 @@ spec:
           c.GenericOAuthenticator.enable_auth_state = True
         
     singleuser:
-    
-      securityContext:
+
+      podSecurityContext:
         fsGroup: 100
         fsGroupChangePolicy: OnRootMismatch
 
