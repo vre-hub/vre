@@ -50,9 +50,10 @@ spec:
       
       config:
         KubeSpawner:
-          podSecurityContext:
-            fsGroup: 100
-            fsGroupChangePolicy: OnRootMismatch
+          extra_pod_config:
+            podSecurityContext:
+              fsGroup: 100
+              fsGroupChangePolicy: OnRootMismatch
 
         JupyterHub:
           authenticator_class: "generic-oauth"
