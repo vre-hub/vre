@@ -41,9 +41,6 @@ spec:
       service:
         type: ClusterIP
     hub:
-      podSecurityContext:
-        fsGroup: 100
-        fsGroupChangePolicy: OnRootMismatch
       service:
         type: ClusterIP
       # network policy needs to be modified to allow access to the Rucio server
@@ -55,6 +52,13 @@ spec:
         type: postgres # passed as s secret (dbconnect string) from the jhub-vre-db secret
       
       config:
+      
+        KubeSpawner:
+          extra_container_config:
+            securityContext:
+              fsGroup: 100
+              fsGroupChangePolicy: OnRootMismatch
+
         JupyterHub:
           authenticator_class: "generic-oauth"
         RucioAuthenticator:
