@@ -117,7 +117,7 @@ spec:
         
     singleuser:
 
-      podSecurityContext:
+      SecurityContext:
         fsGroup: 100
         fsGroupChangePolicy: OnRootMismatch
 
