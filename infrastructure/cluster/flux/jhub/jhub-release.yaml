@@ -42,6 +42,7 @@ spec:
         type: ClusterIP
     hub:
       podSecurityContext:
+        fsGroup: 100
         fsGroupChangePolicy: OnRootMismatch
       service:
         type: ClusterIP
