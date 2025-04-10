@@ -28,9 +28,6 @@ spec:
       name: jhub-vre-db
       valuesKey: dbconnectstring
       targetPath: hub.db.url
-    - kind: ConfigMap
-      name: jhub-profiles
-      valuesKey: values.yaml
     - kind: Secret
       name: jupyterhub-auth-state
       valuesKey: JUPYTERHUB_CRYPT_KEY
@@ -208,7 +205,7 @@ spec:
 
       cmd: null
       extraEnv:
-    #     JUPYTERHUB_SINGLEUSER_APP: "notebook.notebookapp.NotebookApp"
+        #JUPYTERHUB_SINGLEUSER_APP: "notebook.notebookapp.NotebookApp"
         RUCIO_MODE: "replica"
         RUCIO_WILDCARD_ENABLED: "1"
         RUCIO_BASE_URL: "https://vre-rucio.cern.ch"
@@ -227,6 +224,56 @@ spec:
         RUCIO_PATH_BEGINS_AT: "5" # becase we are need to substitute /eos/pilot/eulake/escape/data with /eos/eulake
         RUCIO_CA_CERT: "/certs/rucio_ca.pem"
         OAUTH2_TOKEN: "FILE:/tmp/eos_oauth.token"
+
+      profileList:
+        - display_name: "Default environment"
+          description: "Based on a scipy notebook environment with a python-3.11 kernel, the Rucio jupyterlab extension and the Reana client installed."
+          default: true
+        - display_name: "ROOT Higgs 2024 environment"
+          description: "ROOT v6.32.04, and a python-3.11 kernel."
+          kubespawner_override:
+            image: ghcr.io/vre-hub/vre-singleuser-root-base:latest
+        - display_name: "ROOT environment"
+          description: "Legacy ROOT v6.26.10 as well as a ROOT C++ and a python-3.8 kernel."
+          kubespawner_override:
+            image: ghcr.io/vre-hub/vre-singleuser-root:sha-c94d95a
+        - display_name: "VIRGO - WDF environment"
+          description: "Contains the full WDF v2.2.3 environment and a Python 3.11 kernel."
+          kubespawner_override:
+            image: ghcr.io/vre-hub/vre-singleuser-wdf:sha-ba497d3
+        - display_name: "Python 3.11 environment"
+          description: "quay.io/jupyter/scipy-notebook:python-3.11 image"
+          kubespawner_override:
+            image: quay.io/jupyter/scipy-notebook:python-3.11.8
+        - display_name: "Default environment - python 3.9"
+          description: "Same environment as the default one except for a python-3.9 kernel installed. This environment will be deprecated soon."
+          kubespawner_override:
+            image: ghcr.io/vre-hub/vre-singleuser:sha-423e01a
+        - display_name: "Default environment - python 3.8"
+          description: "Same environment as the default one except for a python-3.8 kernel installed. This environment will be deprecated soon."
+          kubespawner_override:
+            image: ghcr.io/vre-hub/vre-singleuser-py38:sha-7ed7d80
+        - display_name: "KM3Net Science Project environment"
+          description: "Contains gammapy=1.1, km3irf and km3net-testdata libraries - Python 3.9 kernel."
+          kubespawner_override:
+            image: ghcr.io/vre-hub/vre-singleuser-km3irf:sha-c1e2a18
+        - display_name: "KM3NeT and CTA combined analysis environment"
+          description: "Contains gammapy=0.17 and astropy - python-3.8 kernel."
+          kubespawner_override:
+            image: ghcr.io/vre-hub/vre-singleuser-combined_ana_km3net_cta:sha-520edf8
+        - display_name: "Indirect Dark Matter Detection Science Project environment"
+          description: "Contains the MLFermiLATDwarfs and fermitools libraries - Python 3.9 kernel."
+          kubespawner_override:
+            image: ghcr.io/vre-hub/vre-singleuser-microomega:sha-5cbf4f4
+        - display_name: "VRE DEV environment"
+          description: "Development environment with various tools installed."
+          kubespawner_override:
+            image: ghcr.io/vre-hub/vre-singleuser-dev:latest
+        - display_name: "Zenodo extension DEV environment"
+          description: "For testing purposes"
+          kubespawner_override:
+            image: ghcr.io/vre-hub/vre-singleuser-zen_ext-dev:latest
+
 
       # extraFiles:
       #   jupyter_notebook_config.json:
