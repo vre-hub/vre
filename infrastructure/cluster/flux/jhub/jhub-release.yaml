@@ -121,10 +121,10 @@ spec:
           c.GenericOAuthenticator.enable_auth_state = True
         
     singleuser:
-    
-      podSecurityContext:
-        fsGroup: 100
-        #fsGroupChangePolicy: "OnRootMismatch"
+      kubeSpawner:
+        podSecurityContext:
+          fsGroup: 100
+          #fsGroupChangePolicy: "OnRootMismatch"
 
       extraLabels:
         component: singleuser-server
