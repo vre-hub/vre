@@ -122,7 +122,7 @@ spec:
         
     singleuser:
 
-      ExtraContainerConfig:
+      extraContainerConfig:
         PodSecurityContext:
           fsGroup: 100
           fsGroupChangePolicy: OnRootMismatch
