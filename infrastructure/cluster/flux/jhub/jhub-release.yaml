@@ -121,11 +121,10 @@ spec:
           c.GenericOAuthenticator.enable_auth_state = True
         
     singleuser:
-
-      extraContainerConfig:
-        podSecurityContext:
-          fsGroup: 100
-          fsGroupChangePolicy: OnRootMismatch
+    
+      podSecurityContext:
+        fsGroup: 100
+        fsGroupChangePolicy: OnRootMismatch
 
       extraLabels:
         component: singleuser-server
