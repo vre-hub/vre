@@ -122,9 +122,10 @@ spec:
         
     singleuser:
 
-      # SecurityContext:
-      #   fsGroup: 100
-      #   fsGroupChangePolicy: OnRootMismatch
+      ExtraContainerConfig:
+        PodSecurityContext:
+          fsGroup: 100
+          fsGroupChangePolicy: OnRootMismatch
 
       extraLabels:
         component: singleuser-server
