@@ -124,7 +124,7 @@ spec:
     
       podSecurityContext:
         fsGroup: 100
-        fsGroupChangePolicy: OnRootMismatch
+        fsGroupChangePolicy: "OnRootMismatch"
 
       extraLabels:
         component: singleuser-server
