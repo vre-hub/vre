@@ -1,7 +1,6 @@
 # VRE @ CERN
 
-![](vre@CERN-logo.png)  
-*Designed with [freelogodesign](https://www.freelogodesign.org/)*
+![](vre@CERN-logo.png)
 
 The Virtual Research Environment developed at CERN.
 
