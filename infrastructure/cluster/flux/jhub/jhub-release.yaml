@@ -282,6 +282,11 @@ spec:
           kubespawner_override:
             #image: ghcr.io/vre-hub/vre-singleuser-zen_ext-dev:latest
             image: ghcr.io/vre-hub/vre-singleuser-rucio-jlab-dev:latest
+        - display_name: "Rucio jupyterLab extension DEV environment (download mode)" #"Zenodo extension DEV environment"
+          description: "For testing purposes"
+          kubespawner_override:
+            #image: ghcr.io/vre-hub/vre-singleuser-zen_ext-dev:latest
+            image: ghcr.io/vre-singleuser-rucio-jlab-dev-download-mode:latest
 
 
       # extraFiles:
