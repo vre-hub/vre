@@ -36,33 +36,17 @@ jobs:
       - name: List all changed dirs 
         id: format-output
         run: |
-          echo "Parsing changed directories..."
-
-          declare -A seen_dirs
           containers=()
-
           for dir in ${{ steps.changed-files.outputs.all_changed_files }}; do
             echo "$dir was changed"
-
-            # Extract top-level dir name 
-            top_level_dir=$(echo "$dir" | cut -d'/' -f2)
-
-            # And avoid duplications
-            if [[ -n "${seen_dirs[$top_level_dir]}" ]]; then
-              echo " - $top_level_dir already added, skipping"
-              continue
-            fi
-
-            echo " - $top_level_dir is a new dir, adding it"
-            seen_dirs[$top_level_dir]=1
-            containers+=("\"${top_level_dir}\"")
-      
+            tmp_dir=$(echo $dir | cut -d'/' -f2)
+            containers+=("\"${tmp_dir}\"")
           done
 
-          CONT_LIST=`echo "[${containers[*]}]" |  sed 's/ /,/g'`
+          CONT_LIST=`echo "[${containers[@]}]" |  sed 's/ /,/g'`
           echo "Updated containers list: $CONT_LIST"
 
-          echo "container_list=$CONT_LIST" >> "$GITHUB_OUTPUT"
+          echo ::set-output name=container_list::$CONT_LIST
       
     outputs:
       modified_containers: ${{ steps.format-output.outputs.container_list }}  
