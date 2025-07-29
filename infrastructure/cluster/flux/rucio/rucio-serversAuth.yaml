@@ -17,7 +17,7 @@ spec:
         namespace: rucio
       interval: 1m
       chart: rucio-server
-      version: 34.0.4
+      version: 35.0.1
   valuesFrom:
     - kind: Secret
       name: rucio-db
@@ -55,7 +55,7 @@ spec:
     
     image:
       repository: rucio/rucio-server
-      tag: release-34.6.0
+      tag: release-35.8.0
       pullPolicy: Always
     
     service:
