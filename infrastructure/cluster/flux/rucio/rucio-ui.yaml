@@ -15,7 +15,7 @@ spec:
         namespace: rucio
       interval: 1m
       chart: rucio-ui
-      version: 34.0.5
+      version: 35.0.1
 
   valuesFrom:
     - kind: Secret
@@ -53,7 +53,7 @@ spec:
 
     image:
       repository: rucio/rucio-ui
-      tag: release-34.6.0
+      tag: release-35.8.0
       pullPolicy: Always
 
     strategy:
