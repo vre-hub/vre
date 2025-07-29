@@ -427,7 +427,7 @@ spec:
       enabled: 1  
       image:
         repository: rucio/fts-cron
-        tag: 34.0.0
+        tag: 35.8.0
         pullPolicy: Always
       vos:
         - vo: "escape"
