@@ -240,7 +240,7 @@ spec:
         - display_name: "ATLAS Open Data environment"
           description: "ATLAS Open Data suite, and a python-3.11 kernel."
           kubespawner_override:
-            image: ghcr.io/vre-hub/vre-singleuser-atlasopendata:sha-96b286c
+            image: ghcr.io/vre-hub/vre-singleuser-atlasopendata:latest
         - display_name: "ROOT environment"
           description: "Legacy ROOT v6.26.10 as well as a ROOT C++ and a python-3.8 kernel."
           kubespawner_override:
