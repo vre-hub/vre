@@ -173,9 +173,9 @@ spec:
             hostPath:
               # path: /var/eos/eulake # This is pointing to /eos/pilot/eulake/escape/data, defined on the configmap/eos-csi-dir-etc-eo  
               path: /var/eos/pilot
-          - name: eos-atlas
+          - name: eos-atlas-open-data
             hostPath:
-              path: /var/eos/atlas
+              path: /var/eos/opendata/atlas
         extraVolumeMounts:
           - name: cvmfs-vre
             mountPath: /cvmfs
@@ -185,13 +185,13 @@ spec:
             mountPath: /eos/eulake
             mountPropagation: HostToContainer
             readOnly: true 
-          - name: eos-atlas
-            mountPath: /eos/atlas
+          - name: eos-atlas-open-data
+            mountPath: /eos/opendata/atlas
             mountPropagation: HostToContainer
             readOnly: true
       image:
         name: ghcr.io/vre-hub/vre-singleuser-py311
-        tag: sha-ee63437
+        tag: sha-210febf
         pullPolicy: Always
 
       # nodeSelector: 
@@ -240,7 +240,7 @@ spec:
         - display_name: "ATLAS Open Data environment"
           description: "ATLAS Open Data suite, and a python-3.11 kernel."
           kubespawner_override:
-            image: ghcr.io/vre-hub/vre-singleuser-atlasopendata:sha-96b286c
+            image: ghcr.io/vre-hub/vre-singleuser-atlasopendata:latest
         - display_name: "ROOT environment"
           description: "Legacy ROOT v6.26.10 as well as a ROOT C++ and a python-3.8 kernel."
           kubespawner_override:
@@ -248,7 +248,7 @@ spec:
         - display_name: "VIRGO - WDF environment"
           description: "Contains the full WDF v2.2.3 environment and a Python 3.11 kernel."
           kubespawner_override:
-            image: ghcr.io/vre-hub/vre-singleuser-wdf:sha-ba497d3
+            image: ghcr.io/vre-hub/vre-singleuser-wdf:sha-57b874e
         - display_name: "Python 3.11 environment"
           description: "quay.io/jupyter/scipy-notebook:python-3.11 image"
           kubespawner_override:
