@@ -25,6 +25,12 @@ spec:
       targetPath: config.database.default
 
   values:
+    policyPackages:
+      enabled: true
+      packages:
+        - moduleName: escape-rucio-policy-package
+          requirement: escape-rucio-policy-package==0.1.0
+          version: 0.1.0
     secretMounts:
       - secretName: server-gridca
         mountPath: /etc/grid-security/certificates/
