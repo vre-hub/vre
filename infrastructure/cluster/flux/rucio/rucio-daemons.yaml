@@ -6,7 +6,7 @@ metadata:
 
 spec:
   releaseName: daemons
-  interval: 30s
+  interval: 1m
   chart: 
     spec: 
       sourceRef:
@@ -30,9 +30,10 @@ spec:
     policyPackages:
       enabled: true
       packages:
-        - moduleName: escape-rucio-policy-package
-          requirement: escape-rucio-policy-package==0.1.0
-          version: 0.1.0
+      - moduleName: escape_rucio_policy_package
+        requirement: escape-rucio-policy-package==0.2.2
+        version: 0.2.2
+
     additionalSecrets:
       - volumeName: idpsecrets
         secretName: idpsecrets
