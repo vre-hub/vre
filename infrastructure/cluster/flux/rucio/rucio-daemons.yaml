@@ -6,7 +6,7 @@ metadata:
 
 spec:
   releaseName: daemons
-  interval: 30s
+  interval: 1m
   chart: 
     spec: 
       sourceRef:
@@ -27,12 +27,13 @@ spec:
     #   valuesKey: values.yaml
 
   values:
-    policyPackages:
-      enabled: true
-      packages:
-        - moduleName: escape-rucio-policy-package
-          requirement: escape-rucio-policy-package==0.1.0
-          version: 0.1.0
+    # policyPackages:
+    #   enabled: true
+    #   packages:
+    #   - moduleName: escape_rucio_policy_package
+    #     requirement: escape-rucio-policy-package==0.2.2
+    #     version: 0.2.2
+
     additionalSecrets:
       - volumeName: idpsecrets
         secretName: idpsecrets
@@ -50,6 +51,18 @@ spec:
       #   secretName: rse-accounts
       #   mountPath: /opt/rucio/etc/rse-accounts.cfg
       #   subPath: rse-accounts.cfg
+      - volumeName: escape-rucio-policy-package-init
+        secretFullName: escape-rucio-policy-package
+        mountPath: /usr/local/lib/python3.9/site-packages/escape_rucio_policy_package/__init__.py
+        subPath: __init__.py
+      - volumeName: escape-rucio-policy-package-permission
+        secretFullName: escape-rucio-policy-package
+        mountPath: /usr/local/lib/python3.9/site-packages/escape_rucio_policy_package/permission.py
+        subPath: permission.py
+      - volumeName: escape-rucio-policy-package-schema
+        secretFullName: escape-rucio-policy-package
+        mountPath: /usr/local/lib/python3.9/site-packages/escape_rucio_policy_package/schema.py
+        subPath: schema.py
    
       # TO START WITH
 
