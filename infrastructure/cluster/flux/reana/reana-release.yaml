@@ -39,7 +39,23 @@ spec:
 
   values:
 
-    shared_storage: 
+    # Mount the CERN EOS namespace (the same /var/eos autofs tree already
+    # exposed to JupyterHub singleuser pods, e.g. jhub-values.yaml) into every
+    # REANA runtime job pod at /eos. This sets K8S_CERN_EOS_AVAILABLE=True on
+    # reana-workflow-controller, which forwards it to the reana-job-controller
+    # sidecar spawned for each workflow run, which in turn hostPath-mounts
+    # /var/eos -> /eos (mountPropagation: HostToContainer) into every workflow
+    # step pod. The eulake pilot data (eospilot.cern.ch) lands at /eos/pilot:
+    # per kube-system/eos-csi-dir-etc-eos's fuse.pilot.conf, that mountpoint's
+    # remotemountdir is already pinned to /eos/pilot/eulake/escape/data/ on
+    # the eospilot instance (jhub just bind-mounts the same /var/eos/pilot
+    # and additionally renames it to /eos/eulake in its own pods; this native
+    # toggle exposes it under its real name, /eos/pilot, instead). Actual
+    # read/write access is still governed by EOS's own ACLs, same as today.
+    eos:
+      enabled: true
+
+    shared_storage:
       backend: cephfs
       volume_size: 1000
       access_modes: ReadWriteMany
