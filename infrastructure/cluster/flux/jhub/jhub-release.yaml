@@ -145,6 +145,12 @@ spec:
                   echo -n $RUCIO_ACCESS_TOKEN > /tmp/rucio_oauth.token;
                   echo -n "oauth2:${EOS_ACCESS_TOKEN}:iam-escape.cloud.cnaf.infn.it/userinfo" > /tmp/eos_oauth.token;
                   chmod 0600 /tmp/eos_oauth.token;
+                  if [ -f "$HOME/.reana/token" ] && command -v reana-client >/dev/null 2>&1; then
+                    export REANA_SERVER_URL="https://reana-vre.cern.ch";
+                    export REANA_ACCESS_TOKEN="$(cat "$HOME/.reana/token")";
+                    reana-client secrets-add --env XrdSecPROTOCOL=sss,unix --overwrite >/tmp/reana_secrets_push.log 2>&1 || true;
+                    reana-client secrets-add --env XrdSecsssENDORSEMENT="oauth2:${EOS_ACCESS_TOKEN}:iam-escape.cloud.cnaf.infn.it/userinfo" --overwrite >>/tmp/reana_secrets_push.log 2>&1 || true;
+                  fi;
                   mkdir -p /opt/rucio/etc;
                   echo "[client]" >> /opt/rucio/etc/rucio.cfg;
                   echo "rucio_host = https://vre-rucio.cern.ch" >> /opt/rucio/etc/rucio.cfg;
