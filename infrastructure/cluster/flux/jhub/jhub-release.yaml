@@ -182,6 +182,9 @@ spec:
           - name: eos-atlas-open-data
             hostPath:
               path: /var/eos/opendata/atlas
+          - name: eosc
+            hostPath:
+              path: /var/eos/eosc
         extraVolumeMounts:
           - name: cvmfs-vre
             mountPath: /cvmfs
@@ -193,6 +196,10 @@ spec:
             readOnly: true 
           - name: eos-atlas-open-data
             mountPath: /eos/opendata/atlas
+            mountPropagation: HostToContainer
+            readOnly: true
+          - name: eosc
+            mountPath: /eos/eosc
             mountPropagation: HostToContainer
             readOnly: true
       image:
