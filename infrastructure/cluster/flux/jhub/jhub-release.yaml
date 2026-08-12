@@ -145,6 +145,8 @@ spec:
                   echo -n $RUCIO_ACCESS_TOKEN > /tmp/rucio_oauth.token;
                   echo -n "oauth2:${EOS_ACCESS_TOKEN}:iam-escape.cloud.cnaf.infn.it/userinfo" > /tmp/eos_oauth.token;
                   chmod 0600 /tmp/eos_oauth.token;
+                  echo -n "${EOS_ACCESS_TOKEN}" > /tmp/bt;
+                  chmod 0600 /tmp/bt;
                   if [ -f "$HOME/.reana/token" ] && command -v reana-client >/dev/null 2>&1; then
                     export REANA_SERVER_URL="https://reana-vre.cern.ch";
                     export REANA_ACCESS_TOKEN="$(cat "$HOME/.reana/token")";
@@ -241,6 +243,7 @@ spec:
         RUCIO_PATH_BEGINS_AT: "5" # becase we are need to substitute /eos/pilot/eulake/escape/data with /eos/eulake
         RUCIO_CA_CERT: "/certs/rucio_ca.pem"
         OAUTH2_TOKEN: "FILE:/tmp/eos_oauth.token"
+        BEARER_TOKEN_FILE: "/tmp/bt"
 
       profileList:
         - display_name: "Default environment"
