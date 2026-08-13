@@ -206,7 +206,7 @@ spec:
             readOnly: true
       image:
         name: ghcr.io/vre-hub/vre-singleuser-py311
-        tag: sha-4c63968
+        tag: sha-7181bc3
         pullPolicy: Always
 
       # nodeSelector: 
@@ -298,7 +298,10 @@ spec:
           kubespawner_override:
             #image: ghcr.io/vre-hub/vre-singleuser-zen_ext-dev:latest
             #image: ghcr.io/vre-hub/vre-singleuser-rucio-jlab-dev:latest
-            image: ghcr.io/vre-hub/vre-singleuser-py311:latest
+            # environments@7181bc3 -- InvenioRDM jupyterlab extension, replacing
+            # zenodo-jupyterlab. Browse/search work anonymously; OAuth login is
+            # not usable yet, it needs the InvenioRDM API proxy.
+            image: ghcr.io/vre-hub/vre-singleuser-py311:sha-7181bc3
         - display_name: "Rucio jupyterLab extension DEV environment (download mode)" #"Zenodo extension DEV environment"
           description: "For testing purposes"
           kubespawner_override:
