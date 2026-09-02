@@ -244,6 +244,8 @@ spec:
         RUCIO_CA_CERT: "/certs/rucio_ca.pem"
         OAUTH2_TOKEN: "FILE:/tmp/eos_oauth.token"
         BEARER_TOKEN_FILE: "/tmp/bt"
+        # Restrict the REANA extension to the VRE's REANA server (SSRF allowlist).
+        REANA_ALLOWED_SERVER_HOSTS: "reana-vre.cern.ch"
         # InvenioRDM extension. Read only by images built from
         # environments@6c2d97a or later, which currently means the default
         # profile and the InvenioRDM TEST profile; images on other tags ignore
