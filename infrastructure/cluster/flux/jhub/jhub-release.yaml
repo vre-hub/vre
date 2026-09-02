@@ -206,7 +206,7 @@ spec:
             readOnly: true
       image:
         name: ghcr.io/vre-hub/vre-singleuser-py311
-        tag: sha-6c2d97a
+        tag: sha-eabb8af
         pullPolicy: Always
 
       # nodeSelector: 
