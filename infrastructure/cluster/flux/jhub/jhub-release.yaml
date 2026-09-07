@@ -123,7 +123,20 @@ spec:
               'fsGroupChangePolicy': 'OnRootMismatch'
           }
 
-        
+        02-per-user-memory: |
+
+          BIG_MEM_USERS = {"vpiompon"}   # JupyterHub username == preferred_username from IAM
+
+          def mem_limit(spawner):
+              return "12G" if spawner.user.name in BIG_MEM_USERS else "2G"
+
+          def mem_guarantee(spawner):
+              return "8G" if spawner.user.name in BIG_MEM_USERS else "1G"
+
+          c.KubeSpawner.mem_limit = mem_limit
+          c.KubeSpawner.mem_guarantee = mem_guarantee
+
+
     singleuser:
       extraLabels:
         component: singleuser-server

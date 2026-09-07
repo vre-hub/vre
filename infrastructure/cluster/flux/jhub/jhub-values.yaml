@@ -1,0 +1,274 @@
+proxy:
+  service:
+    type: ClusterIP
+    
+hub:
+  service:
+    type: ClusterIP
+  networkPolicy:
+    enabled: false
+  db:
+    type: postgres
+  
+  config:
+    JupyterHub:
+      authenticator_class: "generic-oauth"
+    RucioAuthenticator:
+      authorize_url: https://iam-escape.cloud.cnaf.infn.it/authorize
+      token_url: https://iam-escape.cloud.cnaf.infn.it/token
+      userdata_url: https://iam-escape.cloud.cnaf.infn.it/userinfo
+      username_key: preferred_username
+      enable_auth_state: true
+      allow_all: true
+      scope:
+        - openid
+        - profile
+        - email
+
+  extraConfig:
+
+    token-exchange: |
+      import pprint
+      import os
+      import warnings
+      import requests
+      from oauthenticator.generic import GenericOAuthenticator
+
+      class RucioAuthenticator(GenericOAuthenticator):
+          def __init__(self, **kwargs):
+              super().__init__(**kwargs)
+              self.enable_auth_state = True
+
+          def exchange_token(self, token):
+              params = {
+                  'client_id': self.client_id,
+                  'client_secret': self.client_secret,
+                  'grant_type': 'urn:ietf:params:oauth:grant-type:token-exchange',
+                  'subject_token_type': 'urn:ietf:params:oauth:token-type:access_token',
+                  'subject_token': token,
+                  'scope': 'openid profile',
+                  'audience': 'rucio'
+              }
+              response = requests.post(self.token_url, data=params)
+              print("EXCHANGE TOKEN")
+              print(response.json())
+              rucio_token = response.json()['access_token']
+
+              return rucio_token
+              
+          async def pre_spawn_start(self, user, spawner):
+              auth_state = await user.get_auth_state()
+              if not auth_state:
+                  return False
+              
+              spawner.environment['RUCIO_ACCESS_TOKEN'] = self.exchange_token(auth_state['access_token'])
+              spawner.environment['EOS_ACCESS_TOKEN'] = auth_state['access_token']
+      
+      c.JupyterHub.authenticator_class = RucioAuthenticator
+      c.GenericOAuthenticator.enable_auth_state = True
+
+    01-custom-securityContext: |
+
+      c.KubeSpawner.pod_security_context = {
+          'fsGroup': 100,
+          'fsGroupChangePolicy': 'OnRootMismatch'
+      }
+
+    02-per-user-memory: |
+
+      BIG_MEM_USERS = {"vpiompon"}   # JupyterHub username == preferred_username from IAM
+
+      def mem_limit(spawner):
+          return "12G" if spawner.user.name in BIG_MEM_USERS else "2G"
+
+      def mem_guarantee(spawner):
+          return "8G" if spawner.user.name in BIG_MEM_USERS else "1G"
+
+      c.KubeSpawner.mem_limit = mem_limit
+      c.KubeSpawner.mem_guarantee = mem_guarantee
+
+
+singleuser:
+  extraLabels:
+    component: singleuser-server
+  defaultUrl: "/lab"
+  startTimeout: 1200
+  lifecycleHooks:
+    postStart:
+      exec:
+        command:
+          - "sh"
+          - "-c"
+          - |
+            if [ "${SKIP_POSTSTART_HOOK}" = "true" ]; then
+              echo "hello world";
+            else
+              mkdir -p /certs /tmp;
+              echo -n $RUCIO_ACCESS_TOKEN > /tmp/rucio_oauth.token;
+              echo -n "oauth2:${EOS_ACCESS_TOKEN}:iam-escape.cloud.cnaf.infn.it/userinfo" > /tmp/eos_oauth.token;
+              chmod 0600 /tmp/eos_oauth.token;
+              echo -n "${EOS_ACCESS_TOKEN}" > /tmp/bt;
+              chmod 0600 /tmp/bt;
+              if [ -f "$HOME/.reana/token" ] && command -v reana-client >/dev/null 2>&1; then
+                export REANA_SERVER_URL="https://reana-vre.cern.ch";
+                export REANA_ACCESS_TOKEN="$(cat "$HOME/.reana/token")";
+                reana-client secrets-add --env XrdSecPROTOCOL=sss,unix --overwrite >/tmp/reana_secrets_push.log 2>&1 || true;
+                reana-client secrets-add --env XrdSecsssENDORSEMENT="oauth2:${EOS_ACCESS_TOKEN}:iam-escape.cloud.cnaf.infn.it/userinfo" --overwrite >>/tmp/reana_secrets_push.log 2>&1 || true;
+              fi;
+              mkdir -p /opt/rucio/etc;
+              echo "[client]" >> /opt/rucio/etc/rucio.cfg;
+              echo "rucio_host = https://vre-rucio.cern.ch" >> /opt/rucio/etc/rucio.cfg;
+              echo "auth_host = https://vre-rucio-auth.cern.ch" >> /opt/rucio/etc/rucio.cfg;
+              echo "ca_cert = /certs/rucio_ca.pem" >> /opt/rucio/etc/rucio.cfg;
+              echo "account = $JUPYTERHUB_USER" >> /opt/rucio/etc/rucio.cfg;
+              echo "auth_type = oidc" >> /opt/rucio/etc/rucio.cfg;
+              echo "oidc_audience = rucio" >> /opt/rucio/etc/rucio.cfg;
+              echo "oidc_polling = true" >> /opt/rucio/etc/rucio.cfg;
+              echo "oidc_issuer = escape" >> /opt/rucio/etc/rucio.cfg;
+              echo "oidc_scope = openid profile offline_access" >> /opt/rucio/etc/rucio.cfg;
+              echo "auth_token_file_path = /tmp/rucio_oauth.token" >> /opt/rucio/etc/rucio.cfg;
+            fi;
+            
+  networkPolicy:
+    enabled: false
+  storage:
+    type: static
+    static:
+      pvcName: jhub-vre-singleuser-preprovisioned-manila-pvc
+    extraVolumes:
+      - name: cvmfs-vre
+        persistentVolumeClaim:
+          claimName: cvmfs-vre-pvc
+      - name: eospilot-eulake
+        hostPath:
+          path: /var/eos/pilot
+      - name: eos-atlas-open-data
+        hostPath:
+          path: /var/eos/opendata/atlas
+      - name: eosc
+        hostPath:
+          path: /var/eos/eosc
+    extraVolumeMounts:
+      - name: cvmfs-vre
+        mountPath: /cvmfs
+        mountPropagation: HostToContainer
+      - name: eospilot-eulake
+        mountPath: /eos/eulake
+        mountPropagation: HostToContainer
+        readOnly: true 
+      - name: eos-atlas-open-data
+        mountPath: /eos/opendata/atlas
+        mountPropagation: HostToContainer
+        readOnly: true
+      - name: eosc
+        mountPath: /eos/eosc
+        mountPropagation: HostToContainer
+        readOnly: true
+  image:
+    name: ghcr.io/vre-hub/vre-singleuser-py311
+    tag: sha-067e444
+    pullPolicy: Always
+
+  nodeSelector:
+    component: singleuser-server
+  memory:
+    limit: 2G
+    guarantee: 1G 
+
+  cmd: null
+  extraEnv:
+    RUCIO_MODE: "replica"
+    RUCIO_WILDCARD_ENABLED: "1"
+    RUCIO_BASE_URL: "https://vre-rucio.cern.ch"
+    RUCIO_AUTH_URL: "https://vre-rucio-auth.cern.ch"
+    RUCIO_WEBUI_URL: "https://vre-rucio-ui.cern.ch"
+    RUCIO_DISPLAY_NAME: "RUCIO - CERN VRE"
+    RUCIO_NAME: "vre-rucio.cern.ch"
+    RUCIO_SITE_NAME: "CERN"
+    RUCIO_OIDC_AUTH: "env"
+    RUCIO_OIDC_ENV_NAME: "RUCIO_ACCESS_TOKEN"
+    RUCIO_DEFAULT_AUTH_TYPE: "oidc"
+    RUCIO_OAUTH_ID: "rucio"
+    RUCIO_DEFAULT_INSTANCE: "vre-rucio.cern.ch"
+    RUCIO_DESTINATION_RSE: "CERN-EOSPILOT"
+    RUCIO_RSE_MOUNT_PATH: "/eos/eulake"
+    RUCIO_PATH_BEGINS_AT: "5"
+    RUCIO_CA_CERT: "/certs/rucio_ca.pem"
+    OAUTH2_TOKEN: "FILE:/tmp/eos_oauth.token"
+    BEARER_TOKEN_FILE: "/tmp/bt"
+
+  profileList:
+    - display_name: "Default environment"
+      description: "Based on a scipy notebook environment with a python-3.11 kernel, the Rucio jupyterlab extension and the Reana client installed."
+      default: true
+    - display_name: "ROOT Higgs 2024 environment"
+      description: "ROOT v6.32.04, and a python-3.11 kernel."
+      kubespawner_override:
+        image: ghcr.io/vre-hub/vre-singleuser-root-base:latest
+    - display_name: "ATLAS Open Data environment"
+      description: "ATLAS Open Data suite, and a python-3.11 kernel."
+      kubespawner_override:
+        image: ghcr.io/vre-hub/vre-singleuser-atlasopendata:latest
+    - display_name: "ROOT environment"
+      description: "Legacy ROOT v6.26.10 as well as a ROOT C++ and a python-3.8 kernel."
+      kubespawner_override:
+        image: ghcr.io/vre-hub/vre-singleuser-root:sha-c94d95a
+    - display_name: "VIRGO - WDF environment"
+      description: "Contains the full WDF v2.2.3 environment and a Python 3.11 kernel."
+      kubespawner_override:
+        image: ghcr.io/vre-hub/vre-singleuser-wdf:sha-57b874e
+    - display_name: "Python 3.11 environment"
+      description: "quay.io/jupyter/scipy-notebook:python-3.11 image"
+      kubespawner_override:
+        image: quay.io/jupyter/scipy-notebook:python-3.11.8
+    - display_name: "Default environment - python 3.9"
+      description: "Same environment as the default one except for a python-3.9 kernel installed. This environment will be deprecated soon."
+      kubespawner_override:
+        image: ghcr.io/vre-hub/vre-singleuser:sha-423e01a
+    - display_name: "Default environment - python 3.8"
+      description: "Same environment as the default one except for a python-3.8 kernel installed. This environment will be deprecated soon."
+      kubespawner_override:
+        image: ghcr.io/vre-hub/vre-singleuser-py38:sha-7ed7d80
+    - display_name: "KM3Net Science Project environment"
+      description: "Contains gammapy=1.1, km3irf and km3net-testdata libraries - Python 3.9 kernel."
+      kubespawner_override:
+        image: ghcr.io/vre-hub/vre-singleuser-km3irf:sha-c1e2a18
+    - display_name: "KM3NeT and CTA combined analysis environment"
+      description: "Contains gammapy=0.17 and astropy - python-3.8 kernel."
+      kubespawner_override:
+        image: ghcr.io/vre-hub/vre-singleuser-combined_ana_km3net_cta:sha-520edf8
+    - display_name: "Indirect Dark Matter Detection Science Project environment"
+      description: "Contains the MLFermiLATDwarfs and fermitools libraries - Python 3.9 kernel."
+      kubespawner_override:
+        image: ghcr.io/vre-hub/vre-singleuser-microomega:sha-5cbf4f4
+    - display_name: "VRE DEV environment"
+      description: "Development environment with various tools installed."
+      kubespawner_override:
+        image: ghcr.io/vre-hub/vre-singleuser-dev:latest
+    - display_name: "Rucio jupyterLab extension DEV environment"
+      description: "For testing purposes"
+      kubespawner_override:
+        image: ghcr.io/vre-hub/vre-singleuser-py311:latest
+    - display_name: "Rucio jupyterLab extension DEV environment (download mode)"
+      description: "For testing purposes"
+      kubespawner_override:
+        image: ghcr.io/vre-hub/vre-singleuser-rucio-jlab-dev-download-mode:latest
+
+prePuller:
+  hook:
+    enabled: true
+
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt"
+  hosts:
+    - jhub-vre.cern.ch 
+  tls:
+    - hosts:
+        - jhub-vre.cern.ch
+      secretName: cert-manager-tls-ingress-secret-jhub
+           
+debug:
+  enabled: true
