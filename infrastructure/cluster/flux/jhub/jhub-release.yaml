@@ -219,7 +219,7 @@ spec:
             readOnly: true
       image:
         name: ghcr.io/vre-hub/vre-singleuser-py311
-        tag: sha-4c63968
+        tag: sha-eabb8af
         pullPolicy: Always
 
       # nodeSelector: 
@@ -257,6 +257,22 @@ spec:
         RUCIO_CA_CERT: "/certs/rucio_ca.pem"
         OAUTH2_TOKEN: "FILE:/tmp/eos_oauth.token"
         BEARER_TOKEN_FILE: "/tmp/bt"
+        # Restrict the REANA extension to the VRE's REANA server (SSRF allowlist).
+        REANA_ALLOWED_SERVER_HOSTS: "reana-vre.cern.ch"
+        # InvenioRDM extension. Read only by images built from
+        # environments@6c2d97a or later, which currently means the default
+        # profile and the InvenioRDM TEST profile; images on other tags ignore
+        # these variables entirely.
+        # Proxy mode is required under JupyterHub: in local mode the OAuth
+        # callback URL contains /user/<username>/, so every user would need
+        # their own registered redirect URI.
+        INVENIORDM_REQUEST_MODE: "proxy"
+        ZENODO_OAUTH_CLIENT_ID: "LHapdZmEOiu4jAifySwZpOWhCxxYL5ZPylip6ZTl"
+        ZENODO_PROXY_URL: "https://jhub-vre.cern.ch/inveniordm-proxy"
+        ZENODO_PROXY_SESSION_COOKIE_NAME: "zenodo_proxy_session"
+        # No proxy is deployed for CDS or Zenodo Sandbox yet, so in proxy mode
+        # they are dropped from the extension's server list. Users on the
+        # default profile therefore see Zenodo only.
 
       profileList:
         - display_name: "Default environment"
@@ -311,12 +327,22 @@ spec:
           kubespawner_override:
             #image: ghcr.io/vre-hub/vre-singleuser-zen_ext-dev:latest
             #image: ghcr.io/vre-hub/vre-singleuser-rucio-jlab-dev:latest
-            image: ghcr.io/vre-hub/vre-singleuser-py311:latest
+            # environments@7181bc3 -- InvenioRDM jupyterlab extension, replacing
+            # zenodo-jupyterlab. Browse/search work anonymously; OAuth login is
+            # not usable yet, it needs the InvenioRDM API proxy.
+            image: ghcr.io/vre-hub/vre-singleuser-py311:sha-7181bc3
         - display_name: "Rucio jupyterLab extension DEV environment (download mode)" #"Zenodo extension DEV environment"
           description: "For testing purposes"
           kubespawner_override:
             #image: ghcr.io/vre-hub/vre-singleuser-zen_ext-dev:latest
             image: ghcr.io/vre-hub/vre-singleuser-rucio-jlab-dev-download-mode:latest
+        # TEMPORARY: validates InvenioRDM proxy mode against the deployed API
+        # proxy before environments#feat/inveniordm-proxy-mode is merged.
+        # Remove once that lands and the default image carries the change.
+        - display_name: "InvenioRDM proxy TEST environment"
+          description: "For testing InvenioRDM login through the API proxy. Zenodo only."
+          kubespawner_override:
+            image: ghcr.io/vre-hub/vre-singleuser-py311:sha-6c2d97a
 
 
       # extraFiles:
