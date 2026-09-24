@@ -125,3 +125,121 @@ spec:
 
     traefik:
       enabled: false
+
+  # Root cause of the 2026-09-24 "login hangs forever" incident: a user's
+  # oversized workflow workspace (tens of millions of bytes of directory
+  # listing) took 15-30+ minutes to enumerate on the CephFS-backed shared
+  # storage, and neither reana-server nor reana-workflow-controller had any
+  # uWSGI harakiri timeout configured. A single such request could hold a
+  # worker hostage indefinitely; once enough piled up (helped along by the
+  # REANA UI's 15s auto-poll), the whole worker pool -- including completely
+  # unrelated requests like OAuth login -- backed up for as long as the
+  # slow request(s) ran, sometimes over an hour.
+  #
+  # This adds `harakiri = 120` (kill + respawn any single request running
+  # longer than 120s) to both components, so one pathological request can no
+  # longer wedge the whole server. It does not fix the underlying slow
+  # workspace listing itself -- see the workspace cleanup tracked separately.
+  postRenderers:
+    - kustomize:
+        patches:
+          # reana-server: the uwsgi.ini ConfigMap doesn't expose harakiri via
+          # Helm values, so replace its rendered content with the same
+          # content plus two extra lines. Keep this in sync if the chart's
+          # templates/uwsgi-config.yaml template ever changes.
+          - target:
+              kind: ConfigMap
+              name: uwsgi-config
+            patch: |-
+              - op: replace
+                path: /data/uwsgi.ini
+                value: |
+                  [uwsgi]
+                  stats = /tmp/stats.socket
+                  http = 0.0.0.0:5000
+                  module = invenio_app.wsgi:application
+                  master = true
+                  processes = 6
+                  threads = 4
+                  enable-threads = true
+                  single-interpreter = true
+                  need-app = true
+                  vacuum = true
+                  wsgi-disable-file-wrapper = true
+
+                  auto-procname = true
+                  buffer-size =  10240
+                  post-buffering = true
+                  lazy-apps = true
+
+                  # Logging
+
+                  # Workers management
+                  max-requests = 1999
+                  max-requests-delta = 149
+                  reload-on-rss = 250
+
+                  # Kill + respawn any single request running longer than
+                  # this instead of letting it hold a worker forever.
+                  harakiri = 120
+                  harakiri-verbose = true
+
+                  # fix up signal handling
+                  die-on-term = true
+                  hook-master-start = unix_signal:2 gracefully_kill_them_all
+                  hook-master-start = unix_signal:15 gracefully_kill_them_all
+
+                  # enable keepalive to avoid 500/502 from traefik
+                  http-keepalive = 1
+
+                  # fix uWSGI memory consumption on systems with very high fs.nr_open limits
+                  max-fd = 1048576
+          # reana-workflow-controller: its uwsgi command/args aren't exposed
+          # via Helm values at all -- they're baked into the container image's
+          # own entrypoint (confirmed live: `uwsgi --processes 2 --threads 2
+          # ...`, no ConfigMap involved). Kubernetes `command`/`args` fully
+          # replace the image's CMD, so this must repeat the exact flags the
+          # image already runs with (verified via `ps aux` in the live pod)
+          # plus the two new harakiri flags. If reanahub ever changes this
+          # image's default flags, this patch will silently keep the old
+          # ones until updated here too.
+          - target:
+              kind: Deployment
+              name: reana-workflow-controller
+            patch: |-
+              - op: add
+                path: /spec/template/spec/containers/0/command
+                value:
+                  - uwsgi
+              - op: add
+                path: /spec/template/spec/containers/0/args
+                value:
+                  - --buffer-size
+                  - "8192"
+                  - --die-on-term
+                  - --hook-master-start
+                  - "unix_signal:2 gracefully_kill_them_all"
+                  - --hook-master-start
+                  - "unix_signal:15 gracefully_kill_them_all"
+                  - --enable-threads
+                  - --http-socket
+                  - "0.0.0.0:5000"
+                  - --master
+                  - --max-fd
+                  - "1048576"
+                  - --module
+                  - reana_workflow_controller.app:app
+                  - --need-app
+                  - --processes
+                  - "2"
+                  - --single-interpreter
+                  - --stats
+                  - /tmp/stats.socket
+                  - --threads
+                  - "2"
+                  - --vacuum
+                  - --wsgi-disable-file-wrapper
+                  - --harakiri
+                  - "120"
+                  - --harakiri-verbose
+                  - "true"
