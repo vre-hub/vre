@@ -1,0 +1,13 @@
+# Flux source-controller exclusions (gitignore-style, evaluated from repo root).
+# See https://fluxcd.io/flux/components/source/gitrepositories/#excluding-files
+
+# Bare Helm values snippet (no apiVersion/kind/metadata) accidentally committed
+# alongside the real HelmRelease manifests in commit 3ec109d (2026-09-07). The
+# flux-system Kustomization tries to apply every YAML file under
+# infrastructure/cluster/flux/ as a Kubernetes resource, so this one file broke
+# reconciliation for the whole tree from that commit onward ("failed to decode
+# Kubernetes YAML ... missing Resource metadata"). The actual live source of
+# truth for jhub is infrastructure/cluster/flux/jhub/jhub-release.yaml
+# (spec.values, inline) -- this file is a stray, drifted copy kept only for
+# local reference, never consumed by Flux.
+/infrastructure/cluster/flux/jhub/jhub-values.yaml
