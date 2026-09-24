@@ -242,4 +242,3 @@ spec:
                   - --harakiri
                   - "120"
                   - --harakiri-verbose
-                  - "true"
