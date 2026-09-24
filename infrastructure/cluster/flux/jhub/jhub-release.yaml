@@ -125,16 +125,29 @@ spec:
 
         02-per-user-memory: |
 
+          # 2026-09-24 incident: the previous version of this hook assigned
+          # c.KubeSpawner.mem_limit/mem_guarantee directly to Python callables.
+          # JupyterHub's ByteSpecification trait validator calls value[:-1] on
+          # whatever it's assigned unconditionally (no callable support in the
+          # installed version), so it crashed with "TypeError: 'function'
+          # object is not subscriptable" -- and since the hub re-instantiates
+          # spawners for every already-running named server at boot, this took
+          # down the whole hub (CrashLoopBackOff), not just vpiompon's spawns.
+          # Fix: set plain string values on the spawner *instance* from a
+          # pre_spawn_hook instead of assigning callables at the trait/class
+          # level -- only ever a string ever reaches trait validation this way.
+
           BIG_MEM_USERS = {"vpiompon"}   # JupyterHub username == preferred_username from IAM
 
-          def mem_limit(spawner):
-              return "12G" if spawner.user.name in BIG_MEM_USERS else "2G"
+          def _set_per_user_memory(spawner):
+              if spawner.user.name in BIG_MEM_USERS:
+                  spawner.mem_limit = "12G"
+                  spawner.mem_guarantee = "8G"
+              else:
+                  spawner.mem_limit = "2G"
+                  spawner.mem_guarantee = "1G"
 
-          def mem_guarantee(spawner):
-              return "8G" if spawner.user.name in BIG_MEM_USERS else "1G"
-
-          c.KubeSpawner.mem_limit = mem_limit
-          c.KubeSpawner.mem_guarantee = mem_guarantee
+          c.KubeSpawner.pre_spawn_hook = _set_per_user_memory
 
 
     singleuser:
